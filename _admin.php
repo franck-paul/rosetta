@@ -22,4 +22,4 @@ $_menu['Blog']->addItem(__('Rosetta'),'plugin.php?p=rosetta','index.php?pf=roset
 require dirname(__FILE__).'/_widgets.php';
 
 /* Register favorite */
-$core->addBehavior('adminDashboardFavorites',array('rosettaBehaviors','adminDashboardFavorites'));
+$core->addBehavior('adminDashboardFavorites',array('rosettaAdminBehaviors','adminDashboardFavorites'));
