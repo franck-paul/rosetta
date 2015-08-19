@@ -1,4 +1,4 @@
-w# Plugin Rosetta pour Dotclear 2
+# Plugin Rosetta pour Dotclear 2
 
 ## Principe
 
