@@ -26,30 +26,6 @@ class rosettaAdminBehaviors
 
 class rosettaPublicBehaviors
 {
-	private static function findTranslation($id,$lang)
-	{
-		global $core;
-
-		// Looks for a post/page with an association with the corresponding lang
-		$strReq = 'SELECT * FROM '.$core->prefix.'rosetta R '.
-			"WHERE ".
-			"(R.src_id = '".$core->con->escape($id)."' AND R.dst_lang = '".$core->con->escape($lang)."') OR ".
-			"(R.dst_id = '".$core->con->escape($id)."' AND R.src_lang = '".$core->con->escape($lang)."') ".
-			"ORDER BY R.dst_id DESC";
-
-		$rs = $core->con->select($strReq);
-		if ($rs->count()) {
-			// Load first record
-			$rs->fetch();
-
-			// Return found ID
-			return ($rs->src_id == $id ? $rs->dst_id : $rs->src_id);
-		}
-
-		// No record found
-		return -1;
-	}
-
 	public static function urlHandlerGetArgsDocument($handler)
 	{
 		global $core;
@@ -78,7 +54,7 @@ class rosettaPublicBehaviors
 				$rsSrc->fetch();
 
 				// Try to find an associated post corresponding to the requested lang
-				$id = self::findTranslation($rsSrc->post_id,$lang);
+				$id = rosettaData::findTranslation($rsSrc->post_id,$rsSrc->post_lang,$lang);
 				if ($id >= 0) {
 					// Get post/page URL
 					$paramsDst = new ArrayObject(array(

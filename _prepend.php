@@ -14,3 +14,5 @@ if (!defined('DC_RC_PATH')) { return; }
 
 $__autoload['rosettaAdminBehaviors'] = dirname(__FILE__).'/inc/rosetta.behaviors.php';
 $__autoload['rosettaPublicBehaviors'] = dirname(__FILE__).'/inc/rosetta.behaviors.php';
+
+$__autoload['rosettaData'] = dirname(__FILE__).'/inc/rosetta.data.php';
