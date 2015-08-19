@@ -13,7 +13,7 @@
 if (!defined('DC_CONTEXT_ADMIN')) { return; }
 
 // dead but useful code, in order to have translations
-__('Rosetta').__('Manage contents translation URLs');
+__('Rosetta').__('Manage post/page translations');
 
 $_menu['Blog']->addItem(__('Rosetta'),'plugin.php?p=rosetta','index.php?pf=rosetta/icon.png',
 		preg_match('/plugin.php\?p=rosetta(&.*)?$/',$_SERVER['REQUEST_URI']),

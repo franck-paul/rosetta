@@ -14,10 +14,12 @@ if (!defined('DC_CONTEXT_ADMIN')) { return; }
 
 if (!empty($_REQUEST['m'])) {
 	switch ($_REQUEST['m']) {
-		case 'posts' :
-			require dirname(__FILE__).'/'.$_REQUEST['m'].'.php';
+		case 'posts' :	// Manage posts translations
+		case 'pages' :	// Manage pages translations
+//			require dirname(__FILE__).'/'.$_REQUEST['m'].'.php';
 			break;
 	}
 }
 
-// Settings for current blog
+// Plugin settings for current blog
+// ...

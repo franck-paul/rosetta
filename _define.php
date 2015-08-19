@@ -14,7 +14,7 @@ if (!defined('DC_RC_PATH')) { return; }
 
 $this->registerModule(
 	/* Name */			"Rosetta",
-	/* Description*/		"Manage contents translation URLs",
+	/* Description*/		"Manage post/page translations",
 	/* Author */			"Franck Paul",
 	/* Version */			'0.1',
 	array(
