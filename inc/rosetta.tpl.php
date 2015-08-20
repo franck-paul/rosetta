@@ -77,7 +77,7 @@ class rosettaTpl
 					\$rosetta_class = (\$rosetta_name == \$rosetta_current ? 'class="current"' : '');
 					echo '<li'.\$rosetta_class.'>'.
 						(\$rosetta_link ? '<a href="'.\$rosetta_url.'">' : '').
-						html::escapeHTML(\$rosetta_name).
+						(\$rosetta_class ? '<strong>' : '').html::escapeHTML(\$rosetta_name).(\$rosetta_class ? '</strong>' : '').
 						(\$rosetta_link ? '</a>' : '').
 						'</li>'."\n";
 				}
@@ -116,7 +116,7 @@ EOT;
 
 			$list .= '<li'.$class.'>'.
 				($link ? '<a href="'.$url.'">' : '').
-				html::escapeHTML($name).
+				($class ? '<strong>' : '').html::escapeHTML($name).($class ? '</strong>' : '').
 				($link ? '</a>' : '').
 				'</li>'."\n";
 		}
