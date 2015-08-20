@@ -2,11 +2,12 @@
 
 ## Principe
 
-Interception de l'URL à servir.
-Si un paramètre lang=nn est présent :
+- Interception de l'URL à servir si un paramètre lang=nn est présent :
 	Si l'URL correspond à un post_id géré par Rosetta :
 		Si une correspondance existe dans la langue demandée :
 			- rediriger vers la nouvelle URL
+
+- Widget avec la liste des traductions disponibles pour le billet/la page courant(e)
 
 Table des correspondances (rosetta) :
 
