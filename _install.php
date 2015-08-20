@@ -33,8 +33,13 @@ try
 	$s->rosetta->index('idx_rosetta_src_id','btree','src_id');
 	$s->rosetta->index('idx_rosetta_dst_id','btree','dst_id');
 
+	// Direct association indexes helpers
 	$s->rosetta->index('idx_rosetta_src_id_dst_lang','btree','src_id','dst_lang');
 	$s->rosetta->index('idx_rosetta_dst_id_src_lang','btree','dst_id','src_lang');
+
+	// Indirect association indexes helpers
+	$s->rosetta->index('idx_rosetta_src_id_src_lang','btree','src_id','src_lang');
+	$s->rosetta->index('idx_rosetta_dst_id_dst_lang','btree','dst_id','dst_lang');
 
 	$s->rosetta->reference('fk_rosetta_src','src_id','post','post_id','cascade','cascade');
 	$s->rosetta->reference('fk_rosetta_dst','dst_id','post','post_id','cascade','cascade');

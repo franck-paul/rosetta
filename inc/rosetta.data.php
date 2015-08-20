@@ -60,7 +60,7 @@ class rosettaData
 	 * @param  boolean $full result should include original post/page+lang
 	 * @return array         associative array (lang => id), false if nothing found
 	 */
-	private static function findAllTranslations($id,$lang,$full=false)
+	public static function findAllTranslations($id,$lang,$full=false)
 	{
 		global $core;
 
@@ -70,7 +70,7 @@ class rosettaData
 		}
 
 		// Get direct associations
-		$list = self::findDirectTranslations($id,$lang,$full);
+		$list = self::findDirectTranslations($id,$lang,true);
 
 		if (is_array($list)) {
 			// Get indirect associations
@@ -81,7 +81,7 @@ class rosettaData
 			while (count($ids)) {
 				$pair = array_shift($ids);
 				foreach ($pair as $l => $i) {
-					$next = self::findDirectTranslations($i,$l,false);
+					$next = self::findDirectTranslations($i,$l,true);
 					if (is_array($next)) {
 						foreach ($next as $key => $value) {
 							if (!in_array($value,$list,true)) {
@@ -90,6 +90,12 @@ class rosettaData
 							}
 						}
 					}
+				}
+			}
+			if (!$full) {
+				// Remove original from list
+				if ($key = array_search($id,$list,true)) {
+					unset($list[$key]);
 				}
 			}
 			return $list;
@@ -131,7 +137,7 @@ class rosettaData
 			return ($rs->src_id == $src_id ? $rs->dst_id : $rs->src_id);
 		}
 
-		// Looks for an indirect post/page association
+		// Looks for an indirect post/page association, ie a -> b and b-> c in table, src = b, looking for c
 		$list = self::findAllTranslations($src_id,$src_lang,false);
 		if (is_array($list)) {
 			if (array_key_exists($dst_lang,$list)) {

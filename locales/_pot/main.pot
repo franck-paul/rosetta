@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dotclear 2 rosetta module\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-19 15:35+0200\n"
+"POT-Creation-Date: 2015-08-20 10:49+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,4 +23,24 @@ msgstr ""
 #: ../hg-plugins/rosetta//_admin.php:16 ../hg-plugins/rosetta//_admin.php:18
 #: ../hg-plugins/rosetta//inc/rosetta.behaviors.php:18
 msgid "Rosetta"
+msgstr ""
+
+#: ../hg-plugins/rosetta//_widgets.php:22
+msgid "Entry's translations"
+msgstr ""
+
+#: ../hg-plugins/rosetta//_widgets.php:23
+msgid "Translation(s) of this entry"
+msgstr ""
+
+#: ../hg-plugins/rosetta//_widgets.php:25
+msgid "Include current entry:"
+msgstr ""
+
+#: ../hg-plugins/rosetta//_widgets.php:26
+msgid "With URL"
+msgstr ""
+
+#: ../hg-plugins/rosetta//_widgets.php:26
+msgid "Without URL"
 msgstr ""

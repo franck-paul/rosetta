@@ -16,3 +16,5 @@ $__autoload['rosettaAdminBehaviors'] = dirname(__FILE__).'/inc/rosetta.behaviors
 $__autoload['rosettaPublicBehaviors'] = dirname(__FILE__).'/inc/rosetta.behaviors.php';
 
 $__autoload['rosettaData'] = dirname(__FILE__).'/inc/rosetta.data.php';
+
+$__autoload['rosettaTpl'] = dirname(__FILE__).'/inc/rosetta.tpl.php';

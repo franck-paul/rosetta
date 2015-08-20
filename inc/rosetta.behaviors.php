@@ -43,6 +43,7 @@ class rosettaPublicBehaviors
 			// Get post/page id
 			$paramsSrc = new ArrayObject(array(
 				'post_url' => $handler->args,
+				'post_type' => array('post','page'),
 				'no_content' => true));
 
 			$core->callBehavior('publicPostBeforeGetPosts',$paramsSrc,$handler->args);
@@ -59,6 +60,7 @@ class rosettaPublicBehaviors
 					// Get post/page URL
 					$paramsDst = new ArrayObject(array(
 						'post_id' => $id,
+						'post_type' => array('post','page'),
 						'no_content' => true));
 
 					$core->callBehavior('publicPostBeforeGetPosts',$paramsDst,$handler->args);
