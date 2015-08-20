@@ -19,7 +19,8 @@ Table des correspondances (rosetta) :
 Composants publics :
 
 - Widget traductions dispos (billet/page) : liste des URLs des billets (<a href="url-billet">langue</a>)
-- Balise template équivalente (utilisable dans les contextes de liste des billets)
+- Balise template équivalente (utilisable dans les contextes de liste des billets) :
+  {{tpl:RosettaEntryList [include_current={std|link|none}]}} (std par défaut)
 - Injection meta : alternate / hreflang dans le <head> (contexte post/page)
 
 Notes :

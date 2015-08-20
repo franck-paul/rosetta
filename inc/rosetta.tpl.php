@@ -12,26 +12,16 @@
 
 class rosettaTpl
 {
-	public static function rosettaEntryWidget($w)
+	public static function EntryListHelper($post_id,$post_lang,$post_type,$include,&$current)
 	{
-		global $core,$_ctx;
-
-		if ($w->offline)
-			return;
-
-		if ($core->url->type != 'post' && $core->url->type != 'page') {
-			return;
-		}
-		$post_type = ($core->url->type == 'post' ? 'post' : 'page');
-
-		// Get list of available translations for current entry
-		$full = ($w->current != 'none');
-		$ids = rosettaData::findAllTranslations($_ctx->posts->post_id,$_ctx->posts->post_lang,$full);
-		if (!is_array($ids)) {
-			return;
-		}
+		global $core;
 
 		// Get associated entries
+		$ids = rosettaData::findAllTranslations($post_id,$post_lang,($include != 'none'));
+		if (!is_array($ids)) {
+			return false;
+		}
+
 		// source = $ids : array ('lang' => 'entry-id')
 		// destination = $table : array ('language' => 'entry-url')
 		// $current = current language
@@ -40,10 +30,10 @@ class rosettaTpl
 		$current = '';
 		foreach ($ids as $lang => $id) {
 			$name = isset($langs[$lang]) ? $langs[$lang] : $langs[$core->blog->settings->system->lang];
-			if ($_ctx->posts->post_id == $id) {
+			if ($post_id == $id) {
 				$current = $name;
 			}
-			if ($_ctx->posts->post_id == $id && $w->current != 'link') {
+			if ($post_id == $id && $include != 'link') {
 				$table[$name] = '';
 			} else {
 				// Get post/page URL
@@ -61,9 +51,59 @@ class rosettaTpl
 			}
 		}
 		if (!count($table)) {
-			return;
+			return false;
 		}
 		dcUtils::lexicalKeySort($table,'public');
+
+		return $table;
+	}
+
+	public static function rosettaEntryList($attr)
+	{
+		$option = !empty($attr['include_current']) ? $attr['include_current'] : 'std';
+
+		if (!preg_match('#^(std|link|none)$#',$option)) {
+			$option = 'std';
+		}
+
+		$res = <<<EOT
+			\$rosetta_table = rosettaTpl::EntryListHelper(
+				\$_ctx->posts->post_id,\$_ctx->posts->post_lang,\$_ctx->posts->post_type,
+				'$option',\$rosetta_current);
+			if (is_array(\$rosetta_table) && count(\$rosetta_table)) {
+				echo '<ul class="rosetta-entries-list">'."\n";
+				foreach (\$rosetta_table as \$rosetta_name => \$rosetta_url) {
+					\$rosetta_link = (\$rosetta_name != \$rosetta_current || '$option' == 'link');
+					\$rosetta_class = (\$rosetta_name == \$rosetta_current ? 'class="current"' : '');
+					echo '<li'.\$rosetta_class.'>'.
+						(\$rosetta_link ? '<a href="'.\$rosetta_url.'">' : '').
+						html::escapeHTML(\$rosetta_name).
+						(\$rosetta_link ? '</a>' : '').
+						'</li>'."\n";
+				}
+				echo '</ul>'."\n";
+			}
+EOT;
+		return ($res != '' ? '<?php '.$res.' ?>' : '');
+	}
+
+	public static function rosettaEntryWidget($w)
+	{
+		global $core,$_ctx;
+
+		if ($w->offline)
+			return;
+
+		if ($core->url->type != 'post' && $core->url->type != 'page') {
+			return;
+		}
+
+		// Get list of available translations for current entry
+		$post_type = ($core->url->type == 'post' ? 'post' : 'page');
+		$table = self::EntryListHelper($_ctx->posts->post_id,$_ctx->posts->post_lang,$post_type,$w->current,$current);
+		if (!$table) {
+			return;
+		}
 
 		// Render widget title
 		$res = ($w->title ? $w->renderTitle(html::escapeHTML($w->title))."\n" : '');
@@ -86,6 +126,6 @@ class rosettaTpl
 		$res .= '<ul>'.$list.'</ul>'."\n";
 
 		// Render full content
-		return $w->renderDiv($w->content_only,'rosetta-entry '.$w->class,'',$res);
+		return $w->renderDiv($w->content_only,'rosetta-entries '.$w->class,'',$res);
 	}
 }
