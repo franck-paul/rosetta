@@ -25,7 +25,7 @@ Composants publics :
 
 Notes :
 
-1. La gestion est pour l'instant limitée aux billets et pages. Une extension du principe aux autres contextes demanderait de revoir le schéma de la table, probablement pour basculer sur les URLs relatives au blog — ce qui implique au passage de prévoir la mise à jour en cas de changement de celles-ci - plutôt que les ID.
+1. La gestion est pour l'instant limitée aux billets et pages. Une extension du principe aux autres contextes demanderait de revoir le schéma de la table, probablement pour basculer sur les URLs relatives au blog — ce qui implique au passage de prévoir la mise à jour en cas de changement de celles-ci - plutôt que les ID qui permettent la gestion en cascade des suppressions de billets/pages.
 
 2. L'affichage d'un billet (sans lang=nn en arguments d'URL) pourrait être intercepté pour trouver s'il existe une version correspondant au accept-language du browser, si le billet demandé ne correspond pas.
 À faire dans rosettaPublicBehaviors::urlHandlerGetArgsDocument().

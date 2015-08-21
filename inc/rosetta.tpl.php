@@ -12,7 +12,7 @@
 
 class rosettaTpl
 {
-	public static function EntryListHelper($post_id,$post_lang,$post_type,$include,&$current)
+	public static function EntryListHelper($post_id,$post_lang,$post_type,$include,&$current,$code_only=false)
 	{
 		global $core;
 
@@ -23,7 +23,7 @@ class rosettaTpl
 		}
 
 		// source = $ids : array ('lang' => 'entry-id')
-		// destination = $table : array ('language' => 'entry-url')
+		// destination = $table : array ('language' (or 'lang' if $code=true) => 'entry-url')
 		// $current = current language
 		$table = array();
 		$langs = l10n::getLanguagesName();
@@ -31,10 +31,10 @@ class rosettaTpl
 		foreach ($ids as $lang => $id) {
 			$name = isset($langs[$lang]) ? $langs[$lang] : $langs[$core->blog->settings->system->lang];
 			if ($post_id == $id) {
-				$current = $name;
+				$current = ($code_only ? $lang : $name);
 			}
 			if ($post_id == $id && $include != 'link') {
-				$table[$name] = '';
+				$table[($code_only ? $lang : $name)] = '';
 			} else {
 				// Get post/page URL
 				$params = new ArrayObject(array(
@@ -46,7 +46,7 @@ class rosettaTpl
 				if ($rs->count()) {
 					$rs->fetch();
 					$url = $core->blog->url.$core->getPostPublicURL($post_type,html::sanitizeURL($rs->post_url));
-					$table[$name] = $url;
+					$table[($code_only ? $lang : $name)] = $url;
 				}
 			}
 		}
@@ -90,6 +90,11 @@ EOT;
 	public static function rosettaEntryWidget($w)
 	{
 		global $core,$_ctx;
+
+		$core->blog->settings->addNamespace('rosetta');
+		if (!$core->blog->settings->rosetta->active) {
+			return;
+		}
 
 		if ($w->offline)
 			return;

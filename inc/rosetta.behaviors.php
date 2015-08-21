@@ -26,9 +26,39 @@ class rosettaAdminBehaviors
 
 class rosettaPublicBehaviors
 {
+	public static function publicHeadContent()
+	{
+		global $core,$_ctx;
+
+		$core->blog->settings->addNamespace('rosetta');
+		if ($core->blog->settings->rosetta->active) {
+			if ($core->url->type == 'post' || $core->url->type == 'page') {
+				if ($_ctx->posts->post_type == 'post' || $_ctx->posts->post_type == 'page') {
+					// Find translations and add meta in header
+					$list = rosettaTpl::EntryListHelper(
+						$_ctx->posts->post_id,$_ctx->posts->post_lang,$_ctx->posts->post_type,
+						'none',$current,true);
+					if (is_array($list)) {
+						if (count($list)) {
+							echo '<!-- Rosetta: translated version of this entry -->'."\n";
+							foreach ($list as $lang => $url) {
+								echo '<link rel="alternate" href="'.$url.'" hreflang="'.$lang.'" />'."\n";
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
 	public static function urlHandlerGetArgsDocument($handler)
 	{
 		global $core;
+
+		$core->blog->settings->addNamespace('rosetta');
+		if (!$core->blog->settings->rosetta->active) {
+			return;
+		}
 
 		$lang = '';
 		if (!empty($_GET['lang'])) {

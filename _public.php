@@ -16,6 +16,7 @@ require dirname(__FILE__).'/_widgets.php';
 
 // Public behaviours
 $core->addBehavior('urlHandlerGetArgsDocument',array('rosettaPublicBehaviors','urlHandlerGetArgsDocument'));
+$core->addBehavior('publicHeadContent', array('rosettaPublicBehaviors','publicHeadContent'));
 
 // Public template tags
 $core->tpl->addValue('RosettaEntryList',array('rosettaTpl','rosettaEntryList'));

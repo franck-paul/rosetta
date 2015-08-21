@@ -55,10 +55,10 @@ class rosettaData
 
 	/**
 	 * Find all posts/pages associated with a post/page id and lang
-	 * @param  integer $id   original post/page id
-	 * @param  string  $lang original lang
-	 * @param  boolean $full result should include original post/page+lang
-	 * @return array         associative array (lang => id), false if nothing found
+	 * @param  integer $id   		original post/page id
+	 * @param  string  $lang 		original lang
+	 * @param  boolean $full 		result should include original post/page+lang
+	 * @return array 				associative array (lang => id), false if nothing found
 	 */
 	public static function findAllTranslations($id,$lang,$full=false)
 	{
