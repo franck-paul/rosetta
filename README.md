@@ -1,5 +1,7 @@
 # Plugin Rosetta pour Dotclear 2
 
+Gestion des traductions de billets et de pages.
+
 ## Principe
 
 - Interception de l'URL à servir si un paramètre lang=nn est présent :
@@ -18,8 +20,9 @@ Table des correspondances (rosetta) :
 
 Composants publics :
 
-- Widget traductions dispos (billet/page) : liste des URLs des billets (<a href="url-billet">langue</a>)
-- Balise template équivalente (utilisable dans les contextes de liste des billets) :
+- Widget traductions dispos (billet/page) dans le contexte du billet/de la page seul(e) :
+  liste des URLs des billets (<a href="url-billet">langue</a>)
+- Balise template équivalente (utilisable aussi dans les contextes de liste des billets) :
   {{tpl:RosettaEntryList [include_current={std|link|none}]}} (std par défaut)
 - Injection meta : alternate / hreflang dans le <head> (contexte post/page)
 
