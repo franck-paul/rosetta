@@ -99,7 +99,12 @@ EOT;
 		if ($w->offline)
 			return;
 
-		if ($core->url->type != 'post' && $core->url->type != 'page') {
+		$urlTypes = array('post');
+		if ($core->plugins->moduleExists('pages')) {
+			$urlTypes[] = 'page';
+		}
+
+		if (!in_array($core->url->type,$urlTypes)) {
 			return;
 		}
 

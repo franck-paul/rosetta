@@ -12,9 +12,14 @@
 
 if (!defined('DC_RC_PATH')) { return; }
 
-$__autoload['rosettaAdminBehaviors'] = dirname(__FILE__).'/inc/rosetta.behaviors.php';
-$__autoload['rosettaPublicBehaviors'] = dirname(__FILE__).'/inc/rosetta.behaviors.php';
+// Public and Admin mode
 
-$__autoload['rosettaData'] = dirname(__FILE__).'/inc/rosetta.data.php';
+$__autoload['rosettaPublicBehaviors'] = 	dirname(__FILE__).'/inc/rosetta.behaviors.php';
+$__autoload['rosettaTpl'] = 				dirname(__FILE__).'/inc/rosetta.tpl.php';
+$__autoload['rosettaData'] = 				dirname(__FILE__).'/inc/rosetta.data.php';
 
-$__autoload['rosettaTpl'] = dirname(__FILE__).'/inc/rosetta.tpl.php';
+if (!defined('DC_CONTEXT_ADMIN')) { return false; }
+
+// Admin mode only
+
+$__autoload['rosettaAdminBehaviors'] = 		dirname(__FILE__).'/inc/rosetta.behaviors.php';

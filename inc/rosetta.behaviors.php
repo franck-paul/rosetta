@@ -10,6 +10,8 @@
 # http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 # -- END LICENSE BLOCK ------------------------------------
 
+// Admin behaviours
+
 class rosettaAdminBehaviors
 {
 	public static function adminDashboardFavorites($core,$favs)
@@ -24,16 +26,25 @@ class rosettaAdminBehaviors
 	}
 }
 
+// Public behaviours
+
 class rosettaPublicBehaviors
 {
 	public static function publicHeadContent()
 	{
 		global $core,$_ctx;
 
+		$urlTypes = array('post');
+		$postTypes = array('post');
+		if ($core->plugins->moduleExists('pages')) {
+			$urlTypes[] = 'page';
+			$postTypes[] = 'post';
+		}
+
 		$core->blog->settings->addNamespace('rosetta');
 		if ($core->blog->settings->rosetta->active) {
-			if ($core->url->type == 'post' || $core->url->type == 'page') {
-				if ($_ctx->posts->post_type == 'post' || $_ctx->posts->post_type == 'page') {
+			if (in_array($core->url->type,$urlTypes)) {
+				if (in_array($_ctx->posts->post_type,$postTypes)) {
 					// Find translations and add meta in header
 					$list = rosettaTpl::EntryListHelper(
 						$_ctx->posts->post_id,$_ctx->posts->post_lang,$_ctx->posts->post_type,
@@ -70,10 +81,15 @@ class rosettaPublicBehaviors
 		}
 
 		if ($lang) {
+			$postTypes = array('post');
+			if ($this->core->plugins->moduleExists('pages')) {
+				$postTypes[] = 'post';
+			}
+
 			// Get post/page id
 			$paramsSrc = new ArrayObject(array(
 				'post_url' => $handler->args,
-				'post_type' => array('post','page'),
+				'post_type' => $postTypes,
 				'no_content' => true));
 
 			$core->callBehavior('publicPostBeforeGetPosts',$paramsSrc,$handler->args);
@@ -90,7 +106,7 @@ class rosettaPublicBehaviors
 					// Get post/page URL
 					$paramsDst = new ArrayObject(array(
 						'post_id' => $id,
-						'post_type' => array('post','page'),
+						'post_type' => $postTypes,
 						'no_content' => true));
 
 					$core->callBehavior('publicPostBeforeGetPosts',$paramsDst,$handler->args);
