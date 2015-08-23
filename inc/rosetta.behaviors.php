@@ -24,6 +24,144 @@ class rosettaAdminBehaviors
 			'permissions' => 'usage,contentadmin'
 		));
 	}
+
+	private static function adminEntryHeaders()
+	{
+		return
+			'<script type="text/javascript">'."\n".
+			"//<![CDATA[\n".
+			dcPage::jsVar('dotclear.msg.confirm_remove_rosetta',
+				__('Are you sure to remove this translation?')).
+			"\n//]]>\n".
+			"</script>\n".
+			dcPage::jsLoad('index.php?pf=rosetta/js/rosetta_entry.js')."\n".
+			dcPage::cssLoad('index.php?pf=rosetta/css/style.css')."\n";
+	}
+
+	public static function adminPostHeaders()
+	{
+		global $core;
+
+		$core->blog->settings->addNamespace('rosetta');
+		if ($core->blog->settings->rosetta->active) {
+			return
+				'<script type="text/javascript">'."\n".
+				"//<![CDATA[\n".
+				dcPage::jsVar('dotclear.post_type','post').
+				"\n//]]>\n".
+				"</script>\n".
+				self::adminEntryHeaders();
+		}
+	}
+
+	public static function adminPageHeaders()
+	{
+		global $core;
+
+		$core->blog->settings->addNamespace('rosetta');
+		if ($core->blog->settings->rosetta->active) {
+			return
+				'<script type="text/javascript">'."\n".
+				"//<![CDATA[\n".
+				dcPage::jsVar('dotclear.post_type','page').
+				"\n//]]>\n".
+				"</script>\n".
+				self::adminEntryHeaders();
+		}
+	}
+
+	private static function adminEntryForm($post,$post_type='post')
+	{
+		global $core,$lang_combo,$post_link,$redir_url;
+
+		$core->blog->settings->addNamespace('rosetta');
+		if ($core->blog->settings->rosetta->active) {
+			echo
+				'<div id="rosetta-area" class="area">'."\n".
+				'<label>'.__('Translations:').'</label>'."\n";
+
+			if ($post_type == 'post') {
+				$url = $core->adminurl->get('admin.post',array('id' => $post->post_id));
+			} else {
+				$url = $redir_url;
+			}
+			$url_rosetta = '&amp;rosetta=%s&amp;rosetta_id=%s&amp;rosetta_lang=%s';
+
+			$html_block =
+				'<div class="table-outer">'.
+				'<table id="rosetta-list" summary="'.__('Translations').'" class="clear maximal">'.
+				'<thead>'.
+				'<tr>'.
+				'<th class="nowrap">'.__('Language').'</th>'.
+				'<th>'.__('Entry').'</th>'.
+				'<th class="nowrap">'.'</th>'.
+				'</tr>'.
+				'</thead>'.
+				'<tbody>%s</tbody>'.
+				'</table>'.
+				'</div>';
+			$html_lines = '';
+			$html_line =
+				'<tr class="line wide" id="r%s">'."\n".
+				'<td class="minimal nowrap">%s</td>'."\n".			// language
+				'<td class="maximal">%s</td>'."\n".					// Entry link
+				'<td class="minimal nowrap">%s</td>'."\n".	// Action
+				'</tr>'."\n";
+
+			$action_add =
+				'<a href="%s" title="'.__('Add a translation').'" class="button">'.__('Add a translation').'</a>';
+			$action_remove =
+				'<a href="%s" title="'.__('Remove this translation').
+				'" name="delete"><img src="index.php?pf=rosetta/img/unlink.png" alt="'.__('Remove this translation').
+				'" /></a>';
+
+			$list = rosettaData::findAllTranslations($post->post_id,$post->post_lang,false);
+			if (is_array($list) && count($list)) {
+
+				dcUtils::lexicalKeySort($list,'admin');
+
+				$langs = l10n::getLanguagesName();
+				$i = 1;
+				foreach ($list as $lang => $id) {
+					// Display existing translations
+					$name = isset($langs[$lang]) ? $langs[$lang] : $langs[$core->blog->settings->system->lang];
+					// Get post/page id
+					$params = new ArrayObject(array(
+						'post_id' => $id,
+						'post_type' => $post_type,
+						'no_content' => true));
+					$rs = $core->blog->getPosts($params);
+					if ($rs->count()) {
+						$rs->fetch();
+						$html_lines .= sprintf($html_line,$i++,
+							$lang.' - '.$name,
+							sprintf($post_link,$id,__('Edit this entry'),
+								html::escapeHTML($rs->post_title)),
+							sprintf($action_remove,$url.sprintf($url_rosetta,'remove',$id,$lang)));
+					}
+				}
+			}
+
+			// Display table
+			echo sprintf($html_block,$html_lines);
+
+			// Add a button for adding a new translation
+			echo '<p>'.sprintf($action_add,$url.sprintf($url_rosetta,'add',0,$post->post_lang)).'</p>';
+
+			echo
+				'</div>'."\n";
+		}
+	}
+
+	public static function adminPostForm($post)
+	{
+		self::adminEntryForm($post,'post');
+	}
+
+	public static function adminPageForm($post)
+	{
+		self::adminEntryForm($post,'page');
+	}
 }
 
 // Public behaviours

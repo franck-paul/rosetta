@@ -23,3 +23,11 @@ require dirname(__FILE__).'/_widgets.php';
 
 /* Register favorite */
 $core->addBehavior('adminDashboardFavorites',array('rosettaAdminBehaviors','adminDashboardFavorites'));
+
+// Add behaviour callback for post
+$core->addBehavior('adminPostForm',array('rosettaAdminBehaviors','adminPostForm'));
+$core->addBehavior('adminPostHeaders',array('rosettaAdminBehaviors','adminPostHeaders'));
+
+// Add behaviour callback for page
+$core->addBehavior('adminPageForm',array('rosettaAdminBehaviors','adminPageForm'));
+$core->addBehavior('adminPageHeaders',array('rosettaAdminBehaviors','adminPageHeaders'));

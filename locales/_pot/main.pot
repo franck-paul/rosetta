@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dotclear 2 rosetta module\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-22 16:37+0200\n"
+"POT-Creation-Date: 2015-08-23 19:37+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,7 +21,7 @@ msgid "Manage post/page translations"
 msgstr ""
 
 #: ../hg-plugins/rosetta//_admin.php:16 ../hg-plugins/rosetta//_admin.php:18
-#: ../hg-plugins/rosetta//inc/rosetta.behaviors.php:18
+#: ../hg-plugins/rosetta//inc/rosetta.behaviors.php:20
 #: ../hg-plugins/rosetta//index.php:36 ../hg-plugins/rosetta//index.php:44
 msgid "Rosetta"
 msgstr ""
@@ -46,18 +46,39 @@ msgstr ""
 msgid "Without its URL"
 msgstr ""
 
+#: ../hg-plugins/rosetta//inc/rosetta.behaviors.php:34
+msgid "Are you sure to remove this translation?"
+msgstr ""
+
+#: ../hg-plugins/rosetta//inc/rosetta.behaviors.php:81
+msgid "Translations:"
+msgstr ""
+
+#: ../hg-plugins/rosetta//inc/rosetta.behaviors.php:112
+msgid "Add a translation"
+msgstr ""
+
+#: ../hg-plugins/rosetta//inc/rosetta.behaviors.php:114
+#: ../hg-plugins/rosetta//inc/rosetta.behaviors.php:115
+msgid "Remove this translation"
+msgstr ""
+
+#: ../hg-plugins/rosetta//inc/rosetta.behaviors.php:136
+msgid "Edit this entry"
+msgstr ""
+
 #: ../hg-plugins/rosetta//index.php:51 ../hg-plugins/rosetta//index.php:52
 msgid "Posts tranlations"
 msgstr ""
 
-#: ../hg-plugins/rosetta//index.php:64 ../hg-plugins/rosetta//index.php:65
+#: ../hg-plugins/rosetta//index.php:65 ../hg-plugins/rosetta//index.php:66
 msgid "Pages tranlations"
 msgstr ""
 
-#: ../hg-plugins/rosetta//index.php:77 ../hg-plugins/rosetta//index.php:78
+#: ../hg-plugins/rosetta//index.php:79 ../hg-plugins/rosetta//index.php:80
 msgid "Settings"
 msgstr ""
 
-#: ../hg-plugins/rosetta//index.php:83
+#: ../hg-plugins/rosetta//index.php:85
 msgid "Enable posts/pages tranlsations for this blog"
 msgstr ""
