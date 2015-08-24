@@ -10,8 +10,139 @@
 # http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 # -- END LICENSE BLOCK ------------------------------------
 
+/**
+ * Rosetta table schema:
+ *
+ * src_id 		post/page ID
+ * src_lang 	post/page lang
+ * dst_id 		translated post/page ID
+ * dst_lang 	translated post/page lang
+ *
+ * Principe :
+ *
+ * Une nouvelle traduction est ajoutée à tous les billets déjà chaînés
+ * Par exemple, si A (fr) et B (en) sont chaînés, une nouvelle traduction C (de) est ajoutée à A et à B
+ *
+ * ce qui donne la table suivante :
+ * A (fr) -> B (en)
+ * A (fr) -> C (de)
+ * B (en) -> C (de)
+ *
+ * Avantage : La suppression d'un billet ou d'une page n'entraîne du coup pas de rupture dans la chaîne de traduction.
+ * Inconvénient : Le nombre de tuples peut vite grimper (factorielle du nb de langues / chaîne) si on gère beaucoup de langues.
+ */
+
 class rosettaData
 {
+	/**
+	 * Add a new translation for a post/page (only if it does not already exists)
+	 * @param integer $src_id   original post/page id
+	 * @param string  $src_lang original lang
+	 * @param integer $dst_id   new post/page translation id
+	 * @param string  $dst_lang new post/page translation lang
+	 */
+	public static function addTranslation($src_id,$src_lang,$dst_id,$dst_lang)
+	{
+		global $core;
+
+		// Check args
+		if ($src_lang == '' || !$src_lang) {
+			// Use blog language if language not specified for original post
+			$src_lang = $core->blog->settings->system->lang;
+		}
+		if ($dst_lang == '' || !$dst_lang) {
+			// Use blog language if language not specified for original post
+			$dst_lang = $core->blog->settings->system->lang;
+		}
+		if ($src_lang == $dst_lang) {
+			return false;
+		}
+		if (self::findTranslation($src_id,$src_lang,$dst_lang) != -1) {
+			// translation already attached
+			return false;
+		}
+
+		// Get all existing translations -> array(lang => id)
+		$list = findAllTranslations($src_id,$src_lang,true);
+
+		// Add the new translation attachment for all existing translations
+		$core->con->writeLock($this->prefix.'rosetta');
+		try
+		{
+			foreach ($list as $lang => $id) {
+				if (self::findTranslation($id,$lang,$dst_lang) == -1) {
+					// Add the new translation
+					$cur = $core->con->openCursor($this->core->prefix.'rosetta');
+					$cur->src_id = $id;
+					$cur->src_lang = $lang;
+					$cur->dst_id = $dst_id;
+					$cur->dst_lang = $dst_lang;
+					$cur->insert();
+				}
+			}
+			$core->con->unlock();
+		}
+		catch (Exception $e)
+		{
+			$core->con->unlock();
+			throw $e;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Remove an existing translation for a post/page
+	 * @param integer $src_id   original post/page id
+	 * @param string  $src_lang original lang
+	 * @param integer $dst_id   post/page translation id to be removed
+	 * @param string  $dst_lang new post/page translation lang to be removed
+	 */
+	public static function removeTranslation($src_id,$src_lang,$dst_id,$dst_lang)
+	{
+		global $core;
+
+		// Check args
+		if ($src_lang == '' || !$src_lang) {
+			// Use blog language if language not specified for original post
+			$src_lang = $core->blog->settings->system->lang;
+		}
+		if ($dst_lang == '' || !$dst_lang) {
+			// Use blog language if language not specified for original post
+			$dst_lang = $core->blog->settings->system->lang;
+		}
+		if ($src_lang == $dst_lang) {
+			return false;
+		}
+		if (self::findTranslation($src_id,$src_lang,$dst_lang) == -1) {
+			// Translation attachment not found
+			return false;
+		}
+
+		$core->con->writeLock($this->prefix.'rosetta');
+		try
+		{
+			// Remove the translations
+			$strReq =
+				'DELETE FROM '.$core->prefix.'rosetta R '.
+				"WHERE ".
+				"((R.src_id = '".$core->con->escape($src_id)."' AND R.src_lang = '".$core->con->escape($src_lang)."') AND ".
+				"(R.dst_id = '".$core->con->escape($dst_id)."' AND R.dst_lang = '".$core->con->escape($dst_lang)."')) ".
+				"OR ".
+				"((R.src_id = '".$core->con->escape($dst_id)."' AND R.src_lang = '".$core->con->escape($dst_lang)."') AND ".
+				"(R.dst_id = '".$core->con->escape($src_id)."' AND R.dst_lang = '".$core->con->escape($src_lang)."')) ";
+			$core->con->execute($strReq);
+			$core->con->unlock();
+		}
+		catch (Exception $e)
+		{
+			$core->con->unlock();
+			throw $e;
+		}
+
+		return true;
+	}
+
 	/**
 	 * Find direct posts/pages associated with a post/page id and lang
 	 * @param  integer $id   original post/page id

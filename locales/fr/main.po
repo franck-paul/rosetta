@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dotclear 2 rosetta module\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-23 19:37+0200\n"
+"POT-Creation-Date: 2015-08-24 11:09+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -40,14 +40,21 @@ msgstr "Sans son URL"
 msgid "Are you sure to remove this translation?"
 msgstr "Êtes-vous sûr de vouloir retirer cette traduction ?"
 
-msgid "Translations:"
-msgstr "Traductions de l'entrée :"
+msgid "Page's translations:"
+msgstr "Traductions de cette page :"
 
-msgid "Add a translation"
-msgstr "Ajouter une traduction"
+#, fuzzy
+msgid "Post's translations:"
+msgstr "Traductions de ce billet :"
 
-msgid "Remove this translation"
-msgstr "Retirer cette traduction"
+msgid "Attached Translations"
+msgstr "Traductions attachées"
+
+msgid "Attach a translation"
+msgstr "Attacher une traduction"
+
+msgid "Remove this translation's link"
+msgstr "Retirer le lien vers cette traduction"
 
 msgid "Edit this entry"
 msgstr "Éditer cette entrée"
@@ -63,3 +70,6 @@ msgstr "Configuration"
 
 msgid "Enable posts/pages tranlsations for this blog"
 msgstr "Activer la gestion des traductions des billets et pages"
+
+#~ msgid "Translations:"
+#~ msgstr "Traductions de l'entrée :"

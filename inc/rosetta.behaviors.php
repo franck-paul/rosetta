@@ -76,24 +76,32 @@ class rosettaAdminBehaviors
 
 		$core->blog->settings->addNamespace('rosetta');
 		if ($core->blog->settings->rosetta->active) {
+
+			if (!$post || !$post->post_id) {
+				// Manage translation only on already created posts/pages
+				return;
+			}
+
 			echo
 				'<div id="rosetta-area" class="area">'."\n".
-				'<label>'.__('Translations:').'</label>'."\n";
+				'<label>'.
+				($post_type == 'post' ? __('Post\'s translations:') : __('Page\'s translations:')).
+				'</label>'."\n";
 
 			if ($post_type == 'post') {
 				$url = $core->adminurl->get('admin.post',array('id' => $post->post_id));
 			} else {
 				$url = $redir_url;
 			}
-			$url_rosetta = '&amp;rosetta=%s&amp;rosetta_id=%s&amp;rosetta_lang=%s';
+			$url_rosetta = '&amp;lang=%s&amp;rosetta=%s&amp;rosetta_id=%s&amp;rosetta_lang=%s';
 
 			$html_block =
 				'<div class="table-outer">'.
-				'<table id="rosetta-list" summary="'.__('Translations').'" class="clear maximal">'.
+				'<table id="rosetta-list" summary="'.__('Attached Translations').'" class="clear maximal">'.
 				'<thead>'.
 				'<tr>'.
 				'<th class="nowrap">'.__('Language').'</th>'.
-				'<th>'.__('Entry').'</th>'.
+				'<th>'.($post_type == 'post' ? __('Entry') : __('Page')).'</th>'.
 				'<th class="nowrap">'.'</th>'.
 				'</tr>'.
 				'</thead>'.
@@ -109,10 +117,10 @@ class rosettaAdminBehaviors
 				'</tr>'."\n";
 
 			$action_add =
-				'<a href="%s" title="'.__('Add a translation').'" class="button">'.__('Add a translation').'</a>';
+				'<a href="%s" class="button">'.__('Attach a translation').'</a>';
 			$action_remove =
-				'<a href="%s" title="'.__('Remove this translation').
-				'" name="delete"><img src="index.php?pf=rosetta/img/unlink.png" alt="'.__('Remove this translation').
+				'<a href="%s" title="'.__('Remove this translation\'s link').
+				'" name="delete"><img src="index.php?pf=rosetta/img/unlink.png" alt="'.__('Remove this translation\'s link').
 				'" /></a>';
 
 			$list = rosettaData::findAllTranslations($post->post_id,$post->post_lang,false);
@@ -137,7 +145,7 @@ class rosettaAdminBehaviors
 							$lang.' - '.$name,
 							sprintf($post_link,$id,__('Edit this entry'),
 								html::escapeHTML($rs->post_title)),
-							sprintf($action_remove,$url.sprintf($url_rosetta,'remove',$id,$lang)));
+							sprintf($action_remove,$url.sprintf($url_rosetta,$post->post_lang,'remove',$id,$lang)));
 					}
 				}
 			}
@@ -146,10 +154,11 @@ class rosettaAdminBehaviors
 			echo sprintf($html_block,$html_lines);
 
 			// Add a button for adding a new translation
-			echo '<p>'.sprintf($action_add,$url.sprintf($url_rosetta,'add',0,$post->post_lang)).'</p>';
+			echo '<p>'.sprintf($action_add,$url.sprintf($url_rosetta,
+				($post->post_lang == '' || !$post->post_lang ? $core->blog->settings->system->lang : $post->post_lang ),
+				'add',0,'')).'</p>';
 
-			echo
-				'</div>'."\n";
+			echo '</div>'."\n";
 		}
 	}
 
