@@ -23,15 +23,17 @@ class rosettaRest
 	 */
 	public static function addTranslation($core,$get)
 	{
-		global $core;
-
 		$id = !empty($get['id']) ? $get['id'] : -1;
+		$lang = !empty($get['lang']) ? $get['lang'] : '';
+		$rosetta_id = !empty($get['rosetta_id']) ? $get['rosetta_id'] : -1;
+		$rosetta_lang = !empty($get['rosetta_lang']) ? $get['rosetta_lang'] : '';
 		$rsp = new xmlTag('rosetta');
 
 		$ret = false;
-		if ($id != -1) {
-			// Call popup to select post/page
-			;
+		$ret = false;
+		if ($id != -1 && $rosetta_id != -1) {
+			// Remove the translation link
+			$ret = rosettaData::addTranslation($id,$lang,$rosetta_id,$rosetta_lang);
 		}
 
 		$rsp->ret = $ret;
@@ -50,12 +52,10 @@ class rosettaRest
 	 */
 	public static function removeTranslation($core,$get)
 	{
-		global $core;
-
 		$id = !empty($get['id']) ? $get['id'] : -1;
 		$lang = !empty($get['lang']) ? $get['lang'] : '';
 		$rosetta_id = !empty($get['rosetta_id']) ? $get['rosetta_id'] : -1;
-		$rosetta_lang = !empty($get['rosetta_lang'] ? $get['rosetta_lang'] : '');
+		$rosetta_lang = !empty($get['rosetta_lang']) ? $get['rosetta_lang'] : '';
 		$rsp = new xmlTag('rosetta');
 
 		$ret = false;

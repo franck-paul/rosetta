@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dotclear 2 rosetta module\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-24 11:09+0200\n"
+"POT-Creation-Date: 2015-08-25 11:27+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,6 +24,22 @@ msgstr ""
 #: ../hg-plugins/rosetta//inc/rosetta.behaviors.php:20
 #: ../hg-plugins/rosetta//index.php:36 ../hg-plugins/rosetta//index.php:44
 msgid "Rosetta"
+msgstr ""
+
+#: ../hg-plugins/rosetta//_services.php:42
+msgid "Error during translation attachment."
+msgstr ""
+
+#: ../hg-plugins/rosetta//_services.php:42
+msgid "New translation attached."
+msgstr ""
+
+#: ../hg-plugins/rosetta//_services.php:72
+msgid "Error during removing translation attachment."
+msgstr ""
+
+#: ../hg-plugins/rosetta//_services.php:72
+msgid "Translation removed."
 msgstr ""
 
 #: ../hg-plugins/rosetta//_widgets.php:22
@@ -50,28 +66,28 @@ msgstr ""
 msgid "Are you sure to remove this translation?"
 msgstr ""
 
-#: ../hg-plugins/rosetta//inc/rosetta.behaviors.php:82
+#: ../hg-plugins/rosetta//inc/rosetta.behaviors.php:88
 msgid "Page's translations:"
 msgstr ""
 
-#: ../hg-plugins/rosetta//inc/rosetta.behaviors.php:82
+#: ../hg-plugins/rosetta//inc/rosetta.behaviors.php:88
 msgid "Post's translations:"
 msgstr ""
 
-#: ../hg-plugins/rosetta//inc/rosetta.behaviors.php:94
+#: ../hg-plugins/rosetta//inc/rosetta.behaviors.php:100
 msgid "Attached Translations"
 msgstr ""
 
-#: ../hg-plugins/rosetta//inc/rosetta.behaviors.php:114
+#: ../hg-plugins/rosetta//inc/rosetta.behaviors.php:120
 msgid "Attach a translation"
 msgstr ""
 
-#: ../hg-plugins/rosetta//inc/rosetta.behaviors.php:116
-#: ../hg-plugins/rosetta//inc/rosetta.behaviors.php:117
+#: ../hg-plugins/rosetta//inc/rosetta.behaviors.php:122
+#: ../hg-plugins/rosetta//inc/rosetta.behaviors.php:123
 msgid "Remove this translation's link"
 msgstr ""
 
-#: ../hg-plugins/rosetta//inc/rosetta.behaviors.php:140
+#: ../hg-plugins/rosetta//inc/rosetta.behaviors.php:146
 msgid "Edit this entry"
 msgstr ""
 

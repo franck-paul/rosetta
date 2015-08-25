@@ -113,13 +113,13 @@ class rosettaAdminBehaviors
 				'<tr class="line wide" id="r%s">'."\n".
 				'<td class="minimal nowrap">%s</td>'."\n".			// language
 				'<td class="maximal">%s</td>'."\n".					// Entry link
-				'<td class="minimal nowrap">%s</td>'."\n".	// Action
+				'<td class="minimal nowrap">%s</td>'."\n".			// Action
 				'</tr>'."\n";
 
 			$action_add =
-				'<a href="%s" class="button">'.__('Attach a translation').'</a>';
+				'<a href="%s" class="button rosetta-add">'.__('Attach a translation').'</a>';
 			$action_remove =
-				'<a href="%s" title="'.__('Remove this translation\'s link').
+				'<a href="%s" class="rosetta-remove" title="'.__('Remove this translation\'s link').
 				'" name="delete"><img src="index.php?pf=rosetta/img/unlink.png" alt="'.__('Remove this translation\'s link').
 				'" /></a>';
 

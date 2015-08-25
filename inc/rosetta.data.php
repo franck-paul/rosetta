@@ -20,7 +20,10 @@
  *
  * Principe :
  *
+ * Les chaînages individuels sont bijectifs
  * Une nouvelle traduction est ajoutée à tous les billets déjà chaînés
+ * Une traduction supprimée du chaînage l'est pour tous les billets chaînés
+ *
  * Par exemple, si A (fr) et B (en) sont chaînés, une nouvelle traduction C (de) est ajoutée à A et à B
  *
  * ce qui donne la table suivante :
@@ -36,10 +39,13 @@ class rosettaData
 {
 	/**
 	 * Add a new translation for a post/page (only if it does not already exists)
+	 *
 	 * @param integer $src_id   original post/page id
 	 * @param string  $src_lang original lang
 	 * @param integer $dst_id   new post/page translation id
 	 * @param string  $dst_lang new post/page translation lang
+	 *
+	 * @return true if translation have been successfully added, else false
 	 */
 	public static function addTranslation($src_id,$src_lang,$dst_id,$dst_lang)
 	{
@@ -66,13 +72,13 @@ class rosettaData
 		$list = findAllTranslations($src_id,$src_lang,true);
 
 		// Add the new translation attachment for all existing translations
-		$core->con->writeLock($this->prefix.'rosetta');
+		$core->con->writeLock($core->prefix.'rosetta');
 		try
 		{
 			foreach ($list as $lang => $id) {
 				if (self::findTranslation($id,$lang,$dst_lang) == -1) {
 					// Add the new translation
-					$cur = $core->con->openCursor($this->core->prefix.'rosetta');
+					$cur = $core->con->openCursor($core->prefix.'rosetta');
 					$cur->src_id = $id;
 					$cur->src_lang = $lang;
 					$cur->dst_id = $dst_id;
@@ -93,10 +99,13 @@ class rosettaData
 
 	/**
 	 * Remove an existing translation for a post/page
+	 *
 	 * @param integer $src_id   original post/page id
 	 * @param string  $src_lang original lang
 	 * @param integer $dst_id   post/page translation id to be removed
 	 * @param string  $dst_lang new post/page translation lang to be removed
+	 *
+	 * @return true if translation have been successfully removed, else false
 	 */
 	public static function removeTranslation($src_id,$src_lang,$dst_id,$dst_lang)
 	{
@@ -119,18 +128,15 @@ class rosettaData
 			return false;
 		}
 
-		$core->con->writeLock($this->prefix.'rosetta');
+		$core->con->writeLock($core->prefix.'rosetta');
 		try
 		{
 			// Remove the translations
 			$strReq =
-				'DELETE FROM '.$core->prefix.'rosetta R '.
+				'DELETE FROM '.$core->prefix.'rosetta '.
 				"WHERE ".
-				"((R.src_id = '".$core->con->escape($src_id)."' AND R.src_lang = '".$core->con->escape($src_lang)."') AND ".
-				"(R.dst_id = '".$core->con->escape($dst_id)."' AND R.dst_lang = '".$core->con->escape($dst_lang)."')) ".
-				"OR ".
-				"((R.src_id = '".$core->con->escape($dst_id)."' AND R.src_lang = '".$core->con->escape($dst_lang)."') AND ".
-				"(R.dst_id = '".$core->con->escape($src_id)."' AND R.dst_lang = '".$core->con->escape($src_lang)."')) ";
+				"(src_id = '".$core->con->escape($dst_id)."' AND src_lang = '".$core->con->escape($dst_lang)."') OR ".
+				"(dst_id = '".$core->con->escape($dst_id)."' AND dst_lang = '".$core->con->escape($dst_lang)."') ";
 			$core->con->execute($strReq);
 			$core->con->unlock();
 		}
@@ -145,9 +151,11 @@ class rosettaData
 
 	/**
 	 * Find direct posts/pages associated with a post/page id and lang
+	 *
 	 * @param  integer $id   original post/page id
 	 * @param  string  $lang original lang
 	 * @param  boolean $full result should include original post/page+lang
+	 *
 	 * @return array         associative array (lang => id), false if nothing found
 	 */
 	private static function findDirectTranslations($id,$lang,$full=false)
@@ -186,9 +194,11 @@ class rosettaData
 
 	/**
 	 * Find all posts/pages associated with a post/page id and lang
+	 *
 	 * @param  integer $id   		original post/page id
 	 * @param  string  $lang 		original lang
 	 * @param  boolean $full 		result should include original post/page+lang
+	 *
 	 * @return array 				associative array (lang => id), false if nothing found
 	 */
 	public static function findAllTranslations($id,$lang,$full=false)
@@ -238,9 +248,11 @@ class rosettaData
 
 	/**
 	 * Find a post/page id with the requested lang
+	 *
 	 * @param  integer $src_id   original post/page id
 	 * @param  string  $src_lang original lang
 	 * @param  string  $dst_lang requested lang
+	 *
 	 * @return integer           first found id, -1 if none
 	 */
 	public static function findTranslation($src_id,$src_lang,$dst_lang)

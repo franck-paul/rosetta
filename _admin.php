@@ -31,3 +31,16 @@ $core->addBehavior('adminPostHeaders',array('rosettaAdminBehaviors','adminPostHe
 // Add behaviour callback for page
 $core->addBehavior('adminPageForm',array('rosettaAdminBehaviors','adminPageForm'));
 $core->addBehavior('adminPageHeaders',array('rosettaAdminBehaviors','adminPageHeaders'));
+
+// Register REST methods
+$core->rest->addFunction('addTranslation',array('rosettaRest','addTranslation'));
+$core->rest->addFunction('removeTranslation',array('rosettaRest','removeTranslation'));
+
+// Administrative actions
+$core->blog->settings->addNamespace('rosetta');
+if ($core->blog->settings->rosetta->active) {
+	// Cope with actions on post/page edition (if javascript not enabled)
+	if (isset($_GET['rosetta']) && in_array($_GET['rosetta'],array('add','remove'))) {
+		; // ToDo later
+	}
+}
