@@ -19,8 +19,8 @@ class rosettaAdminBehaviors
 		$favs->register('rosetta', array(
 			'title' => __('Rosetta'),
 			'url' => 'plugin.php?p=rosetta',
-			'small-icon' => 'index.php?pf=rosetta/icon.png',
-			'large-icon' => 'index.php?pf=rosetta/icon-big.png',
+			'small-icon' => dcPage::getPF('rosetta/icon.png'),
+			'large-icon' => dcPage::getPF('rosetta/icon-big.png'),
 			'permissions' => 'usage,contentadmin'
 		));
 	}
@@ -30,12 +30,12 @@ class rosettaAdminBehaviors
 		return
 			'<script type="text/javascript">'."\n".
 			"//<![CDATA[\n".
-			dcPage::jsVar('dotclear.msg.confirm_remove_rosetta',
-				__('Are you sure to remove this translation?')).
+			dcPage::jsVar('dotclear.msg.confirm_remove_rosetta',__('Are you sure to remove this translation?')).
+			dcPage::jsVar('dotclear.rosetta_post_url','').
 			"\n//]]>\n".
 			"</script>\n".
-			dcPage::jsLoad('index.php?pf=rosetta/js/rosetta_entry.js')."\n".
-			dcPage::cssLoad('index.php?pf=rosetta/css/style.css')."\n";
+			dcPage::jsLoad(dcPage::getPF('rosetta/js/rosetta_entry.js'))."\n".
+			dcPage::cssLoad(dcPage::getPF('rosetta/css/style.css'))."\n";
 	}
 
 	public static function adminPostHeaders()
@@ -119,9 +119,9 @@ class rosettaAdminBehaviors
 			$action_add =
 				'<a href="%s" class="button rosetta-add">'.__('Attach a translation').'</a>';
 			$action_remove =
-				'<a href="%s" class="rosetta-remove" title="'.__('Remove this translation\'s link').
-				'" name="delete"><img src="index.php?pf=rosetta/img/unlink.png" alt="'.__('Remove this translation\'s link').
-				'" /></a>';
+				'<a href="%s" class="rosetta-remove" title="'.__('Remove this translation\'s link').'" name="delete">'.
+				'<img src="'.urldecode(dcPage::getPF('rosetta/img/unlink.png')).
+				'" alt="'.__('Remove this translation\'s link').'" /></a>';
 
 			$list = rosettaData::findAllTranslations($post->post_id,$post->post_lang,false);
 			if (is_array($list) && count($list)) {
@@ -154,9 +154,14 @@ class rosettaAdminBehaviors
 			echo sprintf($html_block,$html_lines);
 
 			// Add a button for adding a new translation
-			echo '<p>'.sprintf($action_add,$url.sprintf($url_rosetta,
+			echo '<p>'.
+				// Button
+				sprintf($action_add,$url.sprintf($url_rosetta,
 				($post->post_lang == '' || !$post->post_lang ? $core->blog->settings->system->lang : $post->post_lang ),
-				'add',0,'')).'</p>';
+				'add',0,'')).
+				// Hidden field for selected post/page URL
+				form::hidden(array('rosetta_url','rosetta_url'), '').
+				'</p>';
 
 			echo '</div>'."\n";
 		}
@@ -170,6 +175,12 @@ class rosettaAdminBehaviors
 	public static function adminPageForm($post)
 	{
 		self::adminEntryForm($post,'page');
+	}
+
+	public static function adminPopupPosts($editor='') {
+		if (empty($editor) || $editor!='rosetta') {return;}
+
+		return dcPage::jsLoad(dcPage::getPF('rosetta/js/popup_posts.js'));
 	}
 }
 

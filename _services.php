@@ -32,7 +32,21 @@ class rosettaRest
 		$ret = false;
 		$ret = false;
 		if ($id != -1 && $rosetta_id != -1) {
-			// Remove the translation link
+			// get new language if not provided
+			if ($rosetta_lang == '') {
+				$params = new ArrayObject(array(
+					'post_id' => $rosetta_id,
+					'post_type' => array('post','page'),
+					'no_content' => true));
+
+				$rs = $core->blog->getPosts($params);
+				if ($rs->count()) {
+					// Load first record
+					$rs->fetch();
+					$rosetta_lang = $rs->post_lang;
+				}
+			}
+			// add the translation link
 			$ret = rosettaData::addTranslation($id,$lang,$rosetta_id,$rosetta_lang);
 		}
 

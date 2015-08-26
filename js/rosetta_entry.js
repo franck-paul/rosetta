@@ -66,17 +66,21 @@ $(function() {
 		var href = $(this).attr('href');
 		var post_id = getURLParameter(href,'id');
 		var post_lang = getURLParameter(href,'lang');
+		var rosetta_id = '';
 		// Call popup_posts.php in order to select entry (post/page)
-		if (1 == 1) {
-			var rosetta_id = getURLParameter(href,'rosetta_id');
-			var rosetta_lang = getURLParameter(href,'rosetta_lang');
+		document.getElementById('rosetta_url').value = '';
+		var p_win = window.open(
+			'popup_posts.php?plugin_id=rosetta','dc_popup',
+			'alwaysRaised=yes,dependent=yes,toolbar=yes,height=500,width=760,'+
+			'menubar=no,resizable=yes,scrollbars=yes,status=no');
+	    rosetta_id = getURLParameter(document.getElementById('rosetta_url').value,'id');
+		if (rosetta_id != '') {
 			var params = {
 				f: 'addTranslation',
 				xd_check: dotclear.nonce,
 				id: post_id,
 				lang: post_lang,
-				rosetta_id: rosetta_id,
-				rosetta_lang: rosetta_lang
+				rosetta_id: rosetta_id
 			};
 			$.get('services.php',params,function(data) {
 				if ($('rsp[status=failed]',data).length > 0) {

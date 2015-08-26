@@ -15,7 +15,7 @@ if (!defined('DC_CONTEXT_ADMIN')) { return; }
 // dead but useful code, in order to have translations
 __('Rosetta').__('Manage post/page translations');
 
-$_menu['Blog']->addItem(__('Rosetta'),'plugin.php?p=rosetta','index.php?pf=rosetta/icon.png',
+$_menu['Blog']->addItem(__('Rosetta'),'plugin.php?p=rosetta',dcPage::getPF('rosetta/icon.png'),
 		preg_match('/plugin.php\?p=rosetta(&.*)?$/',$_SERVER['REQUEST_URI']),
 		$core->auth->check('usage,contentadmin',$core->blog->id));
 
@@ -31,6 +31,9 @@ $core->addBehavior('adminPostHeaders',array('rosettaAdminBehaviors','adminPostHe
 // Add behaviour callback for page
 $core->addBehavior('adminPageForm',array('rosettaAdminBehaviors','adminPageForm'));
 $core->addBehavior('adminPageHeaders',array('rosettaAdminBehaviors','adminPageHeaders'));
+
+// Add behaviour callback for post/page list popup
+$core->addBehavior('adminPopupPosts',array('rosettaAdminBehaviors','adminPopupPosts'));
 
 // Register REST methods
 $core->rest->addFunction('addTranslation',array('rosettaRest','addTranslation'));
