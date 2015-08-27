@@ -110,7 +110,7 @@ class rosettaAdminBehaviors
 				'</div>';
 			$html_lines = '';
 			$html_line =
-				'<tr class="line wide" id="r%s">'."\n".
+				'<tr class="line wide">'."\n".
 				'<td class="minimal nowrap">%s</td>'."\n".			// language
 				'<td class="maximal">%s</td>'."\n".					// Entry link
 				'<td class="minimal nowrap">%s</td>'."\n".			// Action
@@ -129,7 +129,6 @@ class rosettaAdminBehaviors
 				dcUtils::lexicalKeySort($list,'admin');
 
 				$langs = l10n::getLanguagesName();
-				$i = 1;
 				foreach ($list as $lang => $id) {
 					// Display existing translations
 					$name = isset($langs[$lang]) ? $langs[$lang] : $langs[$core->blog->settings->system->lang];
@@ -141,7 +140,7 @@ class rosettaAdminBehaviors
 					$rs = $core->blog->getPosts($params);
 					if ($rs->count()) {
 						$rs->fetch();
-						$html_lines .= sprintf($html_line,$i++,
+						$html_lines .= sprintf($html_line,
 							$lang.' - '.$name,
 							sprintf($post_link,$id,__('Edit this entry'),
 								html::escapeHTML($rs->post_title)),

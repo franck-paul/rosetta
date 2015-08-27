@@ -69,24 +69,23 @@ class rosettaData
 		}
 
 		// Get all existing translations -> array(lang => id)
-		$list = findAllTranslations($src_id,$src_lang,true);
-
+		$list = self::findAllTranslations($src_id,$src_lang,true);
 		// Add the new translation attachment for all existing translations
-		$core->con->writeLock($core->prefix.'rosetta');
 		try
 		{
 			foreach ($list as $lang => $id) {
-				if (self::findTranslation($id,$lang,$dst_lang) == -1) {
+				if (self::findTranslation($id,$lang,$dst_lang,false) == -1) {
 					// Add the new translation
+					$core->con->writeLock($core->prefix.'rosetta');
 					$cur = $core->con->openCursor($core->prefix.'rosetta');
 					$cur->src_id = $id;
 					$cur->src_lang = $lang;
 					$cur->dst_id = $dst_id;
 					$cur->dst_lang = $dst_lang;
 					$cur->insert();
+					$core->con->unlock();
 				}
 			}
-			$core->con->unlock();
 		}
 		catch (Exception $e)
 		{
@@ -212,7 +211,6 @@ class rosettaData
 
 		// Get direct associations
 		$list = self::findDirectTranslations($id,$lang,true);
-
 		if (is_array($list)) {
 			// Get indirect associations
 			$ids = array();
@@ -252,10 +250,11 @@ class rosettaData
 	 * @param  integer $src_id   original post/page id
 	 * @param  string  $src_lang original lang
 	 * @param  string  $dst_lang requested lang
+	 * @param  boolean $indirect look also for indirect associations
 	 *
 	 * @return integer           first found id, -1 if none
 	 */
-	public static function findTranslation($src_id,$src_lang,$dst_lang)
+	public static function findTranslation($src_id,$src_lang,$dst_lang,$indirect=true)
 	{
 		global $core;
 
@@ -280,11 +279,13 @@ class rosettaData
 			return ($rs->src_id == $src_id ? $rs->dst_id : $rs->src_id);
 		}
 
-		// Looks for an indirect post/page association, ie a -> b and b-> c in table, src = b, looking for c
-		$list = self::findAllTranslations($src_id,$src_lang,false);
-		if (is_array($list)) {
-			if (array_key_exists($dst_lang,$list)) {
-				return $list[$dst_lang];
+		if ($indirect) {
+			// Looks for an indirect post/page association, ie a -> b and b-> c in table, src = b, looking for c
+			$list = self::findAllTranslations($src_id,$src_lang,false);
+			if (is_array($list)) {
+				if (array_key_exists($dst_lang,$list)) {
+					return $list[$dst_lang];
+				}
 			}
 		}
 

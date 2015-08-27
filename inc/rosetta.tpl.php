@@ -21,7 +21,6 @@ class rosettaTpl
 		if (!is_array($ids)) {
 			return false;
 		}
-
 		// source = $ids : array ('lang' => 'entry-id')
 		// destination = $table : array ('language' (or 'lang' if $code=true) => 'entry-url')
 		// $current = current language
@@ -110,6 +109,7 @@ EOT;
 
 		// Get list of available translations for current entry
 		$post_type = ($core->url->type == 'post' ? 'post' : 'page');
+		$current = '';
 		$table = self::EntryListHelper($_ctx->posts->post_id,$_ctx->posts->post_lang,$post_type,$w->current,$current);
 		if (!$table) {
 			return;

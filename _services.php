@@ -30,7 +30,6 @@ class rosettaRest
 		$rsp = new xmlTag('rosetta');
 
 		$ret = false;
-		$ret = false;
 		if ($id != -1 && $rosetta_id != -1) {
 			// get new language if not provided
 			if ($rosetta_lang == '') {

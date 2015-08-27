@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dotclear 2 rosetta module\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-25 11:27+0200\n"
+"POT-Creation-Date: 2015-08-27 12:18+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,19 +26,19 @@ msgstr ""
 msgid "Rosetta"
 msgstr ""
 
-#: ../hg-plugins/rosetta//_services.php:42
+#: ../hg-plugins/rosetta//_services.php:53
 msgid "Error during translation attachment."
 msgstr ""
 
-#: ../hg-plugins/rosetta//_services.php:42
+#: ../hg-plugins/rosetta//_services.php:53
 msgid "New translation attached."
 msgstr ""
 
-#: ../hg-plugins/rosetta//_services.php:72
+#: ../hg-plugins/rosetta//_services.php:81
 msgid "Error during removing translation attachment."
 msgstr ""
 
-#: ../hg-plugins/rosetta//_services.php:72
+#: ../hg-plugins/rosetta//_services.php:81
 msgid "Translation removed."
 msgstr ""
 
@@ -62,7 +62,7 @@ msgstr ""
 msgid "Without its URL"
 msgstr ""
 
-#: ../hg-plugins/rosetta//inc/rosetta.behaviors.php:34
+#: ../hg-plugins/rosetta//inc/rosetta.behaviors.php:33
 msgid "Are you sure to remove this translation?"
 msgstr ""
 
@@ -83,7 +83,7 @@ msgid "Attach a translation"
 msgstr ""
 
 #: ../hg-plugins/rosetta//inc/rosetta.behaviors.php:122
-#: ../hg-plugins/rosetta//inc/rosetta.behaviors.php:123
+#: ../hg-plugins/rosetta//inc/rosetta.behaviors.php:124
 msgid "Remove this translation's link"
 msgstr ""
 

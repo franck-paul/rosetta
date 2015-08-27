@@ -66,41 +66,52 @@ $(function() {
 		var href = $(this).attr('href');
 		var post_id = getURLParameter(href,'id');
 		var post_lang = getURLParameter(href,'lang');
-		var rosetta_id = '';
+		var rosetta_hidden = document.getElementById('rosetta_url');
 		// Call popup_posts.php in order to select entry (post/page)
-		document.getElementById('rosetta_url').value = '';
+		rosetta_hidden.value = '';
 		var p_win = window.open(
-			'popup_posts.php?plugin_id=rosetta','dc_popup',
+			'popup_posts.php?popup=1&plugin_id=rosetta','dc_popup',
 			'alwaysRaised=yes,dependent=yes,toolbar=yes,height=500,width=760,'+
 			'menubar=no,resizable=yes,scrollbars=yes,status=no');
-	    rosetta_id = getURLParameter(document.getElementById('rosetta_url').value,'id');
-		if (rosetta_id != '') {
-			var params = {
-				f: 'addTranslation',
-				xd_check: dotclear.nonce,
-				id: post_id,
-				lang: post_lang,
-				rosetta_id: rosetta_id
-			};
-			$.get('services.php',params,function(data) {
-				if ($('rsp[status=failed]',data).length > 0) {
-					// For debugging purpose only:
-					// console.log($('rsp',data).attr('message'));
-					console.log('Dotclear REST server error');
-				} else {
-					// ret -> status (true/false)
-					// msg -> message to display
-					var ret = Number($('rsp>rosetta',data).attr('ret'));
-					var msg = $('rsp>rosetta',data).attr('msg');
-					if (ret) {
-						// Add the new line at the end of the table
-					} else {
-						// Display error message
-						window.alert(msg);
-					}
+		// Wait for popup close
+		var timer = setInterval(function() {
+		    if (p_win.closed) {
+		        clearInterval(timer);
+				// Get translation post/page id
+			    var rosetta_id = getURLParameter(rosetta_hidden.value,'id');
+				if (rosetta_id !== null && rosetta_id != '') {
+					var params = {
+						f: 'addTranslation',
+						xd_check: dotclear.nonce,
+						id: post_id,
+						lang: post_lang,
+						rosetta_id: rosetta_id
+					};
+					$.get('services.php',params,function(data) {
+						if ($('rsp[status=failed]',data).length > 0) {
+							// For debugging purpose only:
+							// console.log($('rsp',data).attr('message'));
+							console.log('Dotclear REST server error');
+						} else {
+							// ret -> status (true/false)
+							// msg -> message to display
+							var ret = Number($('rsp>rosetta',data).attr('ret'));
+							var msg = $('rsp>rosetta',data).attr('msg');
+							if (ret) {
+								// Add the new line at the end of the table
+								//
+								;
+							} else {
+								// Display error message
+								window.alert(msg);
+							}
+						}
+					});
 				}
-			});
-		}
+				// Reset hidden field
+				rosetta_hidden.value = rosetta_hidden.defaultValue;
+		    }
+		}, 500);
 		e.preventDefault();
 	});
 
