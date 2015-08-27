@@ -4,12 +4,20 @@ Gestion des traductions de billets et de pages.
 
 ## Principe
 
+# Côté public :
+
 - Interception de l'URL à servir si un paramètre lang=nn est présent :
 	Si l'URL correspond à un post_id géré par Rosetta :
 		Si une correspondance existe dans la langue demandée :
 			-> rediriger vers la nouvelle URL
 
 - Widget avec la liste des traductions disponibles pour le billet/la page courant(e)
+
+# Côté administration :
+
+- Page d'édition d'un billet/d'une page :
+En fin de page, lister les traductions disponibles pour le billet (avec lien vers la page d'édition correspondante), possibilité de supprimer ou d'ajouter une traduction existante.
+
 
 Table des correspondances (rosetta) :
 
@@ -33,7 +41,6 @@ Notes :
 2. L'affichage d'un billet (sans lang=nn en arguments d'URL) pourrait être intercepté pour trouver s'il existe une version correspondant au accept-language du browser, si le billet demandé ne correspond pas.
 À faire dans rosettaPublicBehaviors::urlHandlerGetArgsDocument().
 
-3. Page d'édition d'un billet/d'une page:
-En fin de page, lister les traductions disponibles pour le billet (avec lien vers la page d'édition correspondante), possibilité de supprimer ou d'ajouter une traduction existante, ou d'en créer une nouvelle, avec bascule sur la page d'édition d'un nouveau billet avec la langue pré-positionnée.
+3. En page d'édition d'un billet (ou d'une page) : voir la possibilité de créer une nouvelle entrée avec la langue pré-positionnée sur le formulaire d'édition.
 
 4. Voir la possibilité de limiter les flux RSS (billets) à une langue donnée (widget supplémentaire).
