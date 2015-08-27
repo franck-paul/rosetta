@@ -38,6 +38,7 @@ $core->addBehavior('adminPopupPosts',array('rosettaAdminBehaviors','adminPopupPo
 // Register REST methods
 $core->rest->addFunction('addTranslation',array('rosettaRest','addTranslation'));
 $core->rest->addFunction('removeTranslation',array('rosettaRest','removeTranslation'));
+$core->rest->addFunction('getTranslationRow',array('rosettaRest','getTranslationRow'));
 
 // Administrative actions
 $core->blog->settings->addNamespace('rosetta');

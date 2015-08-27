@@ -82,4 +82,49 @@ class rosettaRest
 
 		return $rsp;
 	}
+
+	public static function getTranslationRow($core,$get)
+	{
+		$id = !empty($get['id']) ? $get['id'] : -1;
+		$lang = !empty($get['lang']) ? $get['lang'] : '';
+		$rosetta_id = !empty($get['rosetta_id']) ? $get['rosetta_id'] : -1;
+		$rsp = new xmlTag('rosetta');
+
+		$ret = false;
+		$row = '';
+		if ($id != -1 && $rosetta_id != -1) {
+			// Get missing info for current edited entry (post/page)
+			$params = new ArrayObject(array(
+				'post_id' => $id,
+				'post_type' => array('post','page'),
+				'no_content' => true));
+			$rs = $core->blog->getPosts($params);
+			if ($rs->count()) {
+				$rs->fetch();
+				$url_page = $core->getPostAdminURL($rs->post_type,$rs->post_id);
+				// Get missing info for translated entry (post/page)
+				$params = new ArrayObject(array(
+					'post_id' => $rosetta_id,
+					'post_type' => array('post','page'),
+					'no_content' => true));
+				$rs = $core->blog->getPosts($params);
+				if ($rs->count()) {
+					$rs->fetch();
+					$post_link = '<a id="r-%s" href="'.$core->getPostAdminURL($rs->post_type,$rs->post_id).'" title="%s">%s</a>';
+					$langs = l10n::getLanguagesName();
+					$name = isset($langs[$rs->post_lang]) ? $langs[$rs->post_lang] : $langs[$core->blog->settings->system->lang];
+					// Get the translation row
+					$row = rosettaAdminBehaviors::translationRow($lang,
+						$rosetta_id,$rs->post_lang,$name,
+						$rs->post_title,$post_link,$url_page);
+					$ret = true;
+				}
+			}
+		}
+
+		$rsp->ret = $ret;
+		$rsp->msg = $row;
+
+		return $rsp;
+	}
 }

@@ -19,13 +19,45 @@ $(function() {
 	    }
 	}
 
-	// Switch to Ajax for removing translation link
-	$('a.rosetta-remove').click(function(e) {
+	function addTranslationRow(post_id,post_lang,rosetta_id,table) {
+		var params = {
+			f: 'getTranslationRow',
+			xd_check: dotclear.nonce,
+			id: post_id,
+			lang: post_lang,
+			rosetta_id: rosetta_id
+		};
+		$.get('services.php',params,function(data) {
+			if ($('rsp[status=failed]',data).length > 0) {
+				// For debugging purpose only:
+				// console.log($('rsp',data).attr('message'));
+				console.log('Dotclear REST server error');
+			} else {
+				// ret -> status (true/false)
+				// msg -> message to display
+				var ret = Number($('rsp>rosetta',data).attr('ret'));
+				var msg = $('rsp>rosetta',data).attr('msg');
+				if (ret) {
+					// Append the new line at the end of the table
+					$(table).append(msg);
+					// Bind removing translation function
+					$(table+' tr:last td:last a').bind('click',function(e){
+						removeTranslation($(this));
+						e.preventDefault();
+					});
+					return true;
+				}
+			}
+		});
+		return null;
+	}
+
+	function removeTranslation(link) {
 		if (!window.confirm(dotclear.msg.confirm_remove_rosetta)) {
 			return false;
 		}
-		var href = $(this).attr('href');
-		var row = $(this).parent().parent();
+		var href = link.attr('href');
+		var row = link.parent().parent();
 		var post_id = getURLParameter(href,'id');
 		var post_lang = getURLParameter(href,'lang');
 		var rosetta_id = getURLParameter(href,'rosetta_id');
@@ -51,13 +83,17 @@ $(function() {
 				if (ret) {
 					// Remove corresponding line in table
 					row.remove();
-					window.alert(msg);
 				} else {
 					// Display error message
 					window.alert(msg);
 				}
 			}
 		});
+	}
+
+	// Switch to Ajax for removing translation link
+	$('a.rosetta-remove').click(function(e) {
+		removeTranslation($(this));
 		e.preventDefault();
 	});
 
@@ -79,7 +115,7 @@ $(function() {
 		        clearInterval(timer);
 				// Get translation post/page id
 			    var rosetta_id = getURLParameter(rosetta_hidden.value,'id');
-				if (rosetta_id !== null && rosetta_id != '') {
+				if (rosetta_id !== null && rosetta_id !== '') {
 					var params = {
 						f: 'addTranslation',
 						xd_check: dotclear.nonce,
@@ -98,9 +134,8 @@ $(function() {
 							var ret = Number($('rsp>rosetta',data).attr('ret'));
 							var msg = $('rsp>rosetta',data).attr('msg');
 							if (ret) {
-								// Add the new line at the end of the table
-								//
-								;
+								// Append new row at the end of translations list
+								addTranslationRow(post_id,post_lang,rosetta_id,'#rosetta-list');
 							} else {
 								// Display error message
 								window.alert(msg);

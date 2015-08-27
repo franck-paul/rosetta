@@ -14,6 +14,8 @@
 
 class rosettaAdminBehaviors
 {
+	static $args_rosetta = '&amp;lang=%s&amp;rosetta=%s&amp;rosetta_id=%s&amp;rosetta_lang=%s';
+
 	public static function adminDashboardFavorites($core,$favs)
 	{
 		$favs->register('rosetta', array(
@@ -70,9 +72,29 @@ class rosettaAdminBehaviors
 		}
 	}
 
+	public static function translationRow($src_lang,$id,$lang,$name,$title,$post_link,$url_page)
+	{
+		$html_line =
+			'<tr class="line wide">'."\n".
+			'<td class="minimal nowrap">%s</td>'."\n".			// language
+			'<td class="maximal">%s</td>'."\n".					// Entry link
+			'<td class="minimal nowrap">%s</td>'."\n".			// Action
+			'</tr>'."\n";
+		$action_remove =
+			'<a href="%s" class="rosetta-remove" title="'.__('Remove this translation\'s link').'" name="delete">'.
+			'<img src="'.urldecode(dcPage::getPF('rosetta/img/unlink.png')).
+			'" alt="'.__('Remove this translation\'s link').'" /></a>';
+
+		return sprintf($html_line,
+			$lang.' - '.$name,
+			sprintf($post_link,$id,__('Edit this entry'),html::escapeHTML($title)),
+			sprintf($action_remove,$url_page.sprintf(self::$args_rosetta,$src_lang,'remove',$id,$lang))
+			);
+	}
+
 	private static function adminEntryForm($post,$post_type='post')
 	{
-		global $core,$lang_combo,$post_link,$redir_url;
+		global $core,$post_link,$redir_url;
 
 		$core->blog->settings->addNamespace('rosetta');
 		if ($core->blog->settings->rosetta->active) {
@@ -93,7 +115,6 @@ class rosettaAdminBehaviors
 			} else {
 				$url = $redir_url;
 			}
-			$url_rosetta = '&amp;lang=%s&amp;rosetta=%s&amp;rosetta_id=%s&amp;rosetta_lang=%s';
 
 			$html_block =
 				'<div class="table-outer">'.
@@ -109,19 +130,9 @@ class rosettaAdminBehaviors
 				'</table>'.
 				'</div>';
 			$html_lines = '';
-			$html_line =
-				'<tr class="line wide">'."\n".
-				'<td class="minimal nowrap">%s</td>'."\n".			// language
-				'<td class="maximal">%s</td>'."\n".					// Entry link
-				'<td class="minimal nowrap">%s</td>'."\n".			// Action
-				'</tr>'."\n";
 
 			$action_add =
 				'<a href="%s" class="button rosetta-add">'.__('Attach a translation').'</a>';
-			$action_remove =
-				'<a href="%s" class="rosetta-remove" title="'.__('Remove this translation\'s link').'" name="delete">'.
-				'<img src="'.urldecode(dcPage::getPF('rosetta/img/unlink.png')).
-				'" alt="'.__('Remove this translation\'s link').'" /></a>';
 
 			$list = rosettaData::findAllTranslations($post->post_id,$post->post_lang,false);
 			if (is_array($list) && count($list)) {
@@ -140,11 +151,7 @@ class rosettaAdminBehaviors
 					$rs = $core->blog->getPosts($params);
 					if ($rs->count()) {
 						$rs->fetch();
-						$html_lines .= sprintf($html_line,
-							$lang.' - '.$name,
-							sprintf($post_link,$id,__('Edit this entry'),
-								html::escapeHTML($rs->post_title)),
-							sprintf($action_remove,$url.sprintf($url_rosetta,$post->post_lang,'remove',$id,$lang)));
+						$html_lines .= self::translationRow($post->post_lang,$id,$lang,$name,$rs->post_title,$post_link,$url);
 					}
 				}
 			}
@@ -155,7 +162,7 @@ class rosettaAdminBehaviors
 			// Add a button for adding a new translation
 			echo '<p>'.
 				// Button
-				sprintf($action_add,$url.sprintf($url_rosetta,
+				sprintf($action_add,$url.sprintf(self::$args_rosetta,
 				($post->post_lang == '' || !$post->post_lang ? $core->blog->settings->system->lang : $post->post_lang ),
 				'add',0,'')).
 				// Hidden field for selected post/page URL
