@@ -16,7 +16,7 @@ $this->registerModule(
 	/* Name */			"Rosetta",
 	/* Description*/		"Manage post/page translations",
 	/* Author */			"Franck Paul",
-	/* Version */			'0.1',
+	/* Version */			'0.2',
 	array(
 		/* Permissions */	'permissions' =>	'usage,contentadmin',
 		/* Type */			'type' =>			'plugin'
