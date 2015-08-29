@@ -18,6 +18,9 @@ Gestion des traductions de billets et de pages.
 - Page d'édition d'un billet/d'une page :
 En fin de page, lister les traductions disponibles pour le billet (avec lien vers la page d'édition correspondante), possibilité de supprimer ou d'ajouter une traduction existante.
 
+- Page des listes des billets et des pages :
+Ajout de deux colonnes, langue et traductions, cette dernière donnant accès aux billets/pages attaché(e)s à celui listé.
+Nota : dans les popup de sélection de billet ou de page, une seule colonne est ajoutée : langue.
 
 ## Table des correspondances (rosetta)
 
@@ -51,3 +54,7 @@ En fin de page, lister les traductions disponibles pour le billet (avec lien ver
 	- Public widget
 	- Public template tag
 	- Single entry management (page/post)
+
+- 0.2.0 - 2015/08/29
+	- Ajout de deux colonnes (langue et traductions) dans les listes des billets et des pages
+	- Ajout d'une colonne langue dans les listes de sélection (popup) de billet ou de page

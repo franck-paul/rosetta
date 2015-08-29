@@ -10,6 +10,14 @@
 # http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 # -- END LICENSE BLOCK ------------------------------------
 
+/**
+ * Copy of /inc/admin/lib.pager.php with two additionnal columns:
+ *
+ * - language of post/page
+ * - list of existing translation's associations
+ *
+ * All standard classes are overrided by using $__autoload[…] = <this file>
+ */
 class dcPager extends pager
 {
 	protected $form_action;
