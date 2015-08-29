@@ -202,7 +202,7 @@ class rosettaPublicBehaviors
 		$postTypes = array('post');
 		if ($core->plugins->moduleExists('pages')) {
 			$urlTypes[] = 'page';
-			$postTypes[] = 'post';
+			$postTypes[] = 'page';
 		}
 
 		$core->blog->settings->addNamespace('rosetta');
@@ -247,7 +247,7 @@ class rosettaPublicBehaviors
 		if ($lang) {
 			$postTypes = array('post');
 			if ($this->core->plugins->moduleExists('pages')) {
-				$postTypes[] = 'post';
+				$postTypes[] = 'page';
 			}
 
 			// Get post/page id
