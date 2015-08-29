@@ -52,6 +52,8 @@ echo
 '<h3>'.__('Posts tranlations').'</h3>'.
 '<form action="'.$p_url.'" method="post">';
 
+// TODO
+
 echo
 '<p class="field"><input type="submit" value="'.__('Save').'" /> '.
 form::hidden(array('tab'), 'posts').
@@ -65,6 +67,8 @@ if ($core->plugins->moduleExists('pages')) {
 	'<div id="pages" class="multi-part" title="'.__('Pages tranlations').'">'.
 	'<h3>'.__('Pages tranlations').'</h3>'.
 	'<form action="'.$p_url.'" method="post">';
+
+	// TODO
 
 	echo
 	'<p class="field"><input type="submit" value="'.__('Save').'" /> '.
