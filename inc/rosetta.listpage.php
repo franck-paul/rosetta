@@ -10,6 +10,14 @@
 # http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 # -- END LICENSE BLOCK ------------------------------------
 
+/**
+ * Copy of /plugins/pages/class.listpage.php with two additionnal columns:
+ *
+ * - language of post/page
+ * - list of existing translation's associations
+ *
+ * All standard classes are overrided by using $__autoload[…] = <this file>
+ */
 class adminPagesList extends adminGenericList
 {
 	public function display($page,$nb_per_page,$enclose_block='')
