@@ -19,7 +19,7 @@ $this->registerModule(
 	/* Version */			'0.3',
 	array(
 		/* Permissions */	'permissions' =>	'usage,contentadmin',
-		/* Priority */		'priority' =>		1001,	// Must be higher then pages plugin
+		/* Priority */		'priority' =>		1001,	// Must be higher than pages plugin
 		/* Type */			'type' =>			'plugin'
 	)
 );

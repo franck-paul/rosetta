@@ -102,11 +102,12 @@ $(function() {
 		var href = $(this).attr('href');
 		var post_id = getURLParameter(href,'id');
 		var post_lang = getURLParameter(href,'lang');
+		var post_type = getURLParameter(href,'type');
 		var rosetta_hidden = document.getElementById('rosetta_url');
 		// Call popup_posts.php in order to select entry (post/page)
 		rosetta_hidden.value = '';
 		var p_win = window.open(
-			'popup_posts.php?popup=1&plugin_id=rosetta','dc_popup',
+			'popup_posts.php?popup=1&plugin_id=rosetta&type='+post_type,'dc_popup',
 			'alwaysRaised=yes,dependent=yes,toolbar=yes,height=500,width=760,'+
 			'menubar=no,resizable=yes,scrollbars=yes,status=no');
 		// Wait for popup close

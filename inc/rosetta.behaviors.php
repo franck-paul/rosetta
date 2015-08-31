@@ -14,7 +14,7 @@
 
 class rosettaAdminBehaviors
 {
-	static $args_rosetta = '&amp;lang=%s&amp;rosetta=%s&amp;rosetta_id=%s&amp;rosetta_lang=%s';
+	static $args_rosetta = '&amp;lang=%s&amp;type=%s&amp;rosetta=%s&amp;rosetta_id=%s&amp;rosetta_lang=%s';
 
 	public static function adminDashboardFavorites($core,$favs)
 	{
@@ -88,7 +88,7 @@ class rosettaAdminBehaviors
 		return sprintf($html_line,
 			$lang.' - '.$name,
 			sprintf($post_link,$id,__('Edit this entry'),html::escapeHTML($title)),
-			sprintf($action_remove,$url_page.sprintf(self::$args_rosetta,$src_lang,'remove',$id,$lang))
+			sprintf($action_remove,$url_page.sprintf(self::$args_rosetta,$src_lang,'','remove',$id,$lang))
 			);
 	}
 
@@ -151,7 +151,8 @@ class rosettaAdminBehaviors
 					$rs = $core->blog->getPosts($params);
 					if ($rs->count()) {
 						$rs->fetch();
-						$html_lines .= self::translationRow($post->post_lang,$id,$lang,$name,$rs->post_title,$post_link,$url);
+						$html_lines .= self::translationRow($post->post_lang,$post_type,$id,$lang,$name,
+							$rs->post_title,$post_link,$url);
 					}
 				}
 			}
@@ -164,7 +165,7 @@ class rosettaAdminBehaviors
 				// Button
 				sprintf($action_add,$url.sprintf(self::$args_rosetta,
 				($post->post_lang == '' || !$post->post_lang ? $core->blog->settings->system->lang : $post->post_lang ),
-				'add',0,'')).
+				$post_type,'add',0,'')).
 				// Hidden field for selected post/page URL
 				form::hidden(array('rosetta_url','rosetta_url'), '').
 				'</p>';
