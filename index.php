@@ -14,6 +14,7 @@ if (!defined('DC_CONTEXT_ADMIN')) { return; }
 
 $core->blog->settings->addNamespace('rosetta');
 $rosetta_active = $core->blog->settings->rosetta->active;
+$rosetta_accept_language = $core->blog->settings->rosetta->accept_language;
 
 $p_url = $core->adminurl->get('admin.plugin.rosetta');
 $tab = empty($_REQUEST['tab']) ? '' : $_REQUEST['tab'];
@@ -22,6 +23,7 @@ $tab = empty($_REQUEST['tab']) ? '' : $_REQUEST['tab'];
 if (!empty($_POST['save_settings'])) {
 	try {
 		$core->blog->settings->rosetta->put('active',empty($_POST['active']) ? false : true,'boolean');
+		$core->blog->settings->rosetta->put('accept_language',empty($_POST['accept_language']) ? false : true,'boolean');
 
 		dcPage::addSuccessNotice(__('Configuration successfully updated.'));
 		http::redirect($p_url.'&tab='.$tab.'#'.$tab);
@@ -86,7 +88,11 @@ echo
 
 '<h4 class="pretty-title">'.__('Activation').'</h4>'.
 '<p>'.form::checkbox('active', 1, $rosetta_active).
-'<label class="classic" for="active">'.__('Enable posts/pages tranlsations for this blog').'</label></p>';
+'<label class="classic" for="active">'.__('Enable posts/pages translations for this blog').'</label></p>'.
+
+'<h4 class="pretty-title">'.__('Options').'</h4>'.
+'<p>'.form::checkbox('accept_language', 1, $rosetta_accept_language).
+'<label class="classic" for="accept_language">'.__('Automatic posts/pages redirect on browser\'s language for this blog').'</label></p>';
 
 echo
 '<p class="field wide"><input type="submit" value="'.__('Save').'" /> '.

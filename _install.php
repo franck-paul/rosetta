@@ -53,6 +53,7 @@ try
 
 	// Default state is inactive
 	$core->blog->settings->rosetta->put('active',false,'boolean','Active',false,true);
+	$core->blog->settings->rosetta->put('accept_language',false,'boolean','Take care of browser accept-language',false,true);
 
 	$core->setVersion('rosetta',$new_version);
 

@@ -296,7 +296,7 @@ class rosettaPublicBehaviors
 				// Assume that the URL scheme is for post/page
 				$langs[] = $matches[0];
 			}
-		} else {
+		} elseif ($core->blog->settings->rosetta->accept_language) {
 			$urlType = '';
 			$urlPart = '';
 			$handler->getArgs($_SERVER['URL_REQUEST_PART'],$urlType,$urlPart);

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dotclear 2 rosetta module\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-29 12:33+0200\n"
+"POT-Creation-Date: 2015-08-31 20:03+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,7 +22,7 @@ msgstr ""
 
 #: ../hg-plugins/rosetta//_admin.php:16 ../hg-plugins/rosetta//_admin.php:18
 #: ../hg-plugins/rosetta//inc/rosetta.behaviors.php:22
-#: ../hg-plugins/rosetta//index.php:36 ../hg-plugins/rosetta//index.php:44
+#: ../hg-plugins/rosetta//index.php:38 ../hg-plugins/rosetta//index.php:46
 msgid "Rosetta"
 msgstr ""
 
@@ -103,18 +103,22 @@ msgstr ""
 msgid "Spam filter"
 msgstr ""
 
-#: ../hg-plugins/rosetta//index.php:51 ../hg-plugins/rosetta//index.php:52
+#: ../hg-plugins/rosetta//index.php:53 ../hg-plugins/rosetta//index.php:54
 msgid "Posts tranlations"
 msgstr ""
 
-#: ../hg-plugins/rosetta//index.php:67 ../hg-plugins/rosetta//index.php:68
+#: ../hg-plugins/rosetta//index.php:69 ../hg-plugins/rosetta//index.php:70
 msgid "Pages tranlations"
 msgstr ""
 
-#: ../hg-plugins/rosetta//index.php:83 ../hg-plugins/rosetta//index.php:84
+#: ../hg-plugins/rosetta//index.php:85 ../hg-plugins/rosetta//index.php:86
 msgid "Settings"
 msgstr ""
 
-#: ../hg-plugins/rosetta//index.php:89
-msgid "Enable posts/pages tranlsations for this blog"
+#: ../hg-plugins/rosetta//index.php:91
+msgid "Enable posts/pages translations for this blog"
+msgstr ""
+
+#: ../hg-plugins/rosetta//index.php:95
+msgid "Automatic posts/pages redirect on browser's language for this blog"
 msgstr ""

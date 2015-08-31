@@ -10,6 +10,7 @@ Gestion des traductions de billets et de pages.
 	Si l'URL correspond à un post_id géré par Rosetta :
 		Si une correspondance existe dans la langue demandée :
 			-> rediriger vers la nouvelle URL
+- S'il n'y a pas de paramètre lang=nn dans l'URL, et qu'on sert un billet ou une page, on cherche une correspondance avec le accept-language du browser. Cette fonction est à activer explicitement dans les options du plugin.
 
 - Widget avec la liste des traductions disponibles pour le billet/la page courant(e)
 
@@ -41,12 +42,9 @@ Nota : dans les popup de sélection de billet ou de page, une seule colonne est 
 
 1. La gestion est pour l'instant limitée aux billets et pages. Une extension du principe aux autres contextes demanderait de revoir le schéma de la table, probablement pour basculer sur les URLs relatives au blog — ce qui implique au passage de prévoir la mise à jour en cas de changement de celles-ci - plutôt que les ID qui permettent la gestion en cascade des suppressions de billets/pages.
 
-2. L'affichage d'un billet (sans lang=nn en arguments d'URL) pourrait être intercepté pour trouver s'il existe une version correspondant au accept-language du browser, si le billet demandé ne correspond pas.
-À faire dans rosettaPublicBehaviors::urlHandlerGetArgsDocument().
+2. En page d'édition d'un billet (ou d'une page) : voir la possibilité de créer une nouvelle entrée avec la langue pré-positionnée sur le formulaire d'édition.
 
-3. En page d'édition d'un billet (ou d'une page) : voir la possibilité de créer une nouvelle entrée avec la langue pré-positionnée sur le formulaire d'édition.
-
-4. Voir la possibilité de limiter les flux RSS (billets) à une langue donnée (widget supplémentaire).
+3. Voir la possibilité de limiter les flux RSS (billets) à une langue donnée (widget supplémentaire).
 
 ## Changelog
 
@@ -58,3 +56,7 @@ Nota : dans les popup de sélection de billet ou de page, une seule colonne est 
 - 0.2.0 - 2015/08/29
 	- Ajout de deux colonnes (langue et traductions) dans les listes des billets et des pages
 	- Ajout d'une colonne langue dans les listes de sélection (popup) de billet ou de page
+
+- 0.3.0 - 2015/
+	- Prise en compte du accept-anguage du browser si lang=nn n'est pas précisé pour un billet ou une page
+	- Ajout d'une option pour activer la prise en charge du accept-language

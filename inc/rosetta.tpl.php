@@ -45,8 +45,11 @@ class rosettaTpl
 				if ($rs->count()) {
 					$rs->fetch();
 					$url = $core->blog->url.$core->getPostPublicURL($post_type,html::sanitizeURL($rs->post_url));
-					// Add lang parameter to the URL
-					$url .= (strpos($url,'?') === false ? '?' : '&').'lang='.$lang;
+					$core->blog->settings->addNamespace('rosetta');
+					if ($core->blog->settings->rosetta->accept_language) {
+						// Add lang parameter to the URL to prevent accept-language auto redirect
+						$url .= (strpos($url,'?') === false ? '?' : '&').'lang='.$lang;
+					}
 					$table[($code_only ? $lang : $name)] = $url;
 				}
 			}
@@ -61,6 +64,13 @@ class rosettaTpl
 
 	public static function rosettaEntryList($attr)
 	{
+		global $core;
+
+		$core->blog->settings->addNamespace('rosetta');
+		if (!$core->blog->settings->rosetta->active) {
+			return;
+		}
+
 		$option = !empty($attr['include_current']) ? $attr['include_current'] : 'std';
 
 		if (!preg_match('#^(std|link|none)$#',$option)) {
