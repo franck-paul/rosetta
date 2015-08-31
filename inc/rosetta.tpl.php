@@ -45,6 +45,8 @@ class rosettaTpl
 				if ($rs->count()) {
 					$rs->fetch();
 					$url = $core->blog->url.$core->getPostPublicURL($post_type,html::sanitizeURL($rs->post_url));
+					// Add lang parameter to the URL
+					$url .= (strpos($url,'?') === false ? '?' : '&').'lang='.$lang;
 					$table[($code_only ? $lang : $name)] = $url;
 				}
 			}

@@ -163,9 +163,10 @@ class rosettaAdminBehaviors
 			// Add a button for adding a new translation
 			echo '<p>'.
 				// Button
-				sprintf($action_add,$url.sprintf(self::$args_rosetta,
-				($post->post_lang == '' || !$post->post_lang ? $core->blog->settings->system->lang : $post->post_lang ),
-				$post_type,'add',0,'')).
+				sprintf($action_add,$url.
+					sprintf(self::$args_rosetta,
+						($post->post_lang == '' || !$post->post_lang ? $core->blog->settings->system->lang : $post->post_lang ),
+						$post_type,'add',0,'')).
 				// Hidden field for selected post/page URL
 				form::hidden(array('rosetta_url','rosetta_url'), '').
 				'</p>';
@@ -227,6 +228,58 @@ class rosettaPublicBehaviors
 		}
 	}
 
+	private static function findTranslatedEntry($handler,$lang)
+	{
+		global $core;
+
+		$postTypes = array('post');
+		if ($core->plugins->moduleExists('pages')) {
+			$postTypes[] = 'page';
+		}
+
+		// Get post/page id
+		$paramsSrc = new ArrayObject(array(
+			'post_url' => $handler->args,
+			'post_type' => $postTypes,
+			'no_content' => true));
+
+		$core->callBehavior('publicPostBeforeGetPosts',$paramsSrc,$handler->args);
+		$rsSrc = $core->blog->getPosts($paramsSrc);
+
+		// Check if post/page id exists in rosetta table
+		if ($rsSrc->count()) {
+			// Load first record
+			$rsSrc->fetch();
+
+			// Try to find an associated post corresponding to the requested lang
+			$id = rosettaData::findTranslation($rsSrc->post_id,$rsSrc->post_lang,$lang);
+			if ($id >= 0) {
+				// Get post/page URL
+				$paramsDst = new ArrayObject(array(
+					'post_id' => $id,
+					'post_type' => $postTypes,
+					'no_content' => true));
+
+				$core->callBehavior('publicPostBeforeGetPosts',$paramsDst,$handler->args);
+				$rsDst = $core->blog->getPosts($paramsDst);
+
+				if ($rsDst->count()) {
+					// Load first record
+					$rsDst->fetch();
+
+					// Redirect to translated post
+					$url = $rsDst->getURL();
+					if (!preg_match('%^http[s]?://%',$url)) {
+						// Prepend scheme if not present
+						$url = ($_SERVER['HTTPS'] ? 'https:' : 'http').$url;
+					}
+					http::redirect($url);
+					exit;
+				}
+			}
+		}
+	}
+
 	public static function urlHandlerGetArgsDocument($handler)
 	{
 		global $core;
@@ -236,61 +289,27 @@ class rosettaPublicBehaviors
 			return;
 		}
 
-		$lang = '';
+		$langs = array();
 		if (!empty($_GET['lang'])) {
 			// Check lang scheme
 			if (preg_match('/^[a-z]{2}(-[a-z]{2})?$/',rawurldecode($_GET['lang']),$matches)) {
 				// Assume that the URL scheme is for post/page
-				$lang = $matches[0];
+				$langs[] = $matches[0];
+			}
+		} else {
+			$urlType = '';
+			$urlPart = '';
+			$handler->getArgs($_SERVER['URL_REQUEST_PART'],$urlType,$urlPart);
+			if (in_array($urlType,array('post','page'))) {
+				// It is a post or page: Try to find a translation according to the browser
+				$langs = http::getAcceptLanguages();
 			}
 		}
 
-		if ($lang) {
-			$postTypes = array('post');
-			if ($this->core->plugins->moduleExists('pages')) {
-				$postTypes[] = 'page';
-			}
-
-			// Get post/page id
-			$paramsSrc = new ArrayObject(array(
-				'post_url' => $handler->args,
-				'post_type' => $postTypes,
-				'no_content' => true));
-
-			$core->callBehavior('publicPostBeforeGetPosts',$paramsSrc,$handler->args);
-			$rsSrc = $core->blog->getPosts($paramsSrc);
-
-			// Check if post/page id exists in rosetta table
-			if ($rsSrc->count()) {
-				// Load first record
-				$rsSrc->fetch();
-
-				// Try to find an associated post corresponding to the requested lang
-				$id = rosettaData::findTranslation($rsSrc->post_id,$rsSrc->post_lang,$lang);
-				if ($id >= 0) {
-					// Get post/page URL
-					$paramsDst = new ArrayObject(array(
-						'post_id' => $id,
-						'post_type' => $postTypes,
-						'no_content' => true));
-
-					$core->callBehavior('publicPostBeforeGetPosts',$paramsDst,$handler->args);
-					$rsDst = $core->blog->getPosts($paramsDst);
-
-					if ($rsDst->count()) {
-						// Load first record
-						$rsDst->fetch();
-
-						// Redirect to translated post
-						$url = $rsDst->getURL();
-						if (!preg_match('%^http[s]?://%',$url)) {
-							// Prepend scheme if not present
-							$url = ($_SERVER['HTTPS'] ? 'https:' : 'http').$url;
-						}
-						http::redirect($url);
-						exit;
-					}
-				}
+		if (count($langs)) {
+			foreach ($langs as $lang) {
+				// Try to find an according translation (will http-redirect if any)
+				self::findTranslatedEntry($handler,$lang);
 			}
 		}
 	}
