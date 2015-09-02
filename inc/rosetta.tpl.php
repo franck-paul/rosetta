@@ -112,7 +112,7 @@ EOT;
 
 		$urlTypes = array('post');
 		if ($core->plugins->moduleExists('pages')) {
-			$urlTypes[] = 'page';
+			$urlTypes[] = 'pages';
 		}
 
 		if (!in_array($core->url->type,$urlTypes)) {

@@ -299,7 +299,7 @@ class rosettaPublicBehaviors
 			$urlType = '';
 			$urlPart = '';
 			$handler->getArgs($_SERVER['URL_REQUEST_PART'],$urlType,$urlPart);
-			if (in_array($urlType,array('post','page'))) {
+			if (in_array($urlType,array('post','pages'))) {
 				// It is a post or page: Try to find a translation according to the browser
 				$langs = http::getAcceptLanguages();
 			}
