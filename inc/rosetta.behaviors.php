@@ -84,7 +84,6 @@ class rosettaAdminBehaviors
 			'<a href="%s" class="rosetta-remove" title="'.__('Remove this translation\'s link').'" name="delete">'.
 			'<img src="'.urldecode(dcPage::getPF('rosetta/img/unlink.png')).
 			'" alt="'.__('Remove this translation\'s link').'" /></a>';
-
 		return sprintf($html_line,
 			$lang.' - '.$name,
 			sprintf($post_link,$id,__('Edit this entry'),html::escapeHTML($title)),
@@ -113,7 +112,7 @@ class rosettaAdminBehaviors
 			if ($post_type == 'post') {
 				$url = $core->adminurl->get('admin.post',array('id' => $post->post_id));
 			} else {
-				$url = $redir_url;
+				$url = $redir_url.'&id='.$post->post_id;
 			}
 
 			$html_block =
@@ -151,7 +150,7 @@ class rosettaAdminBehaviors
 					$rs = $core->blog->getPosts($params);
 					if ($rs->count()) {
 						$rs->fetch();
-						$html_lines .= self::translationRow($post->post_lang,$post_type,$id,$lang,$name,
+						$html_lines .= self::translationRow($post->post_lang,$id,$lang,$name,
 							$rs->post_title,$post_link,$url);
 					}
 				}

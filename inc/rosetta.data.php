@@ -73,17 +73,29 @@ class rosettaData
 		// Add the new translation attachment for all existing translations
 		try
 		{
-			foreach ($list as $lang => $id) {
-				if (self::findTranslation($id,$lang,$dst_lang,false) == -1) {
-					// Add the new translation
-					$core->con->writeLock($core->prefix.'rosetta');
-					$cur = $core->con->openCursor($core->prefix.'rosetta');
-					$cur->src_id = $id;
-					$cur->src_lang = $lang;
-					$cur->dst_id = $dst_id;
-					$cur->dst_lang = $dst_lang;
-					$cur->insert();
-					$core->con->unlock();
+			if (!$list) {
+				// No translation yet, add direct one
+				$core->con->writeLock($core->prefix.'rosetta');
+				$cur = $core->con->openCursor($core->prefix.'rosetta');
+				$cur->src_id = $src_id;
+				$cur->src_lang = $src_lang;
+				$cur->dst_id = $dst_id;
+				$cur->dst_lang = $dst_lang;
+				$cur->insert();
+				$core->con->unlock();
+			} else {
+				foreach ($list as $lang => $id) {
+					if (self::findTranslation($id,$lang,$dst_lang,false) == -1) {
+						// Add the new translation
+						$core->con->writeLock($core->prefix.'rosetta');
+						$cur = $core->con->openCursor($core->prefix.'rosetta');
+						$cur->src_id = $id;
+						$cur->src_lang = $lang;
+						$cur->dst_id = $dst_id;
+						$cur->dst_lang = $dst_lang;
+						$cur->insert();
+						$core->con->unlock();
+					}
 				}
 			}
 		}
