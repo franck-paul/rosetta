@@ -60,3 +60,4 @@ Nota : dans les popup de sélection de billet ou de page, une seule colonne est 
 - 0.3.0 - 2015/
 	- Prise en compte du accept-anguage du browser si lang=nn n'est pas précisé pour un billet ou une page
 	- Ajout d'une option pour activer la prise en charge du accept-language
+	- Correction pour la gestion des pages (admin et public)
