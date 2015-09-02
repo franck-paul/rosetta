@@ -333,7 +333,7 @@ class adminPostMiniList extends adminGenericList
 			'<th scope="col">'.__('Date').'</th>'.
 			'<th scope="col">'.__('Author').'</th>'.
 			'<th scope="col">'.__('Status').'</th>'.
-			'<th scope="col">'.__('Langue').'</th>'.
+			'<th scope="col">'.__('Language').'</th>'.
 			'</tr>%s</table></div>';
 
 			if ($enclose_block) {
