@@ -196,10 +196,80 @@ class rosettaAdminBehaviors
 		self::adminEntryForm($post,'page');
 	}
 
-	public static function adminPopupPosts($editor='') {
-		if (empty($editor) || $editor!='rosetta') {return;}
+	public static function adminPopupPosts($editor='')
+	{
+		if (empty($editor) || $editor!='rosetta') {
+			return;
+		}
 
 		return dcPage::jsLoad(dcPage::getPF('rosetta/js/popup_posts.js'));
+	}
+
+	private static function adminEntryListHeader($core,$rs,$cols)
+	{
+		$cols['language'] = '<th scope="col">'.__('Language').'</th>';
+		$cols['translations'] = '<th scope="col">'.__('Translations').'</th>';
+	}
+
+	public static function adminPostListHeader($core,$rs,$cols)
+	{
+		self::adminEntryListHeader($core,$rs,$cols);
+	}
+
+	public static function adminPagesListHeader($core,$rs,$cols)
+	{
+		self::adminEntryListHeader($core,$rs,$cols);
+	}
+
+	public static function adminEntryListValue($core,$rs,$cols)
+	{
+		$translations = '';
+		$list = rosettaData::findAllTranslations($rs->post_id,$rs->post_lang,false);
+		if (is_array($list) && count($list)) {
+			dcUtils::lexicalKeySort($list,'admin');
+			$langs = l10n::getLanguagesName();
+			foreach ($list as $lang => $id) {
+				// Display existing translations
+				$name = isset($langs[$lang]) ? $langs[$lang] : $langs[$core->blog->settings->system->lang];
+				// Get post/page id
+				$params = new ArrayObject(array(
+					'post_id' => $id,
+					'post_type' => $rs->post_type,
+					'no_content' => true));
+				$rst = $core->blog->getPosts($params);
+				if ($rst->count()) {
+					$rst->fetch();
+					$translation = sprintf('<a href="%s" title="%s">%s</a>',
+						$core->getPostAdminURL($rst->post_type,$rst->post_id),
+						$rst->post_title,
+						$name);
+					$translations .= ($translations ? ' / ' : '').$translation;
+				}
+			}
+		}
+
+		$cols['language'] = '<td class="nowrap">'.$rs->post_lang.'</td>';
+		$cols['translations'] = '<td class="nowrap">'.$translations.'</td>';
+	}
+
+	public static function adminPostListValue($core,$rs,$cols)
+	{
+		self::adminEntryListValue($core,$rs,$cols);
+	}
+
+	public static function adminPagesListValue($core,$rs,$cols)
+	{
+		self::adminEntryListValue($core,$rs,$cols);
+	}
+
+	public static function adminPostMiniListHeader($core,$rs,$cols)
+	{
+		$cols['language'] = '<th scope="col">'.__('Language').'</th>';
+	}
+
+	public static function adminPostMiniListValue($core,$rs,$cols)
+	{
+		$cols['language'] =	'<td class="nowrap">'.$rs->post_lang.'</td>';
 	}
 }
 
@@ -291,6 +361,14 @@ class rosettaPublicBehaviors
 		}
 	}
 
+	/**
+	* Client languages
+	*
+	* Returns an array of accepted langages ordered by priority.
+	* can be a two letters language code or a xx-xx variant.
+	*
+	* @return array
+	*/
 	private static function getAcceptLanguages()
 	{
 		$langs = array();

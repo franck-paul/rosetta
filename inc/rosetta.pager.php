@@ -186,18 +186,21 @@ class adminPostList extends adminGenericList
 				$html_block .= '<caption class="hidden">'.__('Entries list').'</caption>';
 			}
 
-			$html_block .= '<tr>'.
-			'<th colspan="2" class="first">'.__('Title').'</th>'.
-			'<th scope="col">'.__('Date').'</th>'.
-			'<th scope="col">'.__('Category').'</th>'.
-			'<th scope="col">'.__('Author').'</th>'.
-			'<th scope="col"><img src="images/comments.png" alt="" title="'.__('Comments').'" /><span class="hidden">'.__('Comments').'</span></th>'.
-			'<th scope="col"><img src="images/trackbacks.png" alt="" title="'.__('Trackbacks').'" /><span class="hidden">'.__('Trackbacks').'</span></th>'.
-			'<th scope="col">'.__('Status').'</th>'.
-			'<th scope="col">'.__('Language').'</th>'.
-			'<th scope="col">'.__('Translations').'</th>'.
-			'</tr>%s</table></div>';
+			$cols = array(
+				'title' =>			'<th colspan="2" class="first">'.__('Title').'</th>',
+				'date' =>			'<th scope="col">'.__('Date').'</th>',
+				'category' =>		'<th scope="col">'.__('Category').'</th>',
+				'author' =>			'<th scope="col">'.__('Author').'</th>',
+				'comments' =>		'<th scope="col"><img src="images/comments.png" alt="" title="'.__('Comments').
+									'" /><span class="hidden">'.__('Comments').'</span></th>',
+				'trackbacks' =>		'<th scope="col"><img src="images/trackbacks.png" alt="" title="'.__('Trackbacks').
+									'" /><span class="hidden">'.__('Trackbacks').'</span></th>',
+				'status' =>			'<th scope="col">'.__('Status').'</th>'
+			);
+			$cols = new ArrayObject($cols);
+			$this->core->callBehavior('adminPostListHeader',$this->core,$this->rs,$cols);
 
+			$html_block .= '<tr>'.implode(iterator_to_array($cols)).'</tr>%s</table></div>';
 			if ($enclose_block) {
 				$html_block = sprintf($enclose_block,$html_block);
 			}
@@ -267,48 +270,28 @@ class adminPostList extends adminGenericList
 			$attach = sprintf($img,sprintf($attach_str,$nb_media),'attach.png');
 		}
 
-		$translations = '';
-		$list = rosettaData::findAllTranslations($this->rs->post_id,$this->rs->post_lang,false);
-		if (is_array($list) && count($list)) {
-			dcUtils::lexicalKeySort($list,'admin');
-			$langs = l10n::getLanguagesName();
-			foreach ($list as $lang => $id) {
-				// Display existing translations
-				$name = isset($langs[$lang]) ? $langs[$lang] : $langs[$core->blog->settings->system->lang];
-				// Get post/page id
-				$params = new ArrayObject(array(
-					'post_id' => $id,
-					'post_type' => $this->rs->post_type,
-					'no_content' => true));
-				$rs = $this->core->blog->getPosts($params);
-				if ($rs->count()) {
-					$rs->fetch();
-					$translation = sprintf('<a href="%s" title="%s">%s</a>',
-						$this->core->getPostAdminURL($rs->post_type,$rs->post_id),
-						$rs->post_title,
-						$name);
-					$translations .= ($translations ? ' / ' : '').$translation;
-				}
-			}
-		}
-
 		$res = '<tr class="line'.($this->rs->post_status != 1 ? ' offline' : '').'"'.
 		' id="p'.$this->rs->post_id.'">';
 
-		$res .=
-		'<td class="nowrap">'.
-		form::checkbox(array('entries[]'),$this->rs->post_id,$checked,'','',!$this->rs->isEditable()).'</td>'.
-		'<td class="maximal" scope="row"><a href="'.$this->core->getPostAdminURL($this->rs->post_type,$this->rs->post_id).'">'.
-		html::escapeHTML($this->rs->post_title).'</a></td>'.
-		'<td class="nowrap count">'.dt::dt2str(__('%Y-%m-%d %H:%M'),$this->rs->post_dt).'</td>'.
-		'<td class="nowrap">'.$cat_title.'</td>'.
-		'<td class="nowrap">'.html::escapeHTML($this->rs->user_id).'</td>'.
-		'<td class="nowrap count">'.$this->rs->nb_comment.'</td>'.
-		'<td class="nowrap count">'.$this->rs->nb_trackback.'</td>'.
-		'<td class="nowrap status">'.$img_status.' '.$selected.' '.$protected.' '.$attach.'</td>'.
-		'<td class="nowrap">'.$this->rs->post_lang.'</td>'.
-		'<td class="nowrap">'.$translations.'</td>'.
-		'</tr>';
+		$cols = array(
+			'check' =>			'<td class="nowrap">'.
+								form::checkbox(array('entries[]'),$this->rs->post_id,$checked,'','',!$this->rs->isEditable()).
+								'</td>',
+			'title' =>			'<td class="maximal" scope="row"><a href="'.
+								$this->core->getPostAdminURL($this->rs->post_type,$this->rs->post_id).'">'.
+								html::escapeHTML($this->rs->post_title).'</a></td>',
+			'date' =>			'<td class="nowrap count">'.dt::dt2str(__('%Y-%m-%d %H:%M'),$this->rs->post_dt).'</td>',
+			'category' =>		'<td class="nowrap">'.$cat_title.'</td>',
+			'author' =>			'<td class="nowrap">'.html::escapeHTML($this->rs->user_id).'</td>',
+			'comments' =>		'<td class="nowrap count">'.$this->rs->nb_comment.'</td>',
+			'trackbacks' =>		'<td class="nowrap count">'.$this->rs->nb_trackback.'</td>',
+			'status' =>			'<td class="nowrap status">'.$img_status.' '.$selected.' '.$protected.' '.$attach.'</td>'
+		);
+		$cols = new ArrayObject($cols);
+		$this->core->callBehavior('adminPostListValue',$this->core,$this->rs,$cols);
+
+		$res .= implode(iterator_to_array($cols));
+		$res .= '</tr>';
 
 		return $res;
 	}
@@ -328,14 +311,19 @@ class adminPostMiniList extends adminGenericList
 
 			$html_block =
 			'<div class="table-outer clear">'.
-			'<table><caption class="hidden">'.__('Entries list').'</caption><tr>'.
-			'<th scope="col">'.__('Title').'</th>'.
-			'<th scope="col">'.__('Date').'</th>'.
-			'<th scope="col">'.__('Author').'</th>'.
-			'<th scope="col">'.__('Status').'</th>'.
-			'<th scope="col">'.__('Language').'</th>'.
-			'</tr>%s</table></div>';
+			'<table><caption class="hidden">'.__('Entries list').'</caption><tr>';
 
+			$cols = array(
+				'title' =>		'<th scope="col">'.__('Title').'</th>',
+				'date' =>		'<th scope="col">'.__('Date').'</th>',
+				'author' =>		'<th scope="col">'.__('Author').'</th>',
+				'status' =>		'<th scope="col">'.__('Status').'</th>'
+			);
+
+			$cols = new ArrayObject($cols);
+			$this->core->callBehavior('adminPostMiniListHeader',$this->core,$this->rs,$cols);
+
+			$html_block .= '<tr>'.implode(iterator_to_array($cols)).'</tr>%s</table></div>';
 			if ($enclose_block) {
 				$html_block = sprintf($enclose_block,$html_block);
 			}
@@ -395,15 +383,21 @@ class adminPostMiniList extends adminGenericList
 		$res = '<tr class="line'.($this->rs->post_status != 1 ? ' offline' : '').'"'.
 		' id="p'.$this->rs->post_id.'">';
 
-		$res .=
-		'<td scope="row" class="maximal"><a href="'.$this->core->getPostAdminURL($this->rs->post_type,$this->rs->post_id).'" '.
-		'title="'.html::escapeHTML($this->rs->getURL()).'">'.
-		html::escapeHTML($this->rs->post_title).'</a></td>'.
-		'<td class="nowrap count">'.dt::dt2str(__('%Y-%m-%d %H:%M'),$this->rs->post_dt).'</td>'.
-		'<td class="nowrap">'.html::escapeHTML($this->rs->user_id).'</td>'.
-		'<td class="nowrap status">'.$img_status.' '.$selected.' '.$protected.' '.$attach.'</td>'.
-		'<td class="nowrap">'.$this->rs->post_lang.'</td>'.
-		'</tr>';
+		$cols = array(
+			'title' =>		'<td scope="row" class="maximal"><a href="'.
+							$this->core->getPostAdminURL($this->rs->post_type,$this->rs->post_id).'" '.
+							'title="'.html::escapeHTML($this->rs->getURL()).'">'.
+							html::escapeHTML($this->rs->post_title).'</a></td>',
+			'date' =>		'<td class="nowrap count">'.dt::dt2str(__('%Y-%m-%d %H:%M'),$this->rs->post_dt).'</td>',
+			'author' =>		'<td class="nowrap">'.html::escapeHTML($this->rs->user_id).'</td>',
+			'status' =>		'<td class="nowrap status">'.$img_status.' '.$selected.' '.$protected.' '.$attach.'</td>'
+		);
+
+		$cols = new ArrayObject($cols);
+		$this->core->callBehavior('adminPostMiniListValue',$this->core,$this->rs,$cols);
+
+		$res .= implode(iterator_to_array($cols));
+		$res .= '</tr>';
 
 		return $res;
 	}

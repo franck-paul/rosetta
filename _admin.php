@@ -35,6 +35,14 @@ $core->addBehavior('adminPageHeaders',array('rosettaAdminBehaviors','adminPageHe
 // Add behaviour callback for post/page list popup
 $core->addBehavior('adminPopupPosts',array('rosettaAdminBehaviors','adminPopupPosts'));
 
+// Add behaviour callback for post/page lists
+$core->addBehavior('adminPostListHeader',array('rosettaAdminBehaviors','adminPostListHeader'));
+$core->addBehavior('adminPostListValue',array('rosettaAdminBehaviors','adminPostListValue'));
+$core->addBehavior('adminPostMiniListHeader',array('rosettaAdminBehaviors','adminPostMiniListHeader'));
+$core->addBehavior('adminPostMiniListValue',array('rosettaAdminBehaviors','adminPostMiniListValue'));
+$core->addBehavior('adminPagesListHeader',array('rosettaAdminBehaviors','adminPagesListHeader'));
+$core->addBehavior('adminPagesListValue',array('rosettaAdminBehaviors','adminPagesListValue'));
+
 // Register REST methods
 $core->rest->addFunction('addTranslation',array('rosettaRest','addTranslation'));
 $core->rest->addFunction('removeTranslation',array('rosettaRest','removeTranslation'));
