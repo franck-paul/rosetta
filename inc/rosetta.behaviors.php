@@ -72,6 +72,18 @@ class rosettaAdminBehaviors
 		}
 	}
 
+	/**
+	 * Get a full row for one translation
+	 *
+	 * @param  string $src_lang  source language (from currently edited post or page)
+	 * @param  string $id        source id (post or page)
+	 * @param  string $lang      translation language code
+	 * @param  string $name      translation language name
+	 * @param  string $title     title of translated post or page
+	 * @param  string $post_link sprintf format for post/page edition (post-id, label, post-title)
+	 * @param  string $url_page  current admin page URL
+	 * @return string            row (<tr>…</tr>)
+	 */
 	public static function translationRow($src_lang,$id,$lang,$name,$title,$post_link,$url_page)
 	{
 		$html_line =
@@ -279,6 +291,34 @@ class rosettaPublicBehaviors
 		}
 	}
 
+	private static function getAcceptLanguages()
+	{
+		$langs = array();
+		if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+
+			// break up string into pieces (languages and q factors)
+			preg_match_all('/([a-z]{1,8}(-[a-z]{1,8})?)\s*(;\s*q\s*=\s*(1|0\.[0-9]+))?/i',
+				$_SERVER['HTTP_ACCEPT_LANGUAGE'],$lang_parse);
+
+			if (count($lang_parse[1])) {
+				// create a list like "en" => 0.8
+				$langs = array_combine($lang_parse[1],$lang_parse[4]);
+
+				// set default to 1 for any without q factor
+				foreach ($langs as $lang => $val) {
+					if ($val === '') {
+						$langs[$lang] = 1;
+					}
+				}
+
+				// sort list based on value
+				arsort($langs,SORT_NUMERIC);
+				$langs = array_keys($langs);
+			}
+		}
+		return $langs;
+	}
+
 	public static function urlHandlerGetArgsDocument($handler)
 	{
 		global $core;
@@ -300,8 +340,8 @@ class rosettaPublicBehaviors
 			$urlPart = '';
 			$handler->getArgs($_SERVER['URL_REQUEST_PART'],$urlType,$urlPart);
 			if (in_array($urlType,array('post','pages'))) {
-				// It is a post or page: Try to find a translation according to the browser
-				$langs = http::getAcceptLanguages();
+				// It is a post or page: Try to find a translation according to the browser settings
+				$langs = self::getAcceptLanguages();
 			}
 		}
 
