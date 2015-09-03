@@ -313,7 +313,7 @@ class rosettaPublicBehaviors
 
 				// sort list based on value
 				arsort($langs,SORT_NUMERIC);
-				$langs = array_keys($langs);
+				$langs = array_map('strtolower',array_keys($langs));
 			}
 		}
 		return $langs;
