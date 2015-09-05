@@ -5,3 +5,7 @@
 #rosetta-list {
 	margin-top: 1em;
 }
+
+.rosetta-new.button.add {
+	font-size: 1em;
+}

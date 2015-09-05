@@ -57,7 +57,12 @@ Nota : dans les popup de sélection de billet ou de page, une seule colonne est 
 	- Ajout de deux colonnes (langue et traductions) dans les listes des billets et des pages
 	- Ajout d'une colonne langue dans les listes de sélection (popup) de billet ou de page
 
-- 0.3.0 - 2015/
+- 0.3.0 - 2015/09/02
 	- Prise en compte du accept-anguage du browser si lang=nn n'est pas précisé pour un billet ou une page
 	- Ajout d'une option pour activer la prise en charge du accept-language
 	- Correction pour la gestion des pages (admin et public)
+
+- 0.3.1 - 2015/09/
+	- Correction pour les langues retournées par le accept-language (Clearbricks is buggy about it)
+
+- 0.4.0 - 2015/09/

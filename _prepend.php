@@ -25,12 +25,15 @@ if (!defined('DC_CONTEXT_ADMIN')) { return false; }
 
 $__autoload['rosettaAdminBehaviors'] = 		dirname(__FILE__).'/inc/rosetta.behaviors.php';
 
-// Override standard pager/lists classes
+if (version_compare(DC_VERSION,'2.9','<'))
+{
+	// Override standard pager/lists classes (Dotclear < 2.9 only)
 
-$__autoload['dcPager'] =					dirname(__FILE__).'/inc/rosetta.pager.php';
-$__autoload['adminGenericList'] = 			dirname(__FILE__).'/inc/rosetta.pager.php';
-$__autoload['adminPostList'] = 				dirname(__FILE__).'/inc/rosetta.pager.php';
-$__autoload['adminPostMiniList'] = 			dirname(__FILE__).'/inc/rosetta.pager.php';
-$__autoload['adminCommentList'] =			dirname(__FILE__).'/inc/rosetta.pager.php';
-$__autoload['adminUserList'] =				dirname(__FILE__).'/inc/rosetta.pager.php';
-$__autoload['adminPagesList'] =				dirname(__FILE__).'/inc/rosetta.listpage.php';
+	$__autoload['dcPager'] =					dirname(__FILE__).'/inc/rosetta.pager.php';
+	$__autoload['adminGenericList'] = 			dirname(__FILE__).'/inc/rosetta.pager.php';
+	$__autoload['adminPostList'] = 				dirname(__FILE__).'/inc/rosetta.pager.php';
+	$__autoload['adminPostMiniList'] = 			dirname(__FILE__).'/inc/rosetta.pager.php';
+	$__autoload['adminCommentList'] =			dirname(__FILE__).'/inc/rosetta.pager.php';
+	$__autoload['adminUserList'] =				dirname(__FILE__).'/inc/rosetta.pager.php';
+	$__autoload['adminPagesList'] =				dirname(__FILE__).'/inc/rosetta.listpage.php';
+}

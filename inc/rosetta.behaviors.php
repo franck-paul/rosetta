@@ -142,9 +142,6 @@ class rosettaAdminBehaviors
 				'</div>';
 			$html_lines = '';
 
-			$action_add =
-				'<a href="%s" class="button rosetta-add">'.__('Attach a translation').'</a>';
-
 			$list = rosettaData::findAllTranslations($post->post_id,$post->post_lang,false);
 			if (is_array($list) && count($list)) {
 
@@ -172,6 +169,9 @@ class rosettaAdminBehaviors
 			echo sprintf($html_block,$html_lines);
 
 			// Add a button for adding a new translation
+			$action_add =
+				'<a href="%s" class="button rosetta-add">'.__('Attach a translation').'</a>';
+
 			echo '<p>'.
 				// Button
 				sprintf($action_add,$url.
@@ -180,6 +180,18 @@ class rosettaAdminBehaviors
 						$post_type,'add',0,'')).
 				// Hidden field for selected post/page URL
 				form::hidden(array('rosetta_url','rosetta_url'), '').
+				'</p>';
+
+			// Add a field (title), a combo (lang) and a button to create a new translation
+			$action_new =
+				'<a href="%s" class="button add rosetta-new">'.__('Create a new translation').'</a>';
+
+			echo
+				'<p class="top-add">'.
+				sprintf($action_new,$url.
+					sprintf(self::$args_rosetta,
+						($post->post_lang == '' || !$post->post_lang ? $core->blog->settings->system->lang : $post->post_lang ),
+						$post_type,'new',0,'')).
 				'</p>';
 
 			echo '</div>'."\n";
@@ -352,7 +364,7 @@ class rosettaPublicBehaviors
 					$url = $rsDst->getURL();
 					if (!preg_match('%^http[s]?://%',$url)) {
 						// Prepend scheme if not present
-						$url = ($_SERVER['HTTPS'] ? 'https:' : 'http').$url;
+						$url = (isset($_SERVER['HTTPS']) ? 'https:' : 'http:').$url;
 					}
 					http::redirect($url);
 					exit;

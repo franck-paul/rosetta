@@ -1,7 +1,7 @@
 $(function() {
 	$('#edit-entry').onetabload(function() {
 		// Add toggle capability on Rosetta area
-		$('#rosetta-area label').toggleWithLegend($('#rosetta-area').children().not('label'),{
+		$('#rosetta-area > label').toggleWithLegend($('#rosetta-area').children().not('label'),{
 			user_pref: 'dcx_post_rosetta',
 			legend_click: true,
 			hide: false
