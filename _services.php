@@ -17,12 +17,13 @@ class rosettaRest
 	{
 		$id = !empty($get['id']) ? $get['id'] : -1;
 		$lang = !empty($get['lang']) ? $get['lang'] : '';
-		$type = !empty($get['type']) ? $get['type'] : '';
-		$rosetta_title = !empty($get['rosetta_title']) ? $get['rosetta_title'] : -1;
+		$type = !empty($get['type']) ? $get['type'] : 'post';
+		$rosetta_title = !empty($get['rosetta_title']) ? $get['rosetta_title'] : '';
 		$rosetta_lang = !empty($get['rosetta_lang']) ? $get['rosetta_lang'] : '';
 		$rsp = new xmlTag('rosetta');
 
 		$ret = false;
+		$rosetta_id = -1;
 		if ($id != -1 && $lang != '' && $rosetta_title != '' && $rosetta_lang != '') {
 			try
 			{
@@ -30,10 +31,15 @@ class rosettaRest
 				$cur = $core->con->openCursor($core->prefix.'post');
 
 				$cur->post_title = $rosetta_title;
-				$cur->user_id = $core->auth->userID();
-				$cur->post_content = '';
+				$cur->post_type = $type;
 				$cur->post_lang = $rosetta_lang;
+
+				$cur->user_id = $core->auth->userID();
+				$cur->post_content = '<p>...</p>';
+				$cur->post_format = 'xhtml';
 				$cur->post_status = -2;	// forced to pending
+				$cur->post_open_comment = (integer) $core->blog->settings->system->allow_comments;
+				$cur->post_open_tb = (integer) $core->blog->settings->system->allow_trackbacks;
 
 				# --BEHAVIOR-- adminBeforePostCreate
 				$core->callBehavior('adminBeforePostCreate',$cur);
@@ -41,7 +47,7 @@ class rosettaRest
 				$rosetta_id = $core->blog->addPost($cur);
 
 				# --BEHAVIOR-- adminAfterPostCreate
-				$core->callBehavior('adminAfterPostCreate',$cur,$return_id);
+				$core->callBehavior('adminAfterPostCreate',$cur,$rosetta_id);
 
 				// add the translation link
 				$ret = rosettaData::addTranslation($id,$lang,$rosetta_id,$rosetta_lang);
@@ -55,6 +61,7 @@ class rosettaRest
 		$rsp->ret = $ret;
 		$rsp->msg = $ret ? __('New translation created.') : __('Error during translation creation.');
 		$rsp->id = $rosetta_id;
+		$rsp->edit = DC_ADMIN_URL.$core->getPostAdminURL($type,$rosetta_id);
 
 		return $rsp;
 	}

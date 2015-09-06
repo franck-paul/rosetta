@@ -105,7 +105,7 @@ $(function() {
 		var post_type = getURLParameter(href,'type');
 		var rosetta_hidden = document.getElementById('rosetta_url');
 		// Call popup_posts.php in order to select entry (post/page)
-		rosetta_hidden.value = '';
+//		rosetta_hidden.value = '';
 		var p_win = window.open(
 			'popup_posts.php?popup=1&plugin_id=rosetta&type='+post_type,'dc_popup',
 			'alwaysRaised=yes,dependent=yes,toolbar=yes,height=500,width=760,'+
@@ -159,8 +159,8 @@ $(function() {
 		var post_type = getURLParameter(href,'type');
 		var rosetta_title = document.getElementById('rosetta_title');
 		var rosetta_lang = document.getElementById('rosetta_lang');
-		rosetta_title.value = '';
-		rosetta_lang.value = '';
+//		rosetta_title.value = '';
+//		rosetta_lang.value = '';
 		var p_win = window.open(
 			'plugin.php?p=rosetta&popup_new=1&popup=1&plugin_id=rosetta'+
 			'&type='+post_type+'&id='+post_id+'&lang='+post_lang,
@@ -194,10 +194,12 @@ $(function() {
 							var ret = Number($('rsp>rosetta',data).attr('ret'));
 							var msg = $('rsp>rosetta',data).attr('msg');
 							if (ret) {
-								var rosetta_id = Number($('rsp>rosetta',data).attr('id'));
 								// Append new row at the end of translations list
+								var rosetta_id = Number($('rsp>rosetta',data).attr('id'));
 								addTranslationRow(post_id,post_lang,rosetta_id,'#rosetta-list');
 								// OR redirect to new entry edition ???
+								var edit = $('rsp>rosetta',data).attr('edit');
+								window.location.href = edit;
 							} else {
 								// Display error message
 								window.alert(msg);
@@ -205,7 +207,7 @@ $(function() {
 						}
 					});
 				}
-				// Reset hidden field
+				// Reset hidden fields
 				rosetta_title.value = rosetta_title.defaultValue;
 				rosetta_lang.value = rosetta_lang.defaultValue;
 		    }

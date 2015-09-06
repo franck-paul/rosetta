@@ -66,3 +66,5 @@ Nota : dans les popup de sélection de billet ou de page, une seule colonne est 
 	- Correction pour les langues retournées par le accept-language (Clearbricks is buggy about it)
 
 - 0.4.0 - 2015/09/
+	- Ajout d'une fonction de création d'une traduction pour l'entrée en cours d'édition
+
