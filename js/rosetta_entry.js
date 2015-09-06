@@ -159,8 +159,7 @@ $(function() {
 		var post_type = getURLParameter(href,'type');
 		var rosetta_title = document.getElementById('rosetta_title');
 		var rosetta_lang = document.getElementById('rosetta_lang');
-//		rosetta_title.value = '';
-//		rosetta_lang.value = '';
+		var edit_new = Number(getURLParameter(href,'edit'));
 		var p_win = window.open(
 			'plugin.php?p=rosetta&popup_new=1&popup=1&plugin_id=rosetta'+
 			'&type='+post_type+'&id='+post_id+'&lang='+post_lang,
@@ -197,9 +196,11 @@ $(function() {
 								// Append new row at the end of translations list
 								var rosetta_id = Number($('rsp>rosetta',data).attr('id'));
 								addTranslationRow(post_id,post_lang,rosetta_id,'#rosetta-list');
-								// OR redirect to new entry edition ???
-								var edit = $('rsp>rosetta',data).attr('edit');
-								window.location.href = edit;
+								if (edit_new) {
+									// Redirect to new entry edition if requested
+									var edit = $('rsp>rosetta',data).attr('edit');
+									window.location.href = edit;
+								}
 							} else {
 								// Display error message
 								window.alert(msg);

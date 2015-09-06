@@ -185,13 +185,22 @@ class rosettaAdminBehaviors
 			// Add a field (title), a combo (lang) and a button to create a new translation
 			$action_new =
 				'<a href="%s" class="button add rosetta-new">'.__('Create a new translation').'</a>';
+			$action_new_edit =
+				'<a href="%s" class="button add rosetta-new">'.__('Create and edit a new translation').'</a>';
 
 			echo
 				'<p class="top-add">'.
 				sprintf($action_new,$url.
 					sprintf(self::$args_rosetta,
 						($post->post_lang == '' || !$post->post_lang ? $core->blog->settings->system->lang : $post->post_lang ),
-						$post_type,'new',0,'')).
+						$post_type,'new',0,'').
+					'&amp;edit=0').
+				' '.
+				sprintf($action_new_edit,$url.
+					sprintf(self::$args_rosetta,
+						($post->post_lang == '' || !$post->post_lang ? $core->blog->settings->system->lang : $post->post_lang ),
+						$post_type,'new_edit',0,'').
+					'&amp;edit=1').
 				// Hidden fields for new entry title and lang
 				form::hidden(array('rosetta_title','rosetta_title'), '').
 				form::hidden(array('rosetta_lang','rosetta_lang'), '').
