@@ -10,7 +10,7 @@ $(function() {
 
 	function getURLParameter(url,name) {
 		// Extract param value from URL
-	    var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(url);
+	    var results = new RegExp('[\?&]'+name+'=([^&#]*)').exec(url);
 	    if (results === null) {
 	       return null;
 	    }
@@ -146,6 +146,68 @@ $(function() {
 				}
 				// Reset hidden field
 				rosetta_hidden.value = rosetta_hidden.defaultValue;
+		    }
+		}, 500);
+		e.preventDefault();
+	});
+
+	// Switch to Ajax for adding translation link
+	$('a.rosetta-new').click(function(e) {
+		var href = $(this).attr('href');
+		var post_id = getURLParameter(href,'id');
+		var post_lang = getURLParameter(href,'lang');
+		var post_type = getURLParameter(href,'type');
+		var rosetta_title = document.getElementById('rosetta_title');
+		var rosetta_lang = document.getElementById('rosetta_lang');
+		rosetta_title.value = '';
+		rosetta_lang.value = '';
+		var p_win = window.open(
+			'plugin.php?p=rosetta&popup_new=1&popup=1&plugin_id=rosetta'+
+			'&type='+post_type+'&id='+post_id+'&lang='+post_lang,
+			'dc_popup',
+			'alwaysRaised=yes,dependent=yes,toolbar=yes,height=500,width=760,'+
+			'menubar=no,resizable=yes,scrollbars=yes,status=no');
+		// Wait for popup close
+		var timer = setInterval(function() {
+		    if (p_win.closed) {
+		        clearInterval(timer);
+				// Get translation post/page title and lang
+				if ((rosetta_title.value !== null && rosetta_title.value !== '') &&
+					(rosetta_lang.value !== null && rosetta_lang.value !== '')) {
+					var params = {
+						f: 'newTranslation',
+						xd_check: dotclear.nonce,
+						id: post_id,
+						lang: post_lang,
+						type: post_type,
+						rosetta_title: rosetta_title.value,
+						rosetta_lang: rosetta_lang.value,
+					};
+					$.get('services.php',params,function(data) {
+						if ($('rsp[status=failed]',data).length > 0) {
+							// For debugging purpose only:
+							// console.log($('rsp',data).attr('message'));
+							console.log('Dotclear REST server error');
+						} else {
+							// ret -> status (true/false)
+							// msg -> message to display
+							var ret = Number($('rsp>rosetta',data).attr('ret'));
+							var msg = $('rsp>rosetta',data).attr('msg');
+							if (ret) {
+								var rosetta_id = Number($('rsp>rosetta',data).attr('id'));
+								// Append new row at the end of translations list
+								addTranslationRow(post_id,post_lang,rosetta_id,'#rosetta-list');
+								// OR redirect to new entry edition ???
+							} else {
+								// Display error message
+								window.alert(msg);
+							}
+						}
+					});
+				}
+				// Reset hidden field
+				rosetta_title.value = rosetta_title.defaultValue;
+				rosetta_lang.value = rosetta_lang.defaultValue;
 		    }
 		}, 500);
 		e.preventDefault();

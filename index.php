@@ -12,6 +12,13 @@
 
 if (!defined('DC_CONTEXT_ADMIN')) { return; }
 
+// Open specific popup if required
+if (!empty($_REQUEST['popup_new'])) {
+	require dirname(__FILE__).'/'.'popup_new.php';
+	return;
+}
+
+// Main page of plugin
 $core->blog->settings->addNamespace('rosetta');
 $rosetta_active = $core->blog->settings->rosetta->active;
 $rosetta_accept_language = $core->blog->settings->rosetta->accept_language;

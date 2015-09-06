@@ -13,6 +13,52 @@ if (!defined('DC_CONTEXT_ADMIN')) { return; }
 
 class rosettaRest
 {
+	public static function newTranslation($core,$get)
+	{
+		$id = !empty($get['id']) ? $get['id'] : -1;
+		$lang = !empty($get['lang']) ? $get['lang'] : '';
+		$type = !empty($get['type']) ? $get['type'] : '';
+		$rosetta_title = !empty($get['rosetta_title']) ? $get['rosetta_title'] : -1;
+		$rosetta_lang = !empty($get['rosetta_lang']) ? $get['rosetta_lang'] : '';
+		$rsp = new xmlTag('rosetta');
+
+		$ret = false;
+		if ($id != -1 && $lang != '' && $rosetta_title != '' && $rosetta_lang != '') {
+			try
+			{
+				// Create a new entry with given title and lang
+				$cur = $core->con->openCursor($core->prefix.'post');
+
+				$cur->post_title = $rosetta_title;
+				$cur->user_id = $core->auth->userID();
+				$cur->post_content = '';
+				$cur->post_lang = $rosetta_lang;
+				$cur->post_status = -2;	// forced to pending
+
+				# --BEHAVIOR-- adminBeforePostCreate
+				$core->callBehavior('adminBeforePostCreate',$cur);
+
+				$rosetta_id = $core->blog->addPost($cur);
+
+				# --BEHAVIOR-- adminAfterPostCreate
+				$core->callBehavior('adminAfterPostCreate',$cur,$return_id);
+
+				// add the translation link
+				$ret = rosettaData::addTranslation($id,$lang,$rosetta_id,$rosetta_lang);
+			}
+			catch (Exception $e)
+			{
+				$rosetta_id = -1;
+			}
+		}
+
+		$rsp->ret = $ret;
+		$rsp->msg = $ret ? __('New translation created.') : __('Error during translation creation.');
+		$rsp->id = $rosetta_id;
+
+		return $rsp;
+	}
+
 	/**
 	 * Serve method to add a new translation's link for current edited post/page.
 	 *

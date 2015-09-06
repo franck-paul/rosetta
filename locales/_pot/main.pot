@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dotclear 2 rosetta module\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-03 17:48+0200\n"
+"POT-Creation-Date: 2015-09-06 10:31+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,7 +22,7 @@ msgstr ""
 
 #: ../hg-plugins/rosetta//_admin.php:16 ../hg-plugins/rosetta//_admin.php:18
 #: ../hg-plugins/rosetta//inc/rosetta.behaviors.php:22
-#: ../hg-plugins/rosetta//index.php:38 ../hg-plugins/rosetta//index.php:46
+#: ../hg-plugins/rosetta//index.php:45 ../hg-plugins/rosetta//index.php:53
 msgid "Rosetta"
 msgstr ""
 
@@ -92,11 +92,9 @@ msgid "Attach a translation"
 msgstr ""
 
 #: ../hg-plugins/rosetta//inc/rosetta.behaviors.php:187
+#: ../hg-plugins/rosetta//popup_new.php:24
+#: ../hg-plugins/rosetta//popup_new.php:29
 msgid "Create a new translation"
-msgstr ""
-
-#: ../hg-plugins/rosetta//inc/rosetta.behaviors.php:190
-msgid "New translation"
 msgstr ""
 
 #: ../hg-plugins/rosetta//inc/rosetta.pager.php:463
@@ -107,22 +105,26 @@ msgstr ""
 msgid "Spam filter"
 msgstr ""
 
-#: ../hg-plugins/rosetta//index.php:53 ../hg-plugins/rosetta//index.php:54
+#: ../hg-plugins/rosetta//index.php:60 ../hg-plugins/rosetta//index.php:61
 msgid "Posts tranlations"
 msgstr ""
 
-#: ../hg-plugins/rosetta//index.php:69 ../hg-plugins/rosetta//index.php:70
+#: ../hg-plugins/rosetta//index.php:76 ../hg-plugins/rosetta//index.php:77
 msgid "Pages tranlations"
 msgstr ""
 
-#: ../hg-plugins/rosetta//index.php:85 ../hg-plugins/rosetta//index.php:86
+#: ../hg-plugins/rosetta//index.php:92 ../hg-plugins/rosetta//index.php:93
 msgid "Settings"
 msgstr ""
 
-#: ../hg-plugins/rosetta//index.php:91
+#: ../hg-plugins/rosetta//index.php:98
 msgid "Enable posts/pages translations for this blog"
 msgstr ""
 
-#: ../hg-plugins/rosetta//index.php:95
+#: ../hg-plugins/rosetta//index.php:102
 msgid "Automatic posts/pages redirect on browser's language for this blog"
+msgstr ""
+
+#: ../hg-plugins/rosetta//popup_new.php:41
+msgid "Entry title:"
 msgstr ""

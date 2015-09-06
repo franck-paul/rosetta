@@ -192,6 +192,9 @@ class rosettaAdminBehaviors
 					sprintf(self::$args_rosetta,
 						($post->post_lang == '' || !$post->post_lang ? $core->blog->settings->system->lang : $post->post_lang ),
 						$post_type,'new',0,'')).
+				// Hidden fields for new entry title and lang
+				form::hidden(array('rosetta_title','rosetta_title'), '').
+				form::hidden(array('rosetta_lang','rosetta_lang'), '').
 				'</p>';
 
 			echo '</div>'."\n";

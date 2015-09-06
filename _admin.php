@@ -44,6 +44,7 @@ $core->addBehavior('adminPagesListHeader',array('rosettaAdminBehaviors','adminPa
 $core->addBehavior('adminPagesListValue',array('rosettaAdminBehaviors','adminPagesListValue'));
 
 // Register REST methods
+$core->rest->addFunction('newTranslation',array('rosettaRest','newTranslation'));
 $core->rest->addFunction('addTranslation',array('rosettaRest','addTranslation'));
 $core->rest->addFunction('removeTranslation',array('rosettaRest','removeTranslation'));
 $core->rest->addFunction('getTranslationRow',array('rosettaRest','getTranslationRow'));
