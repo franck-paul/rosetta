@@ -67,4 +67,5 @@ Nota : dans les popup de sélection de billet ou de page, une seule colonne est 
 
 - 0.4.0 - 2015/09/
 	- Ajout d'une fonction de création d'une traduction pour l'entrée en cours d'édition
+	- Ajout d'une fonction de création et d'édition d'une traduction pour l'entrée en cours d'édition
 

@@ -117,6 +117,10 @@ $(function() {
 				// Get translation post/page id
 			    var rosetta_id = getURLParameter(rosetta_hidden.value,'id');
 				if (rosetta_id !== null && rosetta_id !== '') {
+
+					// Reset hidden fields to prevent dirtying form
+					rosetta_hidden.value = rosetta_hidden.defaultValue;
+
 					var params = {
 						f: 'addTranslation',
 						xd_check: dotclear.nonce,
@@ -144,8 +148,6 @@ $(function() {
 						}
 					});
 				}
-				// Reset hidden field
-				rosetta_hidden.value = rosetta_hidden.defaultValue;
 		    }
 		}, 500);
 		e.preventDefault();
@@ -173,6 +175,7 @@ $(function() {
 				// Get translation post/page title and lang
 				if ((rosetta_title.value !== null && rosetta_title.value !== '') &&
 					(rosetta_lang.value !== null && rosetta_lang.value !== '')) {
+
 					var params = {
 						f: 'newTranslation',
 						xd_check: dotclear.nonce,
@@ -182,6 +185,11 @@ $(function() {
 						rosetta_title: rosetta_title.value,
 						rosetta_lang: rosetta_lang.value,
 					};
+
+					// Reset hidden fields to prevent dirtying form
+					rosetta_title.value = rosetta_title.defaultValue;
+					rosetta_lang.value = rosetta_lang.defaultValue;
+
 					$.get('services.php',params,function(data) {
 						if ($('rsp[status=failed]',data).length > 0) {
 							// For debugging purpose only:
@@ -208,9 +216,6 @@ $(function() {
 						}
 					});
 				}
-				// Reset hidden fields
-				rosetta_title.value = rosetta_title.defaultValue;
-				rosetta_lang.value = rosetta_lang.defaultValue;
 		    }
 		}, 500);
 		e.preventDefault();
