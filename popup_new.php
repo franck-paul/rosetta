@@ -31,9 +31,20 @@ echo '<h2 class="page-title">'.__('Create a new translation').'</h2>';
 // Languages combo
 $rs = $core->blog->getLangs(array('order'=>'asc'));
 $lang_combo = dcAdminCombos::getLangsCombo($rs,true);
-
 // Remove already existed translation's languages from combo
-// ???
+$ids = rosettaData::findAllTranslations($id,$lang,true);
+foreach ($lang_combo as $lc => $lv) {
+	if (is_array($lv)) {
+		foreach ($lv as $name => $code) {
+			if (array_key_exists($code,$ids)) {
+				unset($lang_combo[$lc][$name]);
+			}
+		}
+		if (!count($lang_combo[$lc])) {
+			unset($lang_combo[$lc]);
+		}
+	}
+}
 
 echo
 '<form id="link-insert-form" action="#" method="get">'.
