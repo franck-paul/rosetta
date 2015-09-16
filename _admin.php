@@ -54,6 +54,23 @@ $core->blog->settings->addNamespace('rosetta');
 if ($core->blog->settings->rosetta->active) {
 	// Cope with actions on post/page edition (if javascript not enabled)
 	if (isset($_GET['rosetta']) && in_array($_GET['rosetta'],array('add','remove','new','new_edit'))) {
-		; // To be developped later...
+		$redirect = false;
+		switch ($_GET['rosetta']) {
+			case 'add':
+				// Add an existing translation link
+				break;
+			case 'remove':
+				// Remove an existing translation link
+				break;
+			case 'new-edit':
+				// Create, attach and edit a new translation
+				$redirect = true;
+			case 'new':
+				// Create and attach a new translation
+				if ($redirect) {
+					;
+				}
+				break;
+		}
 	}
 }
