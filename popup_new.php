@@ -35,15 +35,17 @@ $lang_combo = dcAdminCombos::getLangsCombo($rs,true);
 unset($lang_combo['']);
 // Remove already existed translation's languages from combo
 $ids = rosettaData::findAllTranslations($id,$lang,true);
-foreach ($lang_combo as $lc => $lv) {
-	if (is_array($lv)) {
-		foreach ($lv as $name => $code) {
-			if (array_key_exists($code,$ids)) {
-				unset($lang_combo[$lc][$name]);
+if (is_array($ids)) {
+	foreach ($lang_combo as $lc => $lv) {
+		if (is_array($lv)) {
+			foreach ($lv as $name => $code) {
+				if (array_key_exists($code,$ids)) {
+					unset($lang_combo[$lc][$name]);
+				}
 			}
-		}
-		if (!count($lang_combo[$lc])) {
-			unset($lang_combo[$lc]);
+			if (!count($lang_combo[$lc])) {
+				unset($lang_combo[$lc]);
+			}
 		}
 	}
 }
