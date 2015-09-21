@@ -62,10 +62,10 @@ Nota : dans les popup de sélection de billet ou de page, une seule colonne est 
 	- Ajout d'une option pour activer la prise en charge du accept-language
 	- Correction pour la gestion des pages (admin et public)
 
-- 0.3.1 - 2015/09/
+- 0.4.0 - 2015/09/06
 	- Correction pour les langues retournées par le accept-language (Clearbricks is buggy about it)
-
-- 0.4.0 - 2015/09/
 	- Ajout d'une fonction de création d'une traduction pour l'entrée en cours d'édition
 	- Ajout d'une fonction de création et d'édition d'une traduction pour l'entrée en cours d'édition
 
+- 0.4.1 - 2015/09/21
+	- Fix possible redirect loop when current entry correspond to one of the preferred language

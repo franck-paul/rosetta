@@ -16,7 +16,7 @@ $this->registerModule(
 	/* Name */			"Rosetta",
 	/* Description*/		"Manage post/page translations",
 	/* Author */			"Franck Paul",
-	/* Version */			'0.4',
+	/* Version */			'0.4.1',
 	array(
 		/* Permissions */	'permissions' =>	'usage,contentadmin',
 		/* Priority */		'priority' =>		1001,	// Must be higher than pages plugin
