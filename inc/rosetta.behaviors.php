@@ -356,9 +356,14 @@ class rosettaPublicBehaviors
 			// Load first record
 			$rsSrc->fetch();
 
+			// If current entry is in the requested languages, return true
+			if ($rsSrc->post_lang == $lang) {
+				return true;
+			}
+
 			// Try to find an associated post corresponding to the requested lang
 			$id = rosettaData::findTranslation($rsSrc->post_id,$rsSrc->post_lang,$lang);
-			if ($id >= 0) {
+			if (($id >= 0) && ($id != $rsSrc->post_id)) {
 				// Get post/page URL
 				$paramsDst = new ArrayObject(array(
 					'post_id' => $id,
@@ -383,6 +388,8 @@ class rosettaPublicBehaviors
 				}
 			}
 		}
+
+		return false;
 	}
 
 	/**
@@ -450,7 +457,10 @@ class rosettaPublicBehaviors
 		if (count($langs)) {
 			foreach ($langs as $lang) {
 				// Try to find an according translation (will http-redirect if any)
-				self::findTranslatedEntry($handler,$lang);
+				if (self::findTranslatedEntry($handler,$lang)) {
+					// The current entry is already in one of the browser languages
+					break;
+				}
 			}
 		}
 	}
