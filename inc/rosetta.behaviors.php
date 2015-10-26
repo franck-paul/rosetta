@@ -303,8 +303,131 @@ class rosettaAdminBehaviors
 
 // Public behaviours
 
+define('ROSETTA_NONE',0);
+define('ROSETTA_FILTER',1);
+define('ROSETTA_SWITCH',2);
+
 class rosettaPublicBehaviors
 {
+	public static $state = ROSETTA_NONE;
+
+	public static function coreBlogBeforeGetPosts($params)
+	{
+		global $core, $_ctx;
+
+		$core->blog->settings->addNamespace('rosetta');
+		if ($core->blog->settings->rosetta->active) {
+			if (rosettaPublicBehaviors::$state != ROSETTA_NONE || isset($params['post_lang'])) return;
+			if (!isset($params['no_context']) && !isset($params['post_url']) && !isset($params['post_id']))
+			{
+				// Operates only in contexts with list of posts
+				$url_types = array(
+					'default','default-page','feed',
+					'category',
+					'tag',
+					'search',
+					'archive');
+				if (in_array($core->url->type,$url_types)) {
+					if (rosettaPublicBehaviors::$state == ROSETTA_NONE) {
+						// Set language according to blog default language setting
+						$params['post_lang'] = $core->blog->settings->system->lang;
+						// Filtering posts state
+						rosettaPublicBehaviors::$state = ROSETTA_FILTER;
+					}
+				}
+			}
+		}
+	}
+
+	private static function getPostLang($id,$type)
+	{
+		global $core;
+
+		$params = new ArrayObject(array(
+			'post_id' => $id,
+			'post_type' => $type,
+			'no_content' => true));
+		$rs = $core->blog->getPosts($params);
+		if ($rs->count()) {
+			$rs->fetch();
+			return $rs->post_lang;
+		}
+		// Return blog default lang
+		return $core->blog->settings->system->lang;
+	}
+
+	public static function coreBlogAfterGetPosts($rs,$alt)
+	{
+		global $core, $_ctx;
+
+		$core->blog->settings->addNamespace('rosetta');
+		if ($core->blog->settings->rosetta->active && $rs->count()) {
+			// Start replacing posts only if in Filtering posts state
+			if (rosettaPublicBehaviors::$state == ROSETTA_FILTER) {
+				$cols = $rs->columns();
+				if (count($cols) > 1 || strpos($cols[0],'count(') != 0) {
+					// Only operate when not counting (aka getPosts() called with $count_only = true)
+					rosettaPublicBehaviors::$state = ROSETTA_SWITCH;
+					// replace translated posts if any may be using core->getPosts()
+					$langs = self::getAcceptLanguages();
+					if (count($langs)) {
+						$ids = array();
+						$nbx = 0;
+						while ($rs->fetch()) {
+							$exchanged = false;
+							if (!$rs->exists('post_lang')) {
+								// Find post lang
+								$post_lang = rosettaPublicBehaviors::getPostLang($rs->post_id,$rs->post_type);
+							} else {
+								$post_lang = $rs->post_lang;
+							}
+							foreach ($langs as $lang) {
+								if ($post_lang == $lang) {
+									// Already in an accepted language, do nothing
+									break;
+								}
+								// Try to find an associated post corresponding to the requested lang
+								$id = rosettaData::findTranslation($rs->post_id,$post_lang,$lang);
+								if (($id >= 0) && ($id != $rs->post_id)) {
+									// Get post/page data
+									$params = new ArrayObject(array(
+										'post_id' => $id,
+										'post_type' => $rs->post_type,
+										'post_status' => $rs->post_status,
+										'no_content' => false));
+									$rst = $core->blog->getPosts($params);
+									if ($rst->count()) {
+										// Load first record
+										$rst->fetch();
+										// Replace source id with its translation id
+										$ids[] = $id;
+										$nbx++;
+										$exchanged = true;
+										// Switch done
+										break;
+									}
+								}
+							}
+							if (!$exchanged) {
+								// Nothing found, keep source id
+								$ids[] = $rs->post_id;
+							}
+						}
+						if (count($ids) && $nbx) {
+							// Get new list of posts as we have at least one exchange done
+							$params = new ArrayObject(array(
+								'post_id' => $ids));
+							$alt['rs'] = $core->blog->getPosts($params);
+						}
+					}
+				}
+
+				// Back to normal operation
+				rosettaPublicBehaviors::$state = ROSETTA_NONE;
+			}
+		}
+	}
+
 	public static function publicHeadContent()
 	{
 		global $core,$_ctx;
