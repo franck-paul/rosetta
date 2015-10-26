@@ -25,7 +25,7 @@ if (!defined('DC_CONTEXT_ADMIN')) { return false; }
 
 $__autoload['rosettaAdminBehaviors'] = 		dirname(__FILE__).'/inc/rosetta.behaviors.php';
 
-if (version_compare(DC_VERSION,'2.9','<'))
+if (version_compare(DC_VERSION,'2.9','<') && (DC_VERSION != '2.9-dev'))
 {
 	// Override standard pager/lists classes (Dotclear < 2.9 only)
 

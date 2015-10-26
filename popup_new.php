@@ -22,7 +22,7 @@ echo '<html>';
 echo
 	'<head>'.
 		'<title>'.__('Create a new translation').'</title>'.
-		dcPage::jsLoad(dcPage::getPF('rosetta/js/popup_new.js')).
+		dcPage::jsLoad(urldecode(dcPage::getPF('rosetta/js/popup_new.js')),$core->getVersion('rosetta')).
 	'</head>';
 
 echo '<body>';

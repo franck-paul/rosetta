@@ -21,14 +21,16 @@ class rosettaAdminBehaviors
 		$favs->register('rosetta', array(
 			'title' => __('Rosetta'),
 			'url' => 'plugin.php?p=rosetta',
-			'small-icon' => dcPage::getPF('rosetta/icon.png'),
-			'large-icon' => dcPage::getPF('rosetta/icon-big.png'),
+			'small-icon' => urldecode(dcPage::getPF('rosetta/icon.png')),
+			'large-icon' => urldecode(dcPage::getPF('rosetta/icon-big.png')),
 			'permissions' => 'usage,contentadmin'
 		));
 	}
 
 	private static function adminEntryHeaders()
 	{
+		global $core;
+
 		return
 			'<script type="text/javascript">'."\n".
 			"//<![CDATA[\n".
@@ -36,8 +38,8 @@ class rosettaAdminBehaviors
 			dcPage::jsVar('dotclear.rosetta_post_url','').
 			"\n//]]>\n".
 			"</script>\n".
-			dcPage::jsLoad(dcPage::getPF('rosetta/js/rosetta_entry.js'))."\n".
-			dcPage::cssLoad(dcPage::getPF('rosetta/css/style.css'))."\n";
+			dcPage::jsLoad(urldecode(dcPage::getPF('rosetta/js/rosetta_entry.js')),$core->getVersion('rosetta'))."\n".
+			dcPage::cssLoad(urldecode(dcPage::getPF('rosetta/css/style.css')),$core->getVersion('rosetta'))."\n";
 	}
 
 	public static function adminPostHeaders()
@@ -222,11 +224,13 @@ class rosettaAdminBehaviors
 
 	public static function adminPopupPosts($editor='')
 	{
+		global $core;
+
 		if (empty($editor) || $editor!='rosetta') {
 			return;
 		}
 
-		return dcPage::jsLoad(dcPage::getPF('rosetta/js/popup_posts.js'));
+		return dcPage::jsLoad(urldecode(dcPage::getPF('rosetta/js/popup_posts.js')),$core->getVersion('rosetta'));
 	}
 
 	private static function adminEntryListHeader($core,$rs,$cols)
