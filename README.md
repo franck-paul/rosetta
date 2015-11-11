@@ -71,3 +71,6 @@ Nota : dans les popup de sélection de billet ou de page, une seule colonne est 
 
 - 0.4.1 - 2015/09/21
 	- Fix possible redirect loop when current entry correspond to one of the preferred language
+
+- 0.5.0 -
+	- Ajout du filtrage /langue pour les contextes en mode liste (accueil, catégorie, …)
