@@ -24,16 +24,3 @@ if (!defined('DC_CONTEXT_ADMIN')) { return false; }
 // Admin mode only
 
 $__autoload['rosettaAdminBehaviors'] = 		dirname(__FILE__).'/inc/rosetta.behaviors.php';
-
-if (version_compare(DC_VERSION,'2.9','<') && (DC_VERSION != '2.9-dev'))
-{
-	// Override standard pager/lists classes (Dotclear < 2.9 only)
-
-	$__autoload['dcPager'] =					dirname(__FILE__).'/inc/rosetta.pager.php';
-	$__autoload['adminGenericList'] = 			dirname(__FILE__).'/inc/rosetta.pager.php';
-	$__autoload['adminPostList'] = 				dirname(__FILE__).'/inc/rosetta.pager.php';
-	$__autoload['adminPostMiniList'] = 			dirname(__FILE__).'/inc/rosetta.pager.php';
-	$__autoload['adminCommentList'] =			dirname(__FILE__).'/inc/rosetta.pager.php';
-	$__autoload['adminUserList'] =				dirname(__FILE__).'/inc/rosetta.pager.php';
-	$__autoload['adminPagesList'] =				dirname(__FILE__).'/inc/rosetta.listpage.php';
-}
