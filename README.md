@@ -11,8 +11,10 @@ Gestion des traductions de billets et de pages.
 - Interception de l'URL à servir si un paramètre lang=nn est présent :
 	Si l'URL correspond à un post_id géré par Rosetta :
 		Si une correspondance existe dans la langue demandée :
-			-> rediriger vers la nouvelle URL
+			-> redirige vers la nouvelle URL
+
 - S'il n'y a pas de paramètre lang=nn dans l'URL, et qu'on sert un billet ou une page, on cherche une correspondance avec le accept-language du browser. Cette fonction est à activer explicitement dans les options du plugin.
+
 - Widget avec la liste des traductions disponibles pour le billet/la page courant(e)
 
 
@@ -27,7 +29,7 @@ Nota : dans les popup de sélection de billet ou de page, une seule colonne est 
 
 ## Table des correspondances (rosetta)
 
-- src_id		integer		post id
+- src_id		integer		post/page id
 - src_lang		string		src lang
 - dst_id		integer		cf src
 - dst_lang		string		dst lang
@@ -72,5 +74,6 @@ Nota : dans les popup de sélection de billet ou de page, une seule colonne est 
 - 0.4.1 - 2015/09/21
 	- Fix possible redirect loop when current entry correspond to one of the preferred language
 
-- 0.5.0 -
-	- Ajout du filtrage /langue pour les contextes en mode liste (accueil, catégorie, …)
+- 0.5.0 - 2016/03/07
+	- Ajout du filtrage / langue pour les contextes en mode liste (accueil, catégorie, …)
+	- Suppression code non nécessaire avec la version 2.9 de Dotclear
