@@ -361,7 +361,7 @@ class rosettaPublicBehaviors
 		global $core, $_ctx;
 
 		$core->blog->settings->addNamespace('rosetta');
-		if ($core->blog->settings->rosetta->active && $rs->count()) {
+		if ($core->blog->settings->rosetta->active && $core->blog->settings->rosetta->accept_language && $rs->count()) {
 			// Start replacing posts only if in Filtering posts state
 			if (rosettaPublicBehaviors::$state == ROSETTA_FILTER) {
 				$cols = $rs->columns();
