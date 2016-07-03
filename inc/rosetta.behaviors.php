@@ -235,8 +235,13 @@ class rosettaAdminBehaviors
 
 	private static function adminEntryListHeader($core,$rs,$cols)
 	{
-		$cols['language'] = '<th scope="col">'.__('Language').'</th>';
-		$cols['translations'] = '<th scope="col">'.__('Translations').'</th>';
+		global $core;
+
+		$core->blog->settings->addNamespace('rosetta');
+		if ($core->blog->settings->rosetta->active) {
+			$cols['language'] = '<th scope="col">'.__('Language').'</th>';
+			$cols['translations'] = '<th scope="col">'.__('Translations').'</th>';
+		}
 	}
 
 	public static function adminPostListHeader($core,$rs,$cols)
@@ -251,33 +256,38 @@ class rosettaAdminBehaviors
 
 	public static function adminEntryListValue($core,$rs,$cols)
 	{
-		$translations = '';
-		$list = rosettaData::findAllTranslations($rs->post_id,$rs->post_lang,false);
-		if (is_array($list) && count($list)) {
-			dcUtils::lexicalKeySort($list,'admin');
-			$langs = l10n::getLanguagesName();
-			foreach ($list as $lang => $id) {
-				// Display existing translations
-				$name = isset($langs[$lang]) ? $langs[$lang] : $langs[$core->blog->settings->system->lang];
-				// Get post/page id
-				$params = new ArrayObject(array(
-					'post_id' => $id,
-					'post_type' => $rs->post_type,
-					'no_content' => true));
-				$rst = $core->blog->getPosts($params);
-				if ($rst->count()) {
-					$rst->fetch();
-					$translation = sprintf('<a href="%s" title="%s">%s</a>',
-						$core->getPostAdminURL($rst->post_type,$rst->post_id),
-						$rst->post_title,
-						$name);
-					$translations .= ($translations ? ' / ' : '').$translation;
+		global $core;
+
+		$core->blog->settings->addNamespace('rosetta');
+		if ($core->blog->settings->rosetta->active) {
+			$translations = '';
+			$list = rosettaData::findAllTranslations($rs->post_id,$rs->post_lang,false);
+			if (is_array($list) && count($list)) {
+				dcUtils::lexicalKeySort($list,'admin');
+				$langs = l10n::getLanguagesName();
+				foreach ($list as $lang => $id) {
+					// Display existing translations
+					$name = isset($langs[$lang]) ? $langs[$lang] : $langs[$core->blog->settings->system->lang];
+					// Get post/page id
+					$params = new ArrayObject(array(
+						'post_id' => $id,
+						'post_type' => $rs->post_type,
+						'no_content' => true));
+					$rst = $core->blog->getPosts($params);
+					if ($rst->count()) {
+						$rst->fetch();
+						$translation = sprintf('<a href="%s" title="%s">%s</a>',
+							$core->getPostAdminURL($rst->post_type,$rst->post_id),
+							$rst->post_title,
+							$name);
+						$translations .= ($translations ? ' / ' : '').$translation;
+					}
 				}
 			}
-		}
 
-		$cols['language'] = '<td class="nowrap">'.$rs->post_lang.'</td>';
-		$cols['translations'] = '<td class="nowrap">'.$translations.'</td>';
+			$cols['language'] = '<td class="nowrap">'.$rs->post_lang.'</td>';
+			$cols['translations'] = '<td class="nowrap">'.$translations.'</td>';
+		}
 	}
 
 	public static function adminPostListValue($core,$rs,$cols)
@@ -292,12 +302,22 @@ class rosettaAdminBehaviors
 
 	public static function adminPostMiniListHeader($core,$rs,$cols)
 	{
-		$cols['language'] = '<th scope="col">'.__('Language').'</th>';
+		global $core;
+
+		$core->blog->settings->addNamespace('rosetta');
+		if ($core->blog->settings->rosetta->active) {
+			$cols['language'] = '<th scope="col">'.__('Language').'</th>';
+		}
 	}
 
 	public static function adminPostMiniListValue($core,$rs,$cols)
 	{
-		$cols['language'] =	'<td class="nowrap">'.$rs->post_lang.'</td>';
+		global $core;
+
+		$core->blog->settings->addNamespace('rosetta');
+		if ($core->blog->settings->rosetta->active) {
+			$cols['language'] =	'<td class="nowrap">'.$rs->post_lang.'</td>';
+		}
 	}
 }
 
