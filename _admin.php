@@ -36,6 +36,7 @@ $core->addBehavior('adminPageHeaders',array('rosettaAdminBehaviors','adminPageHe
 $core->addBehavior('adminPopupPosts',array('rosettaAdminBehaviors','adminPopupPosts'));
 
 // Add behaviour callback for post/page lists
+$core->addBehavior('adminColumnsLists',array('rosettaAdminBehaviors','adminColumnsLists'));
 $core->addBehavior('adminPostListHeader',array('rosettaAdminBehaviors','adminPostListHeader'));
 $core->addBehavior('adminPostListValue',array('rosettaAdminBehaviors','adminPostListValue'));
 $core->addBehavior('adminPostMiniListHeader',array('rosettaAdminBehaviors','adminPostMiniListHeader'));

@@ -233,10 +233,16 @@ class rosettaAdminBehaviors
 		return dcPage::jsLoad(urldecode(dcPage::getPF('rosetta/js/popup_posts.js')),$core->getVersion('rosetta'));
 	}
 
+	public static function adminColumnsLists($core,$cols)
+	{
+		$cols['posts'][1]['language'] = array(true,__('Language'));
+		$cols['posts'][1]['translations'] = array(true,__('Translations'));
+		$cols['pages'][1]['language'] = array(true,__('Language'));
+		$cols['pages'][1]['translations'] = array(true,__('Translations'));
+	}
+
 	private static function adminEntryListHeader($core,$rs,$cols)
 	{
-		global $core;
-
 		$core->blog->settings->addNamespace('rosetta');
 		if ($core->blog->settings->rosetta->active) {
 			$cols['language'] = '<th scope="col">'.__('Language').'</th>';
@@ -256,8 +262,6 @@ class rosettaAdminBehaviors
 
 	public static function adminEntryListValue($core,$rs,$cols)
 	{
-		global $core;
-
 		$core->blog->settings->addNamespace('rosetta');
 		if ($core->blog->settings->rosetta->active) {
 			$translations = '';
@@ -302,8 +306,6 @@ class rosettaAdminBehaviors
 
 	public static function adminPostMiniListHeader($core,$rs,$cols)
 	{
-		global $core;
-
 		$core->blog->settings->addNamespace('rosetta');
 		if ($core->blog->settings->rosetta->active) {
 			$cols['language'] = '<th scope="col">'.__('Language').'</th>';
@@ -312,8 +314,6 @@ class rosettaAdminBehaviors
 
 	public static function adminPostMiniListValue($core,$rs,$cols)
 	{
-		global $core;
-
 		$core->blog->settings->addNamespace('rosetta');
 		if ($core->blog->settings->rosetta->active) {
 			$cols['language'] =	'<td class="nowrap">'.$rs->post_lang.'</td>';
