@@ -61,13 +61,11 @@ echo
 
 '</form>'.
 
-'<p><a class="button reset" href="#" id="rosetta-new-cancel">'.__('Cancel').'</a> - '.
-'<strong><a class="button" href="#" id="rosetta-new-ok">'.__('Create').'</a></strong></p>'."\n".
+'<p><button class="reset" id="rosetta-new-cancel">'.__('Cancel').'</button> - '.
+'<button id="rosetta-new-ok"><strong>'.__('Create').'</strong></button></p>'."\n".
 
 '<script type="text/javascript">'."\n".
-'//<![CDATA['."\n".
 '$(\'input[name="title"]\').get(0).focus();'."\n".
-'//]]>'."\n".
 '</script>'."\n";
 
 echo '</body>';

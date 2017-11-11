@@ -33,10 +33,8 @@ class rosettaAdminBehaviors
 
 		return
 			'<script type="text/javascript">'."\n".
-			"//<![CDATA[\n".
 			dcPage::jsVar('dotclear.msg.confirm_remove_rosetta',__('Are you sure to remove this translation?')).
 			dcPage::jsVar('dotclear.rosetta_post_url','').
-			"\n//]]>\n".
 			"</script>\n".
 			dcPage::jsLoad(urldecode(dcPage::getPF('rosetta/js/rosetta_entry.js')),$core->getVersion('rosetta'))."\n".
 			dcPage::cssLoad(urldecode(dcPage::getPF('rosetta/css/style.css')),$core->getVersion('rosetta'))."\n";
@@ -50,9 +48,7 @@ class rosettaAdminBehaviors
 		if ($core->blog->settings->rosetta->active) {
 			return
 				'<script type="text/javascript">'."\n".
-				"//<![CDATA[\n".
 				dcPage::jsVar('dotclear.post_type','post').
-				"\n//]]>\n".
 				"</script>\n".
 				self::adminEntryHeaders();
 		}
@@ -66,9 +62,7 @@ class rosettaAdminBehaviors
 		if ($core->blog->settings->rosetta->active) {
 			return
 				'<script type="text/javascript">'."\n".
-				"//<![CDATA[\n".
 				dcPage::jsVar('dotclear.post_type','page').
-				"\n//]]>\n".
 				"</script>\n".
 				self::adminEntryHeaders();
 		}
