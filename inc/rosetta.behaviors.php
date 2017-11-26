@@ -313,6 +313,58 @@ class rosettaAdminBehaviors
 			$cols['language'] =	'<td class="nowrap">'.$rs->post_lang.'</td>';
 		}
 	}
+
+	public static function exportSingle($core,$exp,$blog_id)
+	{
+		$exp->export('rosetta',
+			'SELECT R.* '.
+			'FROM '.$core->prefix.'rosetta R, '.$core->prefix.'post P '.
+			'WHERE P.post_id = R.src_id '.
+			"AND P.blog_id = '".$blog_id."'"
+		);
+	}
+
+	public static function exportFull($core,$exp)
+	{
+		$exp->exportTable('rosetta');
+	}
+
+	public static function importInit($fi,$core)
+	{
+		$fi->cur_rosetta = $core->con->openCursor($core->prefix.'rosetta');
+	}
+
+	private function importSingleLine($line,$fi)
+	{
+		$fi->cur_rosetta->clean();
+
+		$fi->cur_rosetta->src_id   = (integer) $line->src_id;
+		$fi->cur_rosetta->src_lang = (integer) $line->src_lang;
+		$fi->cur_rosetta->dst_id   = (integer) $line->dst_id;
+		$fi->cur_rosetta->dst_lang = (integer) $line->dst_lang;
+
+		$fi->cur_rosetta->insert();
+	}
+
+	public static function importSingle($line,$fi,$core)
+	{
+		if ($line->__name == 'rosetta') {
+			if (isset($fi->old_ids['post'][(integer) $line->src_id]) && isset($fi->old_ids['post'][(integer) $line->dst_id])) {
+				$line->src_id = $fi->old_ids['post'][(integer) $line->src_id];
+				$line->dst_id = $fi->old_ids['post'][(integer) $line->dst_id];
+				$this->importSingleLine($line,$fi,$core);
+			} else {
+				self::throwIdError($line->__name,$line->__line,'rosetta');
+			}
+		}
+	}
+
+	public static function importFull($line,$fi,$core)
+	{
+		if ($line->__name == 'rosetta') {
+			$this->importSingleLine($line,$fi,$core);
+		}
+	}
 }
 
 // Public behaviours

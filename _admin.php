@@ -44,6 +44,13 @@ $core->addBehavior('adminPostMiniListValue',array('rosettaAdminBehaviors','admin
 $core->addBehavior('adminPagesListHeader',array('rosettaAdminBehaviors','adminPagesListHeader'));
 $core->addBehavior('adminPagesListValue',array('rosettaAdminBehaviors','adminPagesListValue'));
 
+// Add behaviour callback for import/export
+$core->addBehavior('exportSingle',array('rosettaAdminBehaviors','exportSingle'));
+$core->addBehavior('exportFull',array('rosettaAdminBehaviors','exportFull'));
+$core->addBehavior('importInit',array('rosettaAdminBehaviors','importInit'));
+$core->addBehavior('importSingle',array('rosettaAdminBehaviors','importSingle'));
+$core->addBehavior('importFull',array('rosettaAdminBehaviors','importFull'));
+
 // Register REST methods
 $core->rest->addFunction('newTranslation',array('rosettaRest','newTranslation'));
 $core->rest->addFunction('addTranslation',array('rosettaRest','addTranslation'));
