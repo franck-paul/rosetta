@@ -334,14 +334,14 @@ class rosettaAdminBehaviors
 		$fi->cur_rosetta = $core->con->openCursor($core->prefix.'rosetta');
 	}
 
-	private static function importSingleLine($line,$fi)
+	private static function insertRosettaLine($line,$fi)
 	{
 		$fi->cur_rosetta->clean();
 
 		$fi->cur_rosetta->src_id   = (integer) $line->src_id;
-		$fi->cur_rosetta->src_lang = (integer) $line->src_lang;
+		$fi->cur_rosetta->src_lang = (string) $line->src_lang;
 		$fi->cur_rosetta->dst_id   = (integer) $line->dst_id;
-		$fi->cur_rosetta->dst_lang = (integer) $line->dst_lang;
+		$fi->cur_rosetta->dst_lang = (string) $line->dst_lang;
 
 		$fi->cur_rosetta->insert();
 	}
@@ -352,7 +352,7 @@ class rosettaAdminBehaviors
 			if (isset($fi->old_ids['post'][(integer) $line->src_id]) && isset($fi->old_ids['post'][(integer) $line->dst_id])) {
 				$line->src_id = $fi->old_ids['post'][(integer) $line->src_id];
 				$line->dst_id = $fi->old_ids['post'][(integer) $line->dst_id];
-				rosettaAdminBehaviors::importSingleLine($line,$fi,$core);
+				self::insertRosettaLine($line,$fi,$core);
 			} else {
 				self::throwIdError($line->__name,$line->__line,'rosetta');
 			}
@@ -362,7 +362,7 @@ class rosettaAdminBehaviors
 	public static function importFull($line,$fi,$core)
 	{
 		if ($line->__name == 'rosetta') {
-			rosettaAdminBehaviors::importSingleLine($line,$fi,$core);
+			self::insertRosettaLine($line,$fi,$core);
 		}
 	}
 }
