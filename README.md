@@ -77,3 +77,12 @@ Nota : dans les popup de sélection de billet ou de page, une seule colonne est 
 - 0.5.0 - 2016/03/07
 	- Ajout du filtrage / langue pour les contextes en mode liste (accueil, catégorie, …)
 	- Suppression code non nécessaire avec la version 2.9 de Dotclear
+
+- 0.6.0 - 2016/08/16
+	- Optional display of columns in posts and pages lists (DC 2.10 min)
+	- Local getAcceptLanguages() function not more needed as CB has been fixed with 2.9
+	- Take care of activation before coping with additionnal columns (posts and pages lists)
+
+- 0.7.0 - 2017/12/07
+	- No more CDATA in JS
+	- Add import/export capabilities
