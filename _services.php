@@ -9,175 +9,175 @@
 # http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 # -- END LICENSE BLOCK ------------------------------------
 
-if (!defined('DC_CONTEXT_ADMIN')) { return; }
+if (!defined('DC_CONTEXT_ADMIN')) {return;}
 
 class rosettaRest
 {
-	public static function newTranslation($core,$get)
-	{
-		$id = !empty($get['id']) ? $get['id'] : -1;
-		$lang = !empty($get['lang']) ? $get['lang'] : '';
-		$type = !empty($get['type']) ? $get['type'] : 'post';
-		$rosetta_title = !empty($get['rosetta_title']) ? $get['rosetta_title'] : '';
-		$rosetta_lang = !empty($get['rosetta_lang']) ? $get['rosetta_lang'] : '';
-		$rsp = new xmlTag('rosetta');
+    public static function newTranslation($core, $get)
+    {
+        $id            = !empty($get['id']) ? $get['id'] : -1;
+        $lang          = !empty($get['lang']) ? $get['lang'] : '';
+        $type          = !empty($get['type']) ? $get['type'] : 'post';
+        $rosetta_title = !empty($get['rosetta_title']) ? $get['rosetta_title'] : '';
+        $rosetta_lang  = !empty($get['rosetta_lang']) ? $get['rosetta_lang'] : '';
+        $rsp           = new xmlTag('rosetta');
 
-		$ret = false;
-		$rosetta_id = -1;
-		if ($id != -1 && $lang != '' && $rosetta_title != '' && $rosetta_lang != '') {
-			try
-			{
-				// Create a new entry with given title and lang
-				$cur = $core->con->openCursor($core->prefix.'post');
+        $ret        = false;
+        $rosetta_id = -1;
+        if ($id != -1 && $lang != '' && $rosetta_title != '' && $rosetta_lang != '') {
+            try
+            {
+                // Create a new entry with given title and lang
+                $cur = $core->con->openCursor($core->prefix . 'post');
 
-				$cur->post_title = $rosetta_title;
-				$cur->post_type = $type;
-				$cur->post_lang = $rosetta_lang;
+                $cur->post_title = $rosetta_title;
+                $cur->post_type  = $type;
+                $cur->post_lang  = $rosetta_lang;
 
-				$cur->user_id = $core->auth->userID();
-				$cur->post_content = '<p>...</p>';
-				$cur->post_format = 'xhtml';
-				$cur->post_status = -2;	// forced to pending
-				$cur->post_open_comment = (integer) $core->blog->settings->system->allow_comments;
-				$cur->post_open_tb = (integer) $core->blog->settings->system->allow_trackbacks;
+                $cur->user_id           = $core->auth->userID();
+                $cur->post_content      = '<p>...</p>';
+                $cur->post_format       = 'xhtml';
+                $cur->post_status       = -2; // forced to pending
+                $cur->post_open_comment = (integer) $core->blog->settings->system->allow_comments;
+                $cur->post_open_tb      = (integer) $core->blog->settings->system->allow_trackbacks;
 
-				# --BEHAVIOR-- adminBeforePostCreate
-				$core->callBehavior('adminBeforePostCreate',$cur);
+                # --BEHAVIOR-- adminBeforePostCreate
+                $core->callBehavior('adminBeforePostCreate', $cur);
 
-				$rosetta_id = $core->blog->addPost($cur);
+                $rosetta_id = $core->blog->addPost($cur);
 
-				# --BEHAVIOR-- adminAfterPostCreate
-				$core->callBehavior('adminAfterPostCreate',$cur,$rosetta_id);
+                # --BEHAVIOR-- adminAfterPostCreate
+                $core->callBehavior('adminAfterPostCreate', $cur, $rosetta_id);
 
-				// add the translation link
-				$ret = rosettaData::addTranslation($id,$lang,$rosetta_id,$rosetta_lang);
-			}
-			catch (Exception $e)
-			{
-				$rosetta_id = -1;
-			}
-		}
+                // add the translation link
+                $ret = rosettaData::addTranslation($id, $lang, $rosetta_id, $rosetta_lang);
+            } catch (Exception $e) {
+                $rosetta_id = -1;
+            }
+        }
 
-		$rsp->ret = $ret;
-		$rsp->msg = $ret ? __('New translation created.') : __('Error during translation creation.');
-		$rsp->id = $rosetta_id;
-		$rsp->edit = DC_ADMIN_URL.$core->getPostAdminURL($type,$rosetta_id);
+        $rsp->ret = $ret;
+        $rsp->msg = $ret ? __('New translation created.') : ($rosetta_id == -1 ?
+            __('Error during new translation creation.') :
+            __('Error during newly created translation attachment.'));
+        $rsp->id   = $rosetta_id;
+        $rsp->edit = DC_ADMIN_URL . $core->getPostAdminURL($type, $rosetta_id);
 
-		return $rsp;
-	}
+        return $rsp;
+    }
 
-	/**
-	 * Serve method to add a new translation's link for current edited post/page.
-	 *
-	 * @param	core	<b>dcCore</b>	dcCore instance
-	 * @param	get		<b>array</b>	cleaned $_GET
-	 *
-	 * @return	<b>xmlTag</b>	XML representation of response
-	 */
-	public static function addTranslation($core,$get)
-	{
-		$id = !empty($get['id']) ? $get['id'] : -1;
-		$lang = !empty($get['lang']) ? $get['lang'] : '';
-		$rosetta_id = !empty($get['rosetta_id']) ? $get['rosetta_id'] : -1;
-		$rosetta_lang = !empty($get['rosetta_lang']) ? $get['rosetta_lang'] : '';
-		$rsp = new xmlTag('rosetta');
+    /**
+     * Serve method to add a new translation's link for current edited post/page.
+     *
+     * @param    core    <b>dcCore</b>    dcCore instance
+     * @param    get        <b>array</b>    cleaned $_GET
+     *
+     * @return    <b>xmlTag</b>    XML representation of response
+     */
+    public static function addTranslation($core, $get)
+    {
+        $id           = !empty($get['id']) ? $get['id'] : -1;
+        $lang         = !empty($get['lang']) ? $get['lang'] : '';
+        $rosetta_id   = !empty($get['rosetta_id']) ? $get['rosetta_id'] : -1;
+        $rosetta_lang = !empty($get['rosetta_lang']) ? $get['rosetta_lang'] : '';
+        $rsp          = new xmlTag('rosetta');
 
-		$ret = false;
-		if ($id != -1 && $rosetta_id != -1) {
-			// get new language if not provided
-			if ($rosetta_lang == '') {
-				$params = new ArrayObject(array(
-					'post_id' => $rosetta_id,
-					'post_type' => array('post','page'),
-					'no_content' => true));
+        $ret = false;
+        if ($id != -1 && $rosetta_id != -1) {
+            // get new language if not provided
+            if ($rosetta_lang == '') {
+                $params = new ArrayObject(array(
+                    'post_id'    => $rosetta_id,
+                    'post_type'  => array('post', 'page'),
+                    'no_content' => true));
 
-				$rs = $core->blog->getPosts($params);
-				if ($rs->count()) {
-					// Load first record
-					$rs->fetch();
-					$rosetta_lang = $rs->post_lang;
-				}
-			}
-			// add the translation link
-			$ret = rosettaData::addTranslation($id,$lang,$rosetta_id,$rosetta_lang);
-		}
+                $rs = $core->blog->getPosts($params);
+                if ($rs->count()) {
+                    // Load first record
+                    $rs->fetch();
+                    $rosetta_lang = $rs->post_lang;
+                }
+            }
+            // add the translation link
+            $ret = rosettaData::addTranslation($id, $lang, $rosetta_id, $rosetta_lang);
+        }
 
-		$rsp->ret = $ret;
-		$rsp->msg = $ret ? __('New translation attached.') : __('Error during translation attachment.');
+        $rsp->ret = $ret;
+        $rsp->msg = $ret ? __('New translation attached.') : __('Error during translation attachment.');
 
-		return $rsp;
-	}
+        return $rsp;
+    }
 
-	/**
-	 * Serve method to remove an existing translation's link for current edited post/page.
-	 *
-	 * @param	core	<b>dcCore</b>	dcCore instance
-	 * @param	get		<b>array</b>	cleaned $_GET
-	 *
-	 * @return	<b>xmlTag</b>	XML representation of response
-	 */
-	public static function removeTranslation($core,$get)
-	{
-		$id = !empty($get['id']) ? $get['id'] : -1;
-		$lang = !empty($get['lang']) ? $get['lang'] : '';
-		$rosetta_id = !empty($get['rosetta_id']) ? $get['rosetta_id'] : -1;
-		$rosetta_lang = !empty($get['rosetta_lang']) ? $get['rosetta_lang'] : '';
-		$rsp = new xmlTag('rosetta');
+    /**
+     * Serve method to remove an existing translation's link for current edited post/page.
+     *
+     * @param    core    <b>dcCore</b>    dcCore instance
+     * @param    get        <b>array</b>    cleaned $_GET
+     *
+     * @return    <b>xmlTag</b>    XML representation of response
+     */
+    public static function removeTranslation($core, $get)
+    {
+        $id           = !empty($get['id']) ? $get['id'] : -1;
+        $lang         = !empty($get['lang']) ? $get['lang'] : '';
+        $rosetta_id   = !empty($get['rosetta_id']) ? $get['rosetta_id'] : -1;
+        $rosetta_lang = !empty($get['rosetta_lang']) ? $get['rosetta_lang'] : '';
+        $rsp          = new xmlTag('rosetta');
 
-		$ret = false;
-		if ($id != -1 && $rosetta_id != -1) {
-			// Remove the translation link
-			$ret = rosettaData::removeTranslation($id,$lang,$rosetta_id,$rosetta_lang);
-		}
+        $ret = false;
+        if ($id != -1 && $rosetta_id != -1) {
+            // Remove the translation link
+            $ret = rosettaData::removeTranslation($id, $lang, $rosetta_id, $rosetta_lang);
+        }
 
-		$rsp->ret = $ret;
-		$rsp->msg = $ret ? __('Translation removed.') : __('Error during removing translation attachment.');
+        $rsp->ret = $ret;
+        $rsp->msg = $ret ? __('Translation removed.') : __('Error during removing translation attachment.');
 
-		return $rsp;
-	}
+        return $rsp;
+    }
 
-	public static function getTranslationRow($core,$get)
-	{
-		$id = !empty($get['id']) ? $get['id'] : -1;
-		$lang = !empty($get['lang']) ? $get['lang'] : '';
-		$rosetta_id = !empty($get['rosetta_id']) ? $get['rosetta_id'] : -1;
-		$rsp = new xmlTag('rosetta');
+    public static function getTranslationRow($core, $get)
+    {
+        $id         = !empty($get['id']) ? $get['id'] : -1;
+        $lang       = !empty($get['lang']) ? $get['lang'] : '';
+        $rosetta_id = !empty($get['rosetta_id']) ? $get['rosetta_id'] : -1;
+        $rsp        = new xmlTag('rosetta');
 
-		$ret = false;
-		$row = '';
-		if ($id != -1 && $rosetta_id != -1) {
-			// Get missing info for current edited entry (post/page)
-			$params = new ArrayObject(array(
-				'post_id' => $id,
-				'post_type' => array('post','page'),
-				'no_content' => true));
-			$rs = $core->blog->getPosts($params);
-			if ($rs->count()) {
-				$rs->fetch();
-				$url_page = $core->getPostAdminURL($rs->post_type,$rs->post_id);
-				// Get missing info for translated entry (post/page)
-				$params = new ArrayObject(array(
-					'post_id' => $rosetta_id,
-					'post_type' => array('post','page'),
-					'no_content' => true));
-				$rs = $core->blog->getPosts($params);
-				if ($rs->count()) {
-					$rs->fetch();
-					$post_link = '<a id="r-%s" href="'.$core->getPostAdminURL($rs->post_type,$rs->post_id).'" title="%s">%s</a>';
-					$langs = l10n::getLanguagesName();
-					$name = isset($langs[$rs->post_lang]) ? $langs[$rs->post_lang] : $langs[$core->blog->settings->system->lang];
-					// Get the translation row
-					$row = rosettaAdminBehaviors::translationRow($lang,
-						$rosetta_id,$rs->post_lang,$name,
-						$rs->post_title,$post_link,$url_page);
-					$ret = true;
-				}
-			}
-		}
+        $ret = false;
+        $row = '';
+        if ($id != -1 && $rosetta_id != -1) {
+            // Get missing info for current edited entry (post/page)
+            $params = new ArrayObject(array(
+                'post_id'    => $id,
+                'post_type'  => array('post', 'page'),
+                'no_content' => true));
+            $rs = $core->blog->getPosts($params);
+            if ($rs->count()) {
+                $rs->fetch();
+                $url_page = $core->getPostAdminURL($rs->post_type, $rs->post_id);
+                // Get missing info for translated entry (post/page)
+                $params = new ArrayObject(array(
+                    'post_id'    => $rosetta_id,
+                    'post_type'  => array('post', 'page'),
+                    'no_content' => true));
+                $rs = $core->blog->getPosts($params);
+                if ($rs->count()) {
+                    $rs->fetch();
+                    $post_link = '<a id="r-%s" href="' . $core->getPostAdminURL($rs->post_type, $rs->post_id) . '" title="%s">%s</a>';
+                    $langs     = l10n::getLanguagesName();
+                    $name      = isset($langs[$rs->post_lang]) ? $langs[$rs->post_lang] : $langs[$core->blog->settings->system->lang];
+                    // Get the translation row
+                    $row = rosettaAdminBehaviors::translationRow($lang,
+                        $rosetta_id, $rs->post_lang, $name,
+                        $rs->post_title, $post_link, $url_page);
+                    $ret = true;
+                }
+            }
+        }
 
-		$rsp->ret = $ret;
-		$rsp->msg = $row;
+        $rsp->ret = $ret;
+        $rsp->msg = $row;
 
-		return $rsp;
-	}
+        return $rsp;
+    }
 }
