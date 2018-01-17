@@ -27,6 +27,20 @@ class rosettaRest
         if ($id != -1 && $lang != '' && $rosetta_title != '' && $rosetta_lang != '') {
             try
             {
+                // Default format and content
+                $format  = 'xhtml';
+                $content = '<p>...</p>';
+
+                // Get currently edited post format
+                $rs = $core->blog->getPosts(array('post_id' => $id));
+                if (!$rs->isEmpty()) {
+                    $rs->fetch();
+                    $format = $rs->post_format;
+                    if ($format != 'xhtml') {
+                        $content = '...';
+                    }
+                }
+
                 // Create a new entry with given title and lang
                 $cur = $core->con->openCursor($core->prefix . 'post');
 
@@ -35,8 +49,8 @@ class rosettaRest
                 $cur->post_lang  = $rosetta_lang;
 
                 $cur->user_id           = $core->auth->userID();
-                $cur->post_content      = '<p>...</p>';
-                $cur->post_format       = 'xhtml';
+                $cur->post_content      = $content;
+                $cur->post_format       = $format;
                 $cur->post_status       = -2; // forced to pending
                 $cur->post_open_comment = (integer) $core->blog->settings->system->allow_comments;
                 $cur->post_open_tb      = (integer) $core->blog->settings->system->allow_trackbacks;
