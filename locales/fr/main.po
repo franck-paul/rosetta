@@ -59,7 +59,7 @@ msgid "Without its URL"
 msgstr "Sans son URL"
 
 msgid "Are you sure to remove this translation?"
-msgstr "Êtes-vous sûr de vouloir retirer cette traduction ?"
+msgstr "Êtes-vous sûr·e de vouloir retirer cette traduction ?"
 
 msgid "Remove this translation's link"
 msgstr "Retirer le lien vers cette traduction"

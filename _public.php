@@ -16,10 +16,10 @@ if (!defined('DC_RC_PATH')) {return;}
 require dirname(__FILE__) . '/_widgets.php';
 
 // Public behaviours
-$core->addBehavior('urlHandlerGetArgsDocument', array('rosettaPublicBehaviors', 'urlHandlerGetArgsDocument'));
-$core->addBehavior('publicHeadContent', array('rosettaPublicBehaviors', 'publicHeadContent'));
-$core->addBehavior('coreBlogBeforeGetPosts', array('rosettaPublicBehaviors', 'coreBlogBeforeGetPosts'));
-$core->addBehavior('coreBlogAfterGetPosts', array('rosettaPublicBehaviors', 'coreBlogAfterGetPosts'));
+$core->addBehavior('urlHandlerGetArgsDocument', ['rosettaPublicBehaviors', 'urlHandlerGetArgsDocument']);
+$core->addBehavior('publicHeadContent', ['rosettaPublicBehaviors', 'publicHeadContent']);
+$core->addBehavior('coreBlogBeforeGetPosts', ['rosettaPublicBehaviors', 'coreBlogBeforeGetPosts']);
+$core->addBehavior('coreBlogAfterGetPosts', ['rosettaPublicBehaviors', 'coreBlogAfterGetPosts']);
 
 // Public template tags
-$core->tpl->addValue('RosettaEntryList', array('rosettaTpl', 'rosettaEntryList'));
+$core->tpl->addValue('RosettaEntryList', ['rosettaTpl', 'rosettaEntryList']);

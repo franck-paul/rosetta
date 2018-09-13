@@ -19,13 +19,13 @@ class rosettaAdminBehaviors
 
     public static function adminDashboardFavorites($core, $favs)
     {
-        $favs->register('rosetta', array(
+        $favs->register('rosetta', [
             'title'       => __('Rosetta'),
             'url'         => 'plugin.php?p=rosetta',
             'small-icon'  => urldecode(dcPage::getPF('rosetta/icon.png')),
             'large-icon'  => urldecode(dcPage::getPF('rosetta/icon-big.png')),
             'permissions' => 'usage,contentadmin'
-        ));
+        ]);
     }
 
     private static function adminEntryHeaders()
@@ -119,7 +119,7 @@ class rosettaAdminBehaviors
                 '</label>' . "\n";
 
             if ($post_type == 'post') {
-                $url = $core->adminurl->get('admin.post', array('id' => $post->post_id));
+                $url = $core->adminurl->get('admin.post', ['id' => $post->post_id]);
             } else {
                 $url = $redir_url . '&id=' . $post->post_id;
             }
@@ -149,10 +149,10 @@ class rosettaAdminBehaviors
                     // Display existing translations
                     $name = isset($langs[$lang]) ? $langs[$lang] : $langs[$core->blog->settings->system->lang];
                     // Get post/page id
-                    $params = new ArrayObject(array(
+                    $params = new ArrayObject([
                         'post_id'    => $id,
                         'post_type'  => $post_type,
-                        'no_content' => true));
+                        'no_content' => true]);
                     $rs = $core->blog->getPosts($params);
                     if ($rs->count()) {
                         $rs->fetch();
@@ -176,7 +176,7 @@ class rosettaAdminBehaviors
                     ($post->post_lang == '' || !$post->post_lang ? $core->blog->settings->system->lang : $post->post_lang),
                     $post_type, 'add', 0, '')) .
             // Hidden field for selected post/page URL
-            form::hidden(array('rosetta_url', 'rosetta_url'), '') .
+            form::hidden(['rosetta_url', 'rosetta_url'], '') .
                 '</p>';
 
             // Add a field (title), a combo (lang) and a button to create a new translation
@@ -199,8 +199,8 @@ class rosettaAdminBehaviors
                     $post_type, 'new_edit', 0, '') .
                 '&amp;edit=1') .
             // Hidden fields for new entry title and lang
-            form::hidden(array('rosetta_title', 'rosetta_title'), '') .
-            form::hidden(array('rosetta_lang', 'rosetta_lang'), '') .
+            form::hidden(['rosetta_title', 'rosetta_title'], '') .
+            form::hidden(['rosetta_lang', 'rosetta_lang'], '') .
                 '</p>';
 
             echo '</div>' . "\n";
@@ -230,10 +230,10 @@ class rosettaAdminBehaviors
 
     public static function adminColumnsLists($core, $cols)
     {
-        $cols['posts'][1]['language']     = array(true, __('Language'));
-        $cols['posts'][1]['translations'] = array(true, __('Translations'));
-        $cols['pages'][1]['language']     = array(true, __('Language'));
-        $cols['pages'][1]['translations'] = array(true, __('Translations'));
+        $cols['posts'][1]['language']     = [true, __('Language')];
+        $cols['posts'][1]['translations'] = [true, __('Translations')];
+        $cols['pages'][1]['language']     = [true, __('Language')];
+        $cols['pages'][1]['translations'] = [true, __('Translations')];
     }
 
     private static function adminEntryListHeader($core, $rs, $cols)
@@ -268,10 +268,10 @@ class rosettaAdminBehaviors
                     // Display existing translations
                     $name = isset($langs[$lang]) ? $langs[$lang] : $langs[$core->blog->settings->system->lang];
                     // Get post/page id
-                    $params = new ArrayObject(array(
+                    $params = new ArrayObject([
                         'post_id'    => $id,
                         'post_type'  => $rs->post_type,
-                        'no_content' => true));
+                        'no_content' => true]);
                     $rst = $core->blog->getPosts($params);
                     if ($rst->count()) {
                         $rst->fetch();
@@ -390,12 +390,12 @@ class rosettaPublicBehaviors
 
             if (!isset($params['no_context']) && !isset($params['post_url']) && !isset($params['post_id'])) {
                 // Operates only in contexts with list of posts
-                $url_types = array(
+                $url_types = [
                     'default', 'default-page', 'feed',
                     'category',
                     'tag',
                     'search',
-                    'archive');
+                    'archive'];
                 if (in_array($core->url->type, $url_types)) {
                     if (rosettaPublicBehaviors::$state == ROSETTA_NONE) {
                         // Set language according to blog default language setting
@@ -412,10 +412,10 @@ class rosettaPublicBehaviors
     {
         global $core;
 
-        $params = new ArrayObject(array(
+        $params = new ArrayObject([
             'post_id'    => $id,
             'post_type'  => $type,
-            'no_content' => true));
+            'no_content' => true]);
         $rs = $core->blog->getPosts($params);
         if ($rs->count()) {
             $rs->fetch();
@@ -440,7 +440,7 @@ class rosettaPublicBehaviors
                     // replace translated posts if any may be using core->getPosts()
                     $langs = http::getAcceptLanguages();
                     if (count($langs)) {
-                        $ids = array();
+                        $ids = [];
                         $nbx = 0;
                         while ($rs->fetch()) {
                             $exchanged = false;
@@ -459,11 +459,11 @@ class rosettaPublicBehaviors
                                 $id = rosettaData::findTranslation($rs->post_id, $post_lang, $lang);
                                 if (($id >= 0) && ($id != $rs->post_id)) {
                                     // Get post/page data
-                                    $params = new ArrayObject(array(
+                                    $params = new ArrayObject([
                                         'post_id'     => $id,
                                         'post_type'   => $rs->post_type,
                                         'post_status' => $rs->post_status,
-                                        'no_content'  => false));
+                                        'no_content'  => false]);
                                     $rst = $core->blog->getPosts($params);
                                     if ($rst->count()) {
                                         // Load first record
@@ -484,8 +484,8 @@ class rosettaPublicBehaviors
                         }
                         if (count($ids) && $nbx) {
                             // Get new list of posts as we have at least one exchange done
-                            $params = new ArrayObject(array(
-                                'post_id' => $ids));
+                            $params = new ArrayObject([
+                                'post_id' => $ids]);
                             $alt['rs'] = $core->blog->getPosts($params);
                         }
                     }
@@ -501,8 +501,8 @@ class rosettaPublicBehaviors
     {
         global $core, $_ctx;
 
-        $urlTypes  = array('post');
-        $postTypes = array('post');
+        $urlTypes  = ['post'];
+        $postTypes = ['post'];
         if ($core->plugins->moduleExists('pages')) {
             $urlTypes[]  = 'page';
             $postTypes[] = 'page';
@@ -533,16 +533,16 @@ class rosettaPublicBehaviors
     {
         global $core;
 
-        $postTypes = array('post');
+        $postTypes = ['post'];
         if ($core->plugins->moduleExists('pages')) {
             $postTypes[] = 'page';
         }
 
         // Get post/page id
-        $paramsSrc = new ArrayObject(array(
+        $paramsSrc = new ArrayObject([
             'post_url'   => $handler->args,
             'post_type'  => $postTypes,
-            'no_content' => true));
+            'no_content' => true]);
 
         $core->callBehavior('publicPostBeforeGetPosts', $paramsSrc, $handler->args);
         $rsSrc = $core->blog->getPosts($paramsSrc);
@@ -561,10 +561,10 @@ class rosettaPublicBehaviors
             $id = rosettaData::findTranslation($rsSrc->post_id, $rsSrc->post_lang, $lang);
             if (($id >= 0) && ($id != $rsSrc->post_id)) {
                 // Get post/page URL
-                $paramsDst = new ArrayObject(array(
+                $paramsDst = new ArrayObject([
                     'post_id'    => $id,
                     'post_type'  => $postTypes,
-                    'no_content' => true));
+                    'no_content' => true]);
 
                 $core->callBehavior('publicPostBeforeGetPosts', $paramsDst, $handler->args);
                 $rsDst = $core->blog->getPosts($paramsDst);
@@ -597,7 +597,7 @@ class rosettaPublicBehaviors
             return;
         }
 
-        $langs = array();
+        $langs = [];
         if (!empty($_GET['lang'])) {
             // Check lang scheme
             if (preg_match('/^[a-z]{2}(-[a-z]{2})?$/', rawurldecode($_GET['lang']), $matches)) {
@@ -608,7 +608,7 @@ class rosettaPublicBehaviors
             $urlType = '';
             $urlPart = '';
             $handler->getArgs($_SERVER['URL_REQUEST_PART'], $urlType, $urlPart);
-            if (in_array($urlType, array('post', 'pages'))) {
+            if (in_array($urlType, ['post', 'pages'])) {
                 // It is a post or page: Try to find a translation according to the browser settings
                 $langs = http::getAcceptLanguages();
             }

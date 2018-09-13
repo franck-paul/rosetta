@@ -69,7 +69,7 @@ class rosettaData
             return false;
         }
 
-        // Get all existing translations -> array(lang => id)
+        // Get all existing translations -> [lang => id]
         $list = self::findAllTranslations($src_id, $src_lang, true);
         // Add the new translation attachment for all existing translations
         try
@@ -182,7 +182,7 @@ class rosettaData
 
         $rs = $core->con->select($strReq);
         if ($rs->count()) {
-            $list = array();
+            $list = [];
             while ($rs->fetch()) {
                 // Add src couple if requested
                 if (($full) || (!$full && ($rs->src_id != $id || $rs->src_lang != $lang))) {
@@ -222,9 +222,9 @@ class rosettaData
         $list = self::findDirectTranslations($id, $lang, true);
         if (is_array($list)) {
             // Get indirect associations
-            $ids = array();
+            $ids = [];
             foreach ($list as $l => $i) {
-                $ids[] = array($l => $i);
+                $ids[] = [$l => $i];
             }
             while (count($ids)) {
                 $pair = array_shift($ids);
@@ -234,7 +234,7 @@ class rosettaData
                         foreach ($next as $key => $value) {
                             if (!in_array($value, $list, true)) {
                                 $list[$key] = $value;
-                                $ids[]      = array($key => $value);
+                                $ids[]      = [$key => $value];
                             }
                         }
                     }

@@ -34,7 +34,7 @@ class rosettaRest
                 $content = '<p>...</p>';
 
                 // Get currently edited post format
-                $rs = $core->blog->getPosts(array('post_id' => $id));
+                $rs = $core->blog->getPosts(['post_id' => $id]);
                 if (!$rs->isEmpty()) {
                     $rs->fetch();
                     $format = $rs->post_format;
@@ -102,10 +102,10 @@ class rosettaRest
         if ($id != -1 && $rosetta_id != -1) {
             // get new language if not provided
             if ($rosetta_lang == '') {
-                $params = new ArrayObject(array(
+                $params = new ArrayObject([
                     'post_id'    => $rosetta_id,
-                    'post_type'  => array('post', 'page'),
-                    'no_content' => true));
+                    'post_type'  => ['post', 'page'],
+                    'no_content' => true]);
 
                 $rs = $core->blog->getPosts($params);
                 if ($rs->count()) {
@@ -163,19 +163,19 @@ class rosettaRest
         $row = '';
         if ($id != -1 && $rosetta_id != -1) {
             // Get missing info for current edited entry (post/page)
-            $params = new ArrayObject(array(
+            $params = new ArrayObject([
                 'post_id'    => $id,
-                'post_type'  => array('post', 'page'),
-                'no_content' => true));
+                'post_type'  => ['post', 'page'],
+                'no_content' => true]);
             $rs = $core->blog->getPosts($params);
             if ($rs->count()) {
                 $rs->fetch();
                 $url_page = $core->getPostAdminURL($rs->post_type, $rs->post_id);
                 // Get missing info for translated entry (post/page)
-                $params = new ArrayObject(array(
+                $params = new ArrayObject([
                     'post_id'    => $rosetta_id,
-                    'post_type'  => array('post', 'page'),
-                    'no_content' => true));
+                    'post_type'  => ['post', 'page'],
+                    'no_content' => true]);
                 $rs = $core->blog->getPosts($params);
                 if ($rs->count()) {
                     $rs->fetch();

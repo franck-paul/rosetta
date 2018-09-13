@@ -30,7 +30,7 @@ echo '<body>';
 echo '<h2 class="page-title">' . __('Create a new translation') . '</h2>';
 
 // Languages combo
-$rs         = $core->blog->getLangs(array('order' => 'asc'));
+$rs         = $core->blog->getLangs(['order' => 'asc']);
 $lang_combo = dcAdminCombos::getLangsCombo($rs, true);
 // Remove empty select
 unset($lang_combo['']);

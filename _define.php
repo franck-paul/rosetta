@@ -17,11 +17,11 @@ $this->registerModule(
     "Rosetta",                       // Name
     "Manage post/page translations", // Description
     "Franck Paul",                   // Author
-    '0.7',                           // Version
-    array(
-        'requires'    => array(array('core', '2.10')), // Dependencies
-        'permissions' => 'usage,contentadmin',         // Permissions
-        'priority'    => 1001,                         // Must be higher than pages plugin // Priority
-        'type'        => 'plugin'                     // Type
-    )
+    '0.8',                           // Version
+    [
+        'requires'    => [['core', '2.13']],   // Dependencies
+        'permissions' => 'usage,contentadmin', // Permissions
+        'priority'    => 1001,                 // Must be higher than pages plugin // Priority
+        'type'        => 'plugin'             // Type
+    ]
 );

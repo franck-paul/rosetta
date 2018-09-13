@@ -48,10 +48,10 @@ dcPage::jsPageTabs($tab) .
   <body>';
 
 echo dcPage::breadcrumb(
-    array(
+    [
         html::escapeHTML($core->blog->name) => '',
         __('Rosetta')                       => ''
-    )
+    ]
 ) . dcPage::notices();
 
 // Display tabs
@@ -65,7 +65,7 @@ echo
 
 echo
 '<p class="field"><input type="submit" value="' . __('Save') . '" /> ' .
-form::hidden(array('tab'), 'posts') .
+form::hidden(['tab'], 'posts') .
 $core->formNonce() . '</p>' .
     '</form>' .
     '</div>';
@@ -81,7 +81,7 @@ if ($core->plugins->moduleExists('pages')) {
 
     echo
     '<p class="field"><input type="submit" value="' . __('Save') . '" /> ' .
-    form::hidden(array('tab'), 'pages') .
+    form::hidden(['tab'], 'pages') .
     $core->formNonce() . '</p>' .
         '</form>' .
         '</div>';
@@ -104,8 +104,8 @@ if ($core->auth->check('admin', $core->blog->id)) {
 
     echo
     '<p class="field wide"><input type="submit" value="' . __('Save') . '" /> ' .
-    form::hidden(array('tab'), 'settings') .
-    form::hidden(array('save_settings'), 1) .
+    form::hidden(['tab'], 'settings') .
+    form::hidden(['save_settings'], 1) .
     $core->formNonce() . '</p>' .
         '</form>' .
         '</div>';

@@ -25,7 +25,7 @@ class rosettaTpl
         // source = $ids : array ('lang' => 'entry-id')
         // destination = $table : array ('language' (or 'lang' if $code=true) => 'entry-url')
         // $current = current language
-        $table   = array();
+        $table   = [];
         $langs   = l10n::getLanguagesName();
         $current = '';
         foreach ($ids as $lang => $id) {
@@ -37,10 +37,10 @@ class rosettaTpl
                 $table[($code_only ? $lang : $name)] = '';
             } else {
                 // Get post/page URL
-                $params = new ArrayObject(array(
+                $params = new ArrayObject([
                     'post_id'    => $id,
                     'post_type'  => $post_type,
-                    'no_content' => true));
+                    'no_content' => true]);
                 $core->callBehavior('publicPostBeforeGetPosts', $params, null);
                 $rs = $core->blog->getPosts($params);
                 if ($rs->count()) {
@@ -112,7 +112,7 @@ EOT;
             return;
         }
 
-        $urlTypes = array('post');
+        $urlTypes = ['post'];
         if ($core->plugins->moduleExists('pages')) {
             $urlTypes[] = 'pages';
         }
