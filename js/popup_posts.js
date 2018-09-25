@@ -8,8 +8,8 @@ $(function() {
 
   $('#form-entries tr>td.maximal>a').click(function(e) {
     e.preventDefault();
-    var parent_doc = window.opener.document;
-    var rosetta_url = parent_doc.getElementById('rosetta_url');
+    const parent_doc = window.opener.document;
+    const rosetta_url = parent_doc.getElementById('rosetta_url');
     rosetta_url.value = $(this).attr('href');
     window.close();
   });
