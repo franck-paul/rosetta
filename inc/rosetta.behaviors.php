@@ -33,10 +33,10 @@ class rosettaAdminBehaviors
         global $core;
 
         return
-        '<script type="text/javascript">' . "\n" .
-        dcPage::jsVar('dotclear.msg.confirm_remove_rosetta', __('Are you sure to remove this translation?')) .
-        dcPage::jsVar('dotclear.rosetta_post_url', '') .
-        "</script>\n" .
+        dcPage::jsJson('rosetta_entry', [
+            'msg'              => ['confirm_remove_rosetta' => __('Are you sure to remove this translation?')],
+            'rosetta_post_url' => ''
+        ]) .
         dcPage::jsLoad(urldecode(dcPage::getPF('rosetta/js/rosetta_entry.js')), $core->getVersion('rosetta')) . "\n" .
         dcPage::cssLoad(urldecode(dcPage::getPF('rosetta/css/style.css')), $core->getVersion('rosetta')) . "\n";
     }
@@ -48,9 +48,7 @@ class rosettaAdminBehaviors
         $core->blog->settings->addNamespace('rosetta');
         if ($core->blog->settings->rosetta->active) {
             return
-            '<script type="text/javascript">' . "\n" .
-            dcPage::jsVar('dotclear.post_type', 'post') .
-            "</script>\n" .
+            dcPage::jsJson('rosetta_type', ['post_type' => 'post']) .
             self::adminEntryHeaders();
         }
     }
@@ -62,9 +60,7 @@ class rosettaAdminBehaviors
         $core->blog->settings->addNamespace('rosetta');
         if ($core->blog->settings->rosetta->active) {
             return
-            '<script type="text/javascript">' . "\n" .
-            dcPage::jsVar('dotclear.post_type', 'page') .
-            "</script>\n" .
+            dcPage::jsJson('rosetta_type', ['post_type' => 'page']) .
             self::adminEntryHeaders();
         }
     }

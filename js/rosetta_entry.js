@@ -1,5 +1,8 @@
-/*global $, dotclear */
+/*global $, dotclear, getData, mergeDeep */
 'use strict';
+
+mergeDeep(dotclear, getData('rosetta_entry'));
+mergeDeep(dotclear, getData('rosetta_type'));
 
 $(function() {
   $('#edit-entry').onetabload(function() {
