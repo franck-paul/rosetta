@@ -44,13 +44,13 @@ msgid "Translation removed."
 msgstr "Traduction retirée."
 
 msgid "Entry's translations"
-msgstr "Traductions de l'entrée"
+msgstr "Traductions de la publication"
 
 msgid "Translation(s) of this entry"
 msgstr "Traductions disponibles"
 
 msgid "Include current entry:"
-msgstr "Inclus l'entrée courante :"
+msgstr "Inclus la publication courante :"
 
 msgid "With its URL"
 msgstr "Avec son URL"
@@ -65,7 +65,7 @@ msgid "Remove this translation's link"
 msgstr "Retirer le lien vers cette traduction"
 
 msgid "Edit this entry"
-msgstr "Éditer cette entrée"
+msgstr "Éditer cette publication"
 
 msgid "Page's translations:"
 msgstr "Traductions de cette page :"
@@ -101,4 +101,4 @@ msgid "Automatic posts/pages redirect on browser's language for this blog"
 msgstr "Redirection automatique des billets et des pages en fonction de la langue du navigateur"
 
 msgid "Entry title:"
-msgstr "Titre de l'entrée :"
+msgstr "Titre de la publication :"

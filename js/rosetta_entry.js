@@ -106,13 +106,13 @@ $(function() {
   }
 
   // Switch to Ajax for removing translation link
-  $('a.rosetta-remove').click(function(e) {
+  $('a.rosetta-remove').on('click', function(e) {
     removeTranslation($(this));
     e.preventDefault();
   });
 
   // Switch to Ajax for adding translation link
-  $('a.rosetta-add').click(function(e) {
+  $('a.rosetta-add').on('click', function(e) {
     const href = $(this).attr('href');
     const post_id = getURLParameter(href, 'id');
     const post_lang = getURLParameter(href, 'lang');
@@ -174,7 +174,7 @@ $(function() {
   });
 
   // Switch to Ajax for adding translation link
-  $('a.rosetta-new').click(function(e) {
+  $('a.rosetta-new').on('click', function(e) {
     const href = $(this).attr('href');
     const post_id = getURLParameter(href, 'id');
     const post_lang = getURLParameter(href, 'lang');
