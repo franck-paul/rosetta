@@ -19,9 +19,11 @@ $this->registerModule(
     "Franck Paul",                   // Author
     '0.8',                           // Version
     [
-        'requires'    => [['core', '2.13']],   // Dependencies
-        'permissions' => 'usage,contentadmin', // Permissions
-        'priority'    => 1001,                 // Must be higher than pages plugin // Priority
-        'type'        => 'plugin'             // Type
+        'requires'    => [['core', '2.16']],                       // Dependencies
+        'permissions' => 'usage,contentadmin',                     // Permissions
+        'priority'    => 1001,                                     // Must be higher than pages plugin // Priority
+        'type'        => 'plugin',                                 // Type
+        'details'     => 'https://open-time.net/?q=rosetta',       // Details URL
+        'support'     => 'https://github.com/franck-paul/rosetta' // Support URL
     ]
 );

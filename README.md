@@ -46,7 +46,7 @@ Nota : dans les popup de sélection de billet ou de page, une seule colonne est 
 
 1. La gestion est pour l'instant limitée aux billets et pages. Une extension du principe aux autres contextes demanderait de revoir le schéma de la table, probablement pour basculer sur les URLs relatives au blog — ce qui implique au passage de prévoir la mise à jour en cas de changement de celles-ci - plutôt que les ID qui permettent la gestion en cascade des suppressions de billets/pages.
 
-2. En page d'édition d'un billet (ou d'une page) : voir la possibilité de créer une nouvelle entrée avec la langue pré-positionnée sur le formulaire d'édition.
+2. En page d'édition d'un billet (ou d'une page) : voir la possibilité de créer une nouvelle publication avec la langue pré-positionnée sur le formulaire d'édition.
 
 3. Voir la possibilité de limiter les flux RSS (billets) à une langue donnée (widget supplémentaire).
 
@@ -68,8 +68,8 @@ Nota : dans les popup de sélection de billet ou de page, une seule colonne est 
 
 - 0.4.0 - 2015/09/06
 	- Correction pour les langues retournées par le accept-language (Clearbricks is buggy about it)
-	- Ajout d'une fonction de création d'une traduction pour l'entrée en cours d'édition
-	- Ajout d'une fonction de création et d'édition d'une traduction pour l'entrée en cours d'édition
+	- Ajout d'une fonction de création d'une traduction pour la publication en cours d'édition
+	- Ajout d'une fonction de création et d'édition d'une traduction pour la publication en cours d'édition
 
 - 0.4.1 - 2015/09/21
 	- Fix possible redirect loop when current entry correspond to one of the preferred language
