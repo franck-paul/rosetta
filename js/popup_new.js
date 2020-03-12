@@ -15,4 +15,6 @@ $(function() {
     rosetta_lang.value = document.getElementById('lang').value;
     window.close();
   });
+
+  $('input[name="title"]').get(0).focus();
 });
