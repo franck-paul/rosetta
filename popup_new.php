@@ -65,7 +65,7 @@ form::combo('lang', $lang_combo, $lang) . '</p>' .
 '<p><button class="reset" id="rosetta-new-cancel">' . __('Cancel') . '</button> - ' .
 '<button id="rosetta-new-ok"><strong>' . __('Create') . '</strong></button></p>' . "\n" .
 
-    '<script type="text/javascript">' . "\n" .
+    '<script>' . "\n" .
     '$(\'input[name="title"]\').get(0).focus();' . "\n" .
     '</script>' . "\n";
 
