@@ -5,7 +5,7 @@ mergeDeep(dotclear, getData('rosetta_entry'));
 mergeDeep(dotclear, getData('rosetta_type'));
 
 $(function() {
-  $('#edit-entry').onetabload(function() {
+  $('#edit-entry').on('onetabload', function() {
     // Add toggle capability on Rosetta area
     $('#rosetta-area > label').toggleWithLegend($('#rosetta-area').children().not('label'), {
       user_pref: 'dcx_post_rosetta',
