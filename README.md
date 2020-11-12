@@ -1,6 +1,7 @@
 # Plugin Rosetta pour Dotclear 2
 
 Gestion des traductions de billets et de pages.
+Lire également l'article de blog : [Plugin-Rosetta-07-pour-Dotclear](https://open-time.net/post/2017/12/07/Plugin-Rosetta-07-pour-Dotclear).
 
 ## Principe
 
