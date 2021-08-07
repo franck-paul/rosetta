@@ -10,8 +10,9 @@
  * @copyright Franck Paul carnet.franck.paul@gmail.com
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-
-if (!defined('DC_CONTEXT_ADMIN')) {return;}
+if (!defined('DC_CONTEXT_ADMIN')) {
+    return;
+}
 
 $new_version = $core->plugins->moduleInfo('rosetta', 'version');
 $old_version = $core->getVersion('rosetta');
@@ -20,8 +21,7 @@ if (version_compare($old_version, $new_version, '>=')) {
     return;
 }
 
-try
-{
+try {
     // Database schema
     $s = new dbStruct($core->con, $core->prefix);
 
@@ -65,4 +65,5 @@ try
 } catch (Exception $e) {
     $core->error->add($e->getMessage());
 }
+
 return false;

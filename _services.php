@@ -10,8 +10,9 @@
  * @copyright Franck Paul carnet.franck.paul@gmail.com
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-
-if (!defined('DC_CONTEXT_ADMIN')) {return;}
+if (!defined('DC_CONTEXT_ADMIN')) {
+    return;
+}
 
 class rosettaRest
 {
@@ -27,8 +28,7 @@ class rosettaRest
         $ret        = false;
         $rosetta_id = -1;
         if ($id != -1 && $lang != '' && $rosetta_title != '' && $rosetta_lang != '') {
-            try
-            {
+            try {
                 // Default format and content
                 $format  = 'xhtml';
                 $content = '<p>...</p>';
@@ -181,7 +181,7 @@ class rosettaRest
                     $rs->fetch();
                     $post_link = '<a id="r-%s" href="' . $core->getPostAdminURL($rs->post_type, $rs->post_id) . '" title="%s">%s</a>';
                     $langs     = l10n::getLanguagesName();
-                    $name      = isset($langs[$rs->post_lang]) ? $langs[$rs->post_lang] : $langs[$core->blog->settings->system->lang];
+                    $name      = $langs[$rs->post_lang] ?? $langs[$core->blog->settings->system->lang];
                     // Get the translation row
                     $row = rosettaAdminBehaviors::translationRow($lang,
                         $rosetta_id, $rs->post_lang, $name,

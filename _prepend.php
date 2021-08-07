@@ -10,8 +10,9 @@
  * @copyright Franck Paul carnet.franck.paul@gmail.com
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-
-if (!defined('DC_RC_PATH')) {return;}
+if (!defined('DC_RC_PATH')) {
+    return;
+}
 
 // Public and Admin mode
 
@@ -20,7 +21,9 @@ $__autoload['rosettaTpl']             = dirname(__FILE__) . '/inc/rosetta.tpl.ph
 $__autoload['rosettaData']            = dirname(__FILE__) . '/inc/rosetta.data.php';
 $__autoload['rosettaRest']            = dirname(__FILE__) . '/_services.php';
 
-if (!defined('DC_CONTEXT_ADMIN')) {return false;}
+if (!defined('DC_CONTEXT_ADMIN')) {
+    return false;
+}
 
 // Admin mode only
 

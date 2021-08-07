@@ -35,7 +35,6 @@
  * Avantage : La suppression d'un billet ou d'une page n'entraîne du coup pas de rupture dans la chaîne de traduction.
  * Inconvénient : Le nombre de tuples peut vite grimper (factorielle du nb de langues / chaîne) si on gère beaucoup de langues.
  */
-
 class rosettaData
 {
     /**
@@ -72,8 +71,7 @@ class rosettaData
         // Get all existing translations -> [lang => id]
         $list = self::findAllTranslations($src_id, $src_lang, true);
         // Add the new translation attachment for all existing translations
-        try
-        {
+        try {
             if (!$list) {
                 // No translation yet, add direct one
                 $core->con->writeLock($core->prefix . 'rosetta');
@@ -101,6 +99,7 @@ class rosettaData
             }
         } catch (Exception $e) {
             $core->con->unlock();
+
             throw $e;
         }
 
@@ -139,18 +138,18 @@ class rosettaData
         }
 
         $core->con->writeLock($core->prefix . 'rosetta');
-        try
-        {
+
+        try {
             // Remove the translations
-            $strReq =
-            'DELETE FROM ' . $core->prefix . 'rosetta ' .
-            "WHERE " .
+            $strReq = 'DELETE FROM ' . $core->prefix . 'rosetta ' .
+            'WHERE ' .
             "(src_id = '" . $core->con->escape($dst_id) . "' AND src_lang = '" . $core->con->escape($dst_lang) . "') OR " .
             "(dst_id = '" . $core->con->escape($dst_id) . "' AND dst_lang = '" . $core->con->escape($dst_lang) . "') ";
             $core->con->execute($strReq);
             $core->con->unlock();
         } catch (Exception $e) {
             $core->con->unlock();
+
             throw $e;
         }
 
@@ -176,7 +175,7 @@ class rosettaData
         }
 
         $strReq = 'SELECT * FROM ' . $core->prefix . 'rosetta R ' .
-        "WHERE " .
+        'WHERE ' .
         "(R.src_id = '" . $core->con->escape($id) . "' AND R.src_lang = '" . $core->con->escape($lang) . "') OR " .
         "(R.dst_id = '" . $core->con->escape($id) . "' AND R.dst_lang = '" . $core->con->escape($lang) . "') ";
 
@@ -193,6 +192,7 @@ class rosettaData
                     $list[$rs->dst_lang] = $rs->dst_id;
                 }
             }
+
             return $list;
         }
 
@@ -246,6 +246,7 @@ class rosettaData
                     unset($list[$key]);
                 }
             }
+
             return $list;
         }
 
@@ -274,10 +275,10 @@ class rosettaData
 
         // Looks for a post/page with an association with the corresponding lang
         $strReq = 'SELECT * FROM ' . $core->prefix . 'rosetta R ' .
-        "WHERE " .
+        'WHERE ' .
         "(R.src_id = '" . $core->con->escape($src_id) . "' AND R.dst_lang = '" . $core->con->escape($dst_lang) . "') OR " .
         "(R.dst_id = '" . $core->con->escape($src_id) . "' AND R.src_lang = '" . $core->con->escape($dst_lang) . "') " .
-            "ORDER BY R.dst_id DESC";
+            'ORDER BY R.dst_id DESC';
 
         $rs = $core->con->select($strReq);
         if ($rs->count()) {

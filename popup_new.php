@@ -10,7 +10,6 @@
  * @copyright Franck Paul carnet.franck.paul@gmail.com
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-
 dcPage::check('usage,contentadmin');
 
 $id   = !empty($_GET['id']) ? $_GET['id'] : '';

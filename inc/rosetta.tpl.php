@@ -10,7 +10,6 @@
  * @copyright Franck Paul carnet.franck.paul@gmail.com
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-
 class rosettaTpl
 {
     public static function EntryListHelper($post_id, $post_lang, $post_type, $include, &$current, $code_only = false)
@@ -29,7 +28,7 @@ class rosettaTpl
         $langs   = l10n::getLanguagesName();
         $current = '';
         foreach ($ids as $lang => $id) {
-            $name = isset($langs[$lang]) ? $langs[$lang] : $langs[$core->blog->settings->system->lang];
+            $name = $langs[$lang] ?? $langs[$core->blog->settings->system->lang];
             if ($post_id == $id) {
                 $current = ($code_only ? $lang : $name);
             }
@@ -96,6 +95,7 @@ class rosettaTpl
         echo '</ul>'."\n";
       }
 EOT;
+
         return ($res != '' ? '<?php ' . $res . ' ?>' : '');
     }
 

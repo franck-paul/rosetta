@@ -15,7 +15,7 @@
 
 class rosettaAdminBehaviors
 {
-    static $args_rosetta = '&amp;lang=%s&amp;type=%s&amp;rosetta=%s&amp;rosetta_id=%s&amp;rosetta_lang=%s';
+    public static $args_rosetta = '&amp;lang=%s&amp;type=%s&amp;rosetta=%s&amp;rosetta_id=%s&amp;rosetta_lang=%s';
 
     public static function adminDashboardFavorites($core, $favs)
     {
@@ -79,16 +79,15 @@ class rosettaAdminBehaviors
      */
     public static function translationRow($src_lang, $id, $lang, $name, $title, $post_link, $url_page)
     {
-        $html_line =
-        '<tr class="line wide">' . "\n" .
+        $html_line = '<tr class="line wide">' . "\n" .
         '<td class="minimal nowrap">%s</td>' . "\n" . // language
         '<td class="maximal">%s</td>' . "\n" .        // Entry link
         '<td class="minimal nowrap">%s</td>' . "\n" . // Action
         '</tr>' . "\n";
-        $action_remove =
-        '<a href="%s" class="rosetta-remove" title="' . __('Remove this translation\'s link') . '" name="delete">' .
+        $action_remove = '<a href="%s" class="rosetta-remove" title="' . __('Remove this translation\'s link') . '" name="delete">' .
         '<img src="' . urldecode(dcPage::getPF('rosetta/img/unlink.png')) .
         '" alt="' . __('Remove this translation\'s link') . '" /></a>';
+
         return sprintf($html_line,
             $lang . ' - ' . $name,
             sprintf($post_link, $id, __('Edit this entry'), html::escapeHTML($title)),
@@ -102,7 +101,6 @@ class rosettaAdminBehaviors
 
         $core->blog->settings->addNamespace('rosetta');
         if ($core->blog->settings->rosetta->active) {
-
             if (!$post || !$post->post_id) {
                 // Manage translation only on already created posts/pages
                 return;
@@ -120,8 +118,7 @@ class rosettaAdminBehaviors
                 $url = $redir_url . '&id=' . $post->post_id;
             }
 
-            $html_block =
-            '<div class="table-outer">' .
+            $html_block = '<div class="table-outer">' .
             '<table id="rosetta-list" summary="' . __('Attached Translations') . '" class="clear maximal">' .
             '<thead>' .
             '<tr>' .
@@ -137,13 +134,12 @@ class rosettaAdminBehaviors
 
             $list = rosettaData::findAllTranslations($post->post_id, $post->post_lang, false);
             if (is_array($list) && count($list)) {
-
                 dcUtils::lexicalKeySort($list, 'admin');
 
                 $langs = l10n::getLanguagesName();
                 foreach ($list as $lang => $id) {
                     // Display existing translations
-                    $name = isset($langs[$lang]) ? $langs[$lang] : $langs[$core->blog->settings->system->lang];
+                    $name = $langs[$lang] ?? $langs[$core->blog->settings->system->lang];
                     // Get post/page id
                     $params = new ArrayObject([
                         'post_id'    => $id,
@@ -162,8 +158,7 @@ class rosettaAdminBehaviors
             echo sprintf($html_block, $html_lines);
 
             // Add a button for adding a new translation
-            $action_add =
-            '<a href="%s" class="button rosetta-add">' . __('Attach a translation') . '</a>';
+            $action_add = '<a href="%s" class="button rosetta-add">' . __('Attach a translation') . '</a>';
 
             echo '<p>' .
             // Button
@@ -176,10 +171,8 @@ class rosettaAdminBehaviors
                 '</p>';
 
             // Add a field (title), a combo (lang) and a button to create a new translation
-            $action_new =
-            '<a href="%s" class="button add rosetta-new">' . __('Create a new translation') . '</a>';
-            $action_new_edit =
-            '<a href="%s" class="button add rosetta-new">' . __('Create and edit a new translation') . '</a>';
+            $action_new      = '<a href="%s" class="button add rosetta-new">' . __('Create a new translation') . '</a>';
+            $action_new_edit = '<a href="%s" class="button add rosetta-new">' . __('Create and edit a new translation') . '</a>';
 
             echo
             '<p class="top-add">' .
@@ -262,7 +255,7 @@ class rosettaAdminBehaviors
                 $langs = l10n::getLanguagesName();
                 foreach ($list as $lang => $id) {
                     // Display existing translations
-                    $name = isset($langs[$lang]) ? $langs[$lang] : $langs[$core->blog->settings->system->lang];
+                    $name = $langs[$lang] ?? $langs[$core->blog->settings->system->lang];
                     // Get post/page id
                     $params = new ArrayObject([
                         'post_id'    => $id,
@@ -415,6 +408,7 @@ class rosettaPublicBehaviors
         $rs = $core->blog->getPosts($params);
         if ($rs->count()) {
             $rs->fetch();
+
             return $rs->post_lang;
         }
         // Return blog default lang
