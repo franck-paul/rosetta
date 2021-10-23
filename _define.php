@@ -24,7 +24,9 @@ $this->registerModule(
         'permissions' => 'usage,contentadmin',                     // Permissions
         'priority'    => 1001,                                     // Must be higher than pages plugin // Priority
         'type'        => 'plugin',                                 // Type
-        'details'     => 'https://open-time.net/?q=rosetta',       // Details URL
-        'support'     => 'https://github.com/franck-paul/rosetta'  // Support URL
+
+        'details'    => 'https://open-time.net/?q=rosetta',       // Details URL
+        'support'    => 'https://github.com/franck-paul/rosetta', // Support URL
+        'repository' => 'https://raw.githubusercontent.com/franck-paul/rosetta/main/dcstore.xml'
     ]
 );
