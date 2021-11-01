@@ -27,6 +27,6 @@ $this->registerModule(
 
         'details'    => 'https://open-time.net/?q=rosetta',       // Details URL
         'support'    => 'https://github.com/franck-paul/rosetta', // Support URL
-        'repository' => 'https://raw.githubusercontent.com/franck-paul/rosetta/main/dcstore.xml'
+        'repository' => 'https://raw.githubusercontent.com/franck-paul/rosetta/master/dcstore.xml'
     ]
 );
