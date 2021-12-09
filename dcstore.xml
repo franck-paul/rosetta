@@ -1,8 +1,8 @@
 <modules xmlns:da="http://dotaddict.org/da/">
   <module id="rosetta">
-    <name>Manage post/page translations</name>
+    <name>Rosetta</name>
     <version>0.9</version>
-    <author>Manage post/page translations</author>
+    <author>Franck Paul</author>
     <desc>Manage post/page translations</desc>
     <file>https://github.com/franck-paul/rosetta/releases/download/0.9/plugin-rosetta-0.9.zip</file>
     <da:dcmin>2.19</da:dcmin>
