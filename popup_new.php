@@ -22,14 +22,14 @@ echo '<html>';
 echo
 '<head>' .
 '<title>' . __('Create a new translation') . '</title>' .
-dcPage::jsLoad(urldecode(dcPage::getPF('rosetta/js/popup_new.js')), $core->getVersion('rosetta')) .
+dcPage::jsModuleLoad('rosetta/js/popup_new.js', dcCore::app()->getVersion('rosetta')) .
     '</head>';
 
 echo '<body>';
 echo '<h2 class="page-title">' . __('Create a new translation') . '</h2>';
 
 // Languages combo
-$rs         = $core->blog->getLangs(['order' => 'asc']);
+$rs         = dcCore::app()->blog->getLangs(['order' => 'asc']);
 $lang_combo = dcAdminCombos::getLangsCombo($rs, true);
 // Remove empty select
 unset($lang_combo['']);

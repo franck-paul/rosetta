@@ -14,13 +14,13 @@ if (!defined('DC_RC_PATH')) {
     return;
 }
 
-require dirname(__FILE__) . '/_widgets.php';
+require __DIR__ . '/_widgets.php';
 
 // Public behaviours
-$core->addBehavior('urlHandlerGetArgsDocument', ['rosettaPublicBehaviors', 'urlHandlerGetArgsDocument']);
-$core->addBehavior('publicHeadContent', ['rosettaPublicBehaviors', 'publicHeadContent']);
-$core->addBehavior('coreBlogBeforeGetPosts', ['rosettaPublicBehaviors', 'coreBlogBeforeGetPosts']);
-$core->addBehavior('coreBlogAfterGetPosts', ['rosettaPublicBehaviors', 'coreBlogAfterGetPosts']);
+dcCore::app()->addBehavior('urlHandlerGetArgsDocument', ['rosettaPublicBehaviors', 'urlHandlerGetArgsDocument']);
+dcCore::app()->addBehavior('publicHeadContent', ['rosettaPublicBehaviors', 'publicHeadContent']);
+dcCore::app()->addBehavior('coreBlogBeforeGetPosts', ['rosettaPublicBehaviors', 'coreBlogBeforeGetPosts']);
+dcCore::app()->addBehavior('coreBlogAfterGetPosts', ['rosettaPublicBehaviors', 'coreBlogAfterGetPosts']);
 
 // Public template tags
-$core->tpl->addValue('RosettaEntryList', ['rosettaTpl', 'rosettaEntryList']);
+dcCore::app()->tpl->addValue('RosettaEntryList', ['rosettaTpl', 'rosettaEntryList']);

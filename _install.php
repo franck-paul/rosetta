@@ -14,8 +14,8 @@ if (!defined('DC_CONTEXT_ADMIN')) {
     return;
 }
 
-$new_version = $core->plugins->moduleInfo('rosetta', 'version');
-$old_version = $core->getVersion('rosetta');
+$new_version = dcCore::app()->plugins->moduleInfo('rosetta', 'version');
+$old_version = dcCore::app()->getVersion('rosetta');
 
 if (version_compare($old_version, $new_version, '>=')) {
     return;
@@ -23,7 +23,7 @@ if (version_compare($old_version, $new_version, '>=')) {
 
 try {
     // Database schema
-    $s = new dbStruct($core->con, $core->prefix);
+    $s = new dbStruct(dcCore::app()->con, dcCore::app()->prefix);
 
     $s->rosetta
         ->src_id('bigint', 0, false)
@@ -49,21 +49,21 @@ try {
     $s->rosetta->reference('fk_rosetta_dst', 'dst_id', 'post', 'post_id', 'cascade', 'cascade');
 
     // Schema installation
-    $si      = new dbStruct($core->con, $core->prefix);
+    $si      = new dbStruct(dcCore::app()->con, dcCore::app()->prefix);
     $changes = $si->synchronize($s);
 
     // Blog settings
-    $core->blog->settings->addNamespace('rosetta');
+    dcCore::app()->blog->settings->addNamespace('rosetta');
 
     // Default state is inactive
-    $core->blog->settings->rosetta->put('active', false, 'boolean', 'Active', false, true);
-    $core->blog->settings->rosetta->put('accept_language', false, 'boolean', 'Take care of browser accept-language', false, true);
+    dcCore::app()->blog->settings->rosetta->put('active', false, 'boolean', 'Active', false, true);
+    dcCore::app()->blog->settings->rosetta->put('accept_language', false, 'boolean', 'Take care of browser accept-language', false, true);
 
-    $core->setVersion('rosetta', $new_version);
+    dcCore::app()->setVersion('rosetta', $new_version);
 
     return true;
 } catch (Exception $e) {
-    $core->error->add($e->getMessage());
+    dcCore::app()->error->add($e->getMessage());
 }
 
 return false;

@@ -14,7 +14,7 @@ if (!defined('DC_RC_PATH')) {
     return;
 }
 
-$core->addBehavior('initWidgets', ['rosettaWidgets', 'initWidgets']);
+dcCore::app()->addBehavior('initWidgets', ['rosettaWidgets', 'initWidgets']);
 
 class rosettaWidgets
 {
@@ -22,15 +22,25 @@ class rosettaWidgets
     {
         // Widget for currently displayed post
         $w
-            ->create('rosettaEntry', __('Entry\'s translations'), ['rosettaTpl', 'rosettaEntryWidget'],
-                null, __('Translation(s) of this entry'))
+            ->create(
+                'rosettaEntry',
+                __('Entry\'s translations'),
+                ['rosettaTpl', 'rosettaEntryWidget'],
+                null,
+                __('Translation(s) of this entry')
+            )
             ->addTitle(__('Translations'))
-            ->setting('current', __('Include current entry:'), 'std', 'combo',
+            ->setting(
+                'current',
+                __('Include current entry:'),
+                'std',
+                'combo',
                 [
                     __('Without its URL') => 'std',
                     __('With its URL')    => 'link',
-                    __('None')            => 'none'
-                ])
+                    __('None')            => 'none',
+                ]
+            )
             ->addContentOnly()
             ->addClass()
             ->addOffline();

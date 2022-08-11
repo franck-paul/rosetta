@@ -16,7 +16,7 @@ if (!defined('DC_CONTEXT_ADMIN')) {
 
 class rosettaRest
 {
-    public static function newTranslation($core, $get)
+    public static function newTranslation($core = null, $get)
     {
         $id            = !empty($get['id']) ? $get['id'] : -1;
         $lang          = !empty($get['lang']) ? $get['lang'] : '';
@@ -34,7 +34,7 @@ class rosettaRest
                 $content = '<p>...</p>';
 
                 // Get currently edited post format
-                $rs = $core->blog->getPosts(['post_id' => $id]);
+                $rs = dcCore::app()->blog->getPosts(['post_id' => $id]);
                 if (!$rs->isEmpty()) {
                     $rs->fetch();
                     $format = $rs->post_format;
@@ -44,26 +44,26 @@ class rosettaRest
                 }
 
                 // Create a new entry with given title and lang
-                $cur = $core->con->openCursor($core->prefix . 'post');
+                $cur = dcCore::app()->con->openCursor(dcCore::app()->prefix . 'post');
 
                 $cur->post_title = $rosetta_title;
                 $cur->post_type  = $type;
                 $cur->post_lang  = $rosetta_lang;
 
-                $cur->user_id           = $core->auth->userID();
+                $cur->user_id           = dcCore::app()->auth->userID();
                 $cur->post_content      = $content;
                 $cur->post_format       = $format;
                 $cur->post_status       = -2; // forced to pending
-                $cur->post_open_comment = (integer) $core->blog->settings->system->allow_comments;
-                $cur->post_open_tb      = (integer) $core->blog->settings->system->allow_trackbacks;
+                $cur->post_open_comment = (int) dcCore::app()->blog->settings->system->allow_comments;
+                $cur->post_open_tb      = (int) dcCore::app()->blog->settings->system->allow_trackbacks;
 
                 # --BEHAVIOR-- adminBeforePostCreate
-                $core->callBehavior('adminBeforePostCreate', $cur);
+                dcCore::app()->callBehavior('adminBeforePostCreate', $cur);
 
-                $rosetta_id = $core->blog->addPost($cur);
+                $rosetta_id = dcCore::app()->blog->addPost($cur);
 
                 # --BEHAVIOR-- adminAfterPostCreate
-                $core->callBehavior('adminAfterPostCreate', $cur, $rosetta_id);
+                dcCore::app()->callBehavior('adminAfterPostCreate', $cur, $rosetta_id);
 
                 // add the translation link
                 $ret = rosettaData::addTranslation($id, $lang, $rosetta_id, $rosetta_lang);
@@ -77,7 +77,7 @@ class rosettaRest
             __('Error during new translation creation.') :
             __('Error during newly created translation attachment.'));
         $rsp->id   = $rosetta_id;
-        $rsp->edit = DC_ADMIN_URL . $core->getPostAdminURL($type, $rosetta_id);
+        $rsp->edit = DC_ADMIN_URL . dcCore::app()->getPostAdminURL($type, $rosetta_id);
 
         return $rsp;
     }
@@ -85,12 +85,12 @@ class rosettaRest
     /**
      * Serve method to add a new translation's link for current edited post/page.
      *
-     * @param    core    <b>dcCore</b>    dcCore instance
-     * @param    get        <b>array</b>    cleaned $_GET
+     * @param      dcCore  $core   The dcCore instance
+     * @param      array   $get    The cleaned $_GET
      *
-     * @return    <b>xmlTag</b>    XML representation of response
+     * @return     xmlTag  The xml tag.
      */
-    public static function addTranslation($core, $get)
+    public static function addTranslation($core = null, $get)
     {
         $id           = !empty($get['id']) ? $get['id'] : -1;
         $lang         = !empty($get['lang']) ? $get['lang'] : '';
@@ -105,9 +105,9 @@ class rosettaRest
                 $params = new ArrayObject([
                     'post_id'    => $rosetta_id,
                     'post_type'  => ['post', 'page'],
-                    'no_content' => true]);
+                    'no_content' => true, ]);
 
-                $rs = $core->blog->getPosts($params);
+                $rs = dcCore::app()->blog->getPosts($params);
                 if ($rs->count()) {
                     // Load first record
                     $rs->fetch();
@@ -127,12 +127,12 @@ class rosettaRest
     /**
      * Serve method to remove an existing translation's link for current edited post/page.
      *
-     * @param    core    <b>dcCore</b>    dcCore instance
-     * @param    get        <b>array</b>    cleaned $_GET
+     * @param      dcCore  $core   The dcCore instance
+     * @param      array   $get    The cleaned $_GET
      *
-     * @return    <b>xmlTag</b>    XML representation of response
+     * @return     xmlTag  The xml tag.
      */
-    public static function removeTranslation($core, $get)
+    public static function removeTranslation($core = null, $get)
     {
         $id           = !empty($get['id']) ? $get['id'] : -1;
         $lang         = !empty($get['lang']) ? $get['lang'] : '';
@@ -152,7 +152,7 @@ class rosettaRest
         return $rsp;
     }
 
-    public static function getTranslationRow($core, $get)
+    public static function getTranslationRow($core = null, $get)
     {
         $id         = !empty($get['id']) ? $get['id'] : -1;
         $lang       = !empty($get['lang']) ? $get['lang'] : '';
@@ -166,26 +166,32 @@ class rosettaRest
             $params = new ArrayObject([
                 'post_id'    => $id,
                 'post_type'  => ['post', 'page'],
-                'no_content' => true]);
-            $rs = $core->blog->getPosts($params);
+                'no_content' => true, ]);
+            $rs = dcCore::app()->blog->getPosts($params);
             if ($rs->count()) {
                 $rs->fetch();
-                $url_page = $core->getPostAdminURL($rs->post_type, $rs->post_id);
+                $url_page = dcCore::app()->getPostAdminURL($rs->post_type, $rs->post_id);
                 // Get missing info for translated entry (post/page)
                 $params = new ArrayObject([
                     'post_id'    => $rosetta_id,
                     'post_type'  => ['post', 'page'],
-                    'no_content' => true]);
-                $rs = $core->blog->getPosts($params);
+                    'no_content' => true, ]);
+                $rs = dcCore::app()->blog->getPosts($params);
                 if ($rs->count()) {
                     $rs->fetch();
-                    $post_link = '<a id="r-%s" href="' . $core->getPostAdminURL($rs->post_type, $rs->post_id) . '" title="%s">%s</a>';
+                    $post_link = '<a id="r-%s" href="' . dcCore::app()->getPostAdminURL($rs->post_type, $rs->post_id) . '" title="%s">%s</a>';
                     $langs     = l10n::getLanguagesName();
-                    $name      = $langs[$rs->post_lang] ?? $langs[$core->blog->settings->system->lang];
+                    $name      = $langs[$rs->post_lang] ?? $langs[dcCore::app()->blog->settings->system->lang];
                     // Get the translation row
-                    $row = rosettaAdminBehaviors::translationRow($lang,
-                        $rosetta_id, $rs->post_lang, $name,
-                        $rs->post_title, $post_link, $url_page);
+                    $row = rosettaAdminBehaviors::translationRow(
+                        $lang,
+                        $rosetta_id,
+                        $rs->post_lang,
+                        $name,
+                        $rs->post_title,
+                        $post_link,
+                        $url_page
+                    );
                     $ret = true;
                 }
             }

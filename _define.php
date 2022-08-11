@@ -18,15 +18,15 @@ $this->registerModule(
     'Rosetta',                       // Name
     'Manage post/page translations', // Description
     'Franck Paul',                   // Author
-    '0.9',                           // Version
+    '0.10',
     [
-        'requires'    => [['core', '2.19']],                       // Dependencies
+        'requires'    => [['core', '2.23']],                       // Dependencies
         'permissions' => 'usage,contentadmin',                     // Permissions
         'priority'    => 1001,                                     // Must be higher than pages plugin // Priority
         'type'        => 'plugin',                                 // Type
 
         'details'    => 'https://open-time.net/?q=rosetta',       // Details URL
         'support'    => 'https://github.com/franck-paul/rosetta', // Support URL
-        'repository' => 'https://raw.githubusercontent.com/franck-paul/rosetta/master/dcstore.xml'
+        'repository' => 'https://raw.githubusercontent.com/franck-paul/rosetta/master/dcstore.xml',
     ]
 );

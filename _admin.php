@@ -17,51 +17,56 @@ if (!defined('DC_CONTEXT_ADMIN')) {
 // dead but useful code, in order to have translations
 __('Rosetta') . __('Manage post/page translations');
 
-$_menu['Blog']->addItem(__('Rosetta'), 'plugin.php?p=rosetta', urldecode(dcPage::getPF('rosetta/icon.png')),
+$_menu['Blog']->addItem(
+    __('Rosetta'),
+    'plugin.php?p=rosetta',
+    urldecode(dcPage::getPF('rosetta/icon.svg')),
     preg_match('/plugin.php\?p=rosetta(&.*)?$/', $_SERVER['REQUEST_URI']),
-    $core->auth->check('usage,contentadmin', $core->blog->id));
+    dcCore::app()->auth->check('usage,contentadmin', dcCore::app()->blog->id)
+);
 
-require dirname(__FILE__) . '/_widgets.php';
+require __DIR__ . '/_widgets.php';
 
 /* Register favorite */
-$core->addBehavior('adminDashboardFavorites', ['rosettaAdminBehaviors', 'adminDashboardFavorites']);
+dcCore::app()->addBehavior('adminDashboardFavorites', ['rosettaAdminBehaviors', 'adminDashboardFavorites']);
 
 // Add behaviour callback for post
-$core->addBehavior('adminPostForm', ['rosettaAdminBehaviors', 'adminPostForm']);
-$core->addBehavior('adminPostHeaders', ['rosettaAdminBehaviors', 'adminPostHeaders']);
+dcCore::app()->addBehavior('adminPostForm', ['rosettaAdminBehaviors', 'adminPostForm']);
+dcCore::app()->addBehavior('adminPostHeaders', ['rosettaAdminBehaviors', 'adminPostHeaders']);
 
 // Add behaviour callback for page
-$core->addBehavior('adminPageForm', ['rosettaAdminBehaviors', 'adminPageForm']);
-$core->addBehavior('adminPageHeaders', ['rosettaAdminBehaviors', 'adminPageHeaders']);
+dcCore::app()->addBehavior('adminPageForm', ['rosettaAdminBehaviors', 'adminPageForm']);
+dcCore::app()->addBehavior('adminPageHeaders', ['rosettaAdminBehaviors', 'adminPageHeaders']);
 
 // Add behaviour callback for post/page list popup
-$core->addBehavior('adminPopupPosts', ['rosettaAdminBehaviors', 'adminPopupPosts']);
+dcCore::app()->addBehavior('adminPopupPosts', ['rosettaAdminBehaviors', 'adminPopupPosts']);
 
 // Add behaviour callback for post/page lists
-$core->addBehavior('adminColumnsLists', ['rosettaAdminBehaviors', 'adminColumnsLists']);
-$core->addBehavior('adminPostListHeader', ['rosettaAdminBehaviors', 'adminPostListHeader']);
-$core->addBehavior('adminPostListValue', ['rosettaAdminBehaviors', 'adminPostListValue']);
-$core->addBehavior('adminPostMiniListHeader', ['rosettaAdminBehaviors', 'adminPostMiniListHeader']);
-$core->addBehavior('adminPostMiniListValue', ['rosettaAdminBehaviors', 'adminPostMiniListValue']);
-$core->addBehavior('adminPagesListHeader', ['rosettaAdminBehaviors', 'adminPagesListHeader']);
-$core->addBehavior('adminPagesListValue', ['rosettaAdminBehaviors', 'adminPagesListValue']);
+dcCore::app()->addBehavior('adminColumnsLists', ['rosettaAdminBehaviors', 'adminColumnsLists']);
+dcCore::app()->addBehavior('adminPostListHeader', ['rosettaAdminBehaviors', 'adminPostListHeader']);
+dcCore::app()->addBehavior('adminPostListValue', ['rosettaAdminBehaviors', 'adminPostListValue']);
+dcCore::app()->addBehavior('adminPostMiniListHeader', ['rosettaAdminBehaviors', 'adminPostMiniListHeader']);
+dcCore::app()->addBehavior('adminPostMiniListValue', ['rosettaAdminBehaviors', 'adminPostMiniListValue']);
+dcCore::app()->addBehavior('adminPagesListHeader', ['rosettaAdminBehaviors', 'adminPagesListHeader']);
+dcCore::app()->addBehavior('adminPagesListValue', ['rosettaAdminBehaviors', 'adminPagesListValue']);
+dcCore::app()->addBehavior('adminFiltersLists', ['rosettaAdminBehaviors', 'adminFiltersLists']);
 
 // Add behaviour callback for import/export
-$core->addBehavior('exportSingle', ['rosettaAdminBehaviors', 'exportSingle']);
-$core->addBehavior('exportFull', ['rosettaAdminBehaviors', 'exportFull']);
-$core->addBehavior('importInit', ['rosettaAdminBehaviors', 'importInit']);
-$core->addBehavior('importSingle', ['rosettaAdminBehaviors', 'importSingle']);
-$core->addBehavior('importFull', ['rosettaAdminBehaviors', 'importFull']);
+dcCore::app()->addBehavior('exportSingle', ['rosettaAdminBehaviors', 'exportSingle']);
+dcCore::app()->addBehavior('exportFull', ['rosettaAdminBehaviors', 'exportFull']);
+dcCore::app()->addBehavior('importInit', ['rosettaAdminBehaviors', 'importInit']);
+dcCore::app()->addBehavior('importSingle', ['rosettaAdminBehaviors', 'importSingle']);
+dcCore::app()->addBehavior('importFull', ['rosettaAdminBehaviors', 'importFull']);
 
 // Register REST methods
-$core->rest->addFunction('newTranslation', ['rosettaRest', 'newTranslation']);
-$core->rest->addFunction('addTranslation', ['rosettaRest', 'addTranslation']);
-$core->rest->addFunction('removeTranslation', ['rosettaRest', 'removeTranslation']);
-$core->rest->addFunction('getTranslationRow', ['rosettaRest', 'getTranslationRow']);
+dcCore::app()->rest->addFunction('newTranslation', ['rosettaRest', 'newTranslation']);
+dcCore::app()->rest->addFunction('addTranslation', ['rosettaRest', 'addTranslation']);
+dcCore::app()->rest->addFunction('removeTranslation', ['rosettaRest', 'removeTranslation']);
+dcCore::app()->rest->addFunction('getTranslationRow', ['rosettaRest', 'getTranslationRow']);
 
 // Administrative actions
-$core->blog->settings->addNamespace('rosetta');
-if ($core->blog->settings->rosetta->active) {
+dcCore::app()->blog->settings->addNamespace('rosetta');
+if (dcCore::app()->blog->settings->rosetta->active) {
     // Cope with actions on post/page edition (if javascript not enabled)
     if (isset($_GET['rosetta']) && in_array($_GET['rosetta'], ['add', 'remove', 'new', 'new_edit'])) {
         $redirect = false;

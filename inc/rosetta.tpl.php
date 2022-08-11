@@ -14,8 +14,6 @@ class rosettaTpl
 {
     public static function EntryListHelper($post_id, $post_lang, $post_type, $include, &$current, $code_only = false)
     {
-        global $core;
-
         // Get associated entries
         $ids = rosettaData::findAllTranslations($post_id, $post_lang, ($include != 'none'));
         if (!is_array($ids)) {
@@ -28,7 +26,7 @@ class rosettaTpl
         $langs   = l10n::getLanguagesName();
         $current = '';
         foreach ($ids as $lang => $id) {
-            $name = $langs[$lang] ?? $langs[$core->blog->settings->system->lang];
+            $name = $langs[$lang] ?? $langs[dcCore::app()->blog->settings->system->lang];
             if ($post_id == $id) {
                 $current = ($code_only ? $lang : $name);
             }
@@ -39,14 +37,14 @@ class rosettaTpl
                 $params = new ArrayObject([
                     'post_id'    => $id,
                     'post_type'  => $post_type,
-                    'no_content' => true]);
-                $core->callBehavior('publicPostBeforeGetPosts', $params, null);
-                $rs = $core->blog->getPosts($params);
+                    'no_content' => true, ]);
+                dcCore::app()->callBehavior('publicPostBeforeGetPosts', $params, null);
+                $rs = dcCore::app()->blog->getPosts($params);
                 if ($rs->count()) {
                     $rs->fetch();
-                    $url = $core->blog->url . $core->getPostPublicURL($post_type, html::sanitizeURL($rs->post_url));
-                    $core->blog->settings->addNamespace('rosetta');
-                    if ($core->blog->settings->rosetta->accept_language) {
+                    $url = dcCore::app()->blog->url . dcCore::app()->getPostPublicURL($post_type, html::sanitizeURL($rs->post_url));
+                    dcCore::app()->blog->settings->addNamespace('rosetta');
+                    if (dcCore::app()->blog->settings->rosetta->accept_language) {
                         // Add lang parameter to the URL to prevent accept-language auto redirect
                         $url .= (strpos($url, '?') === false ? '?' : '&') . 'lang=' . $lang;
                     }
@@ -64,10 +62,8 @@ class rosettaTpl
 
     public static function rosettaEntryList($attr)
     {
-        global $core;
-
-        $core->blog->settings->addNamespace('rosetta');
-        if (!$core->blog->settings->rosetta->active) {
+        dcCore::app()->blog->settings->addNamespace('rosetta');
+        if (!dcCore::app()->blog->settings->rosetta->active) {
             return;
         }
 
@@ -78,33 +74,31 @@ class rosettaTpl
         }
 
         $res = <<<EOT
-      \$rosetta_table = rosettaTpl::EntryListHelper(
-        \$_ctx->posts->post_id,\$_ctx->posts->post_lang,\$_ctx->posts->post_type,
-        '$option',\$rosetta_current);
-      if (is_array(\$rosetta_table) && count(\$rosetta_table)) {
-        echo '<ul class="rosetta-entries-list">'."\n";
-        foreach (\$rosetta_table as \$rosetta_name => \$rosetta_url) {
-          \$rosetta_link = (\$rosetta_name != \$rosetta_current || '$option' == 'link');
-          \$rosetta_class = (\$rosetta_name == \$rosetta_current ? 'class="current"' : '');
-          echo '<li'.\$rosetta_class.'>'.
-            (\$rosetta_link ? '<a href="'.\$rosetta_url.'">' : '').
-            (\$rosetta_class ? '<strong>' : '').html::escapeHTML(\$rosetta_name).(\$rosetta_class ? '</strong>' : '').
-            (\$rosetta_link ? '</a>' : '').
-            '</li>'."\n";
-        }
-        echo '</ul>'."\n";
-      }
-EOT;
+                  \$rosetta_table = rosettaTpl::EntryListHelper(
+                    dcCore::app()->ctx->posts->post_id,dcCore::app()->ctx->posts->post_lang,dcCore::app()->ctx->posts->post_type,
+                    '$option',\$rosetta_current);
+                  if (is_array(\$rosetta_table) && count(\$rosetta_table)) {
+                    echo '<ul class="rosetta-entries-list">'."\n";
+                    foreach (\$rosetta_table as \$rosetta_name => \$rosetta_url) {
+                      \$rosetta_link = (\$rosetta_name != \$rosetta_current || '$option' == 'link');
+                      \$rosetta_class = (\$rosetta_name == \$rosetta_current ? 'class="current"' : '');
+                      echo '<li'.\$rosetta_class.'>'.
+                        (\$rosetta_link ? '<a href="'.\$rosetta_url.'">' : '').
+                        (\$rosetta_class ? '<strong>' : '').html::escapeHTML(\$rosetta_name).(\$rosetta_class ? '</strong>' : '').
+                        (\$rosetta_link ? '</a>' : '').
+                        '</li>'."\n";
+                    }
+                    echo '</ul>'."\n";
+                  }
+            EOT;
 
-        return ($res != '' ? '<?php ' . $res . ' ?>' : '');
+        return '<?php ' . $res . ' ?>';
     }
 
     public static function rosettaEntryWidget($w)
     {
-        global $core, $_ctx;
-
-        $core->blog->settings->addNamespace('rosetta');
-        if (!$core->blog->settings->rosetta->active) {
+        dcCore::app()->blog->settings->addNamespace('rosetta');
+        if (!dcCore::app()->blog->settings->rosetta->active) {
             return;
         }
 
@@ -113,18 +107,18 @@ EOT;
         }
 
         $urlTypes = ['post'];
-        if ($core->plugins->moduleExists('pages')) {
+        if (dcCore::app()->plugins->moduleExists('pages')) {
             $urlTypes[] = 'pages';
         }
 
-        if (!in_array($core->url->type, $urlTypes)) {
+        if (!in_array(dcCore::app()->url->type, $urlTypes)) {
             return;
         }
 
         // Get list of available translations for current entry
-        $post_type = ($core->url->type == 'post' ? 'post' : 'page');
+        $post_type = (dcCore::app()->url->type == 'post' ? 'post' : 'page');
         $current   = '';
-        $table     = self::EntryListHelper($_ctx->posts->post_id, $_ctx->posts->post_lang, $post_type, $w->current, $current);
+        $table     = self::EntryListHelper(dcCore::app()->ctx->posts->post_id, dcCore::app()->ctx->posts->post_lang, $post_type, $w->current, $current);
         if (!$table) {
             return;
         }
@@ -136,7 +130,7 @@ EOT;
         $list = '';
         foreach ($table as $name => $url) {
             $link  = ($name != $current || $w->current == 'link');
-            $class = ($name == $current ? ' class="current"' : '');
+            $class = ($name                            == $current ? ' class="current"' : '');
 
             $list .= '<li' . $class . '>' .
             ($link ? '<a href="' . $url . '">' : '') .

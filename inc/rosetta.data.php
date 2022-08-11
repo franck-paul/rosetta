@@ -41,24 +41,22 @@ class rosettaData
      * Add a new translation for a post/page (only if it does not already exists)
      *
      * @param integer $src_id   original post/page id
-     * @param string  $src_lang original lang
+     * @param mixed   $src_lang original lang
      * @param integer $dst_id   new post/page translation id
-     * @param string  $dst_lang new post/page translation lang
+     * @param mixed   $dst_lang new post/page translation lang
      *
-     * @return true if translation have been successfully added, else false
+     * @return bool true if translation have been successfully added, else false
      */
-    public static function addTranslation($src_id, $src_lang, $dst_id, $dst_lang)
+    public static function addTranslation($src_id, $src_lang, $dst_id, $dst_lang): bool
     {
-        global $core;
-
         // Check args
         if ($src_lang == '' || !$src_lang) {
             // Use blog language if language not specified for original post
-            $src_lang = $core->blog->settings->system->lang;
+            $src_lang = dcCore::app()->blog->settings->system->lang;
         }
         if ($dst_lang == '' || !$dst_lang) {
             // Use blog language if language not specified for original post
-            $dst_lang = $core->blog->settings->system->lang;
+            $dst_lang = dcCore::app()->blog->settings->system->lang;
         }
         if ($src_lang == $dst_lang) {
             return false;
@@ -74,31 +72,31 @@ class rosettaData
         try {
             if (!$list) {
                 // No translation yet, add direct one
-                $core->con->writeLock($core->prefix . 'rosetta');
-                $cur           = $core->con->openCursor($core->prefix . 'rosetta');
+                dcCore::app()->con->writeLock(dcCore::app()->prefix . 'rosetta');
+                $cur           = dcCore::app()->con->openCursor(dcCore::app()->prefix . 'rosetta');
                 $cur->src_id   = $src_id;
                 $cur->src_lang = $src_lang;
                 $cur->dst_id   = $dst_id;
                 $cur->dst_lang = $dst_lang;
                 $cur->insert();
-                $core->con->unlock();
+                dcCore::app()->con->unlock();
             } else {
                 foreach ($list as $lang => $id) {
                     if (self::findTranslation($id, $lang, $dst_lang, false) == -1) {
                         // Add the new translation
-                        $core->con->writeLock($core->prefix . 'rosetta');
-                        $cur           = $core->con->openCursor($core->prefix . 'rosetta');
+                        dcCore::app()->con->writeLock(dcCore::app()->prefix . 'rosetta');
+                        $cur           = dcCore::app()->con->openCursor(dcCore::app()->prefix . 'rosetta');
                         $cur->src_id   = $id;
                         $cur->src_lang = $lang;
                         $cur->dst_id   = $dst_id;
                         $cur->dst_lang = $dst_lang;
                         $cur->insert();
-                        $core->con->unlock();
+                        dcCore::app()->con->unlock();
                     }
                 }
             }
         } catch (Exception $e) {
-            $core->con->unlock();
+            dcCore::app()->con->unlock();
 
             throw $e;
         }
@@ -110,24 +108,22 @@ class rosettaData
      * Remove an existing translation for a post/page
      *
      * @param integer $src_id   original post/page id
-     * @param string  $src_lang original lang
+     * @param mixed   $src_lang original lang
      * @param integer $dst_id   post/page translation id to be removed
-     * @param string  $dst_lang new post/page translation lang to be removed
+     * @param mixed   $dst_lang new post/page translation lang to be removed
      *
-     * @return true if translation have been successfully removed, else false
+     * @return bool  true if translation have been successfully removed, else false
      */
-    public static function removeTranslation($src_id, $src_lang, $dst_id, $dst_lang)
+    public static function removeTranslation($src_id, $src_lang, $dst_id, $dst_lang): bool
     {
-        global $core;
-
         // Check args
         if ($src_lang == '' || !$src_lang) {
             // Use blog language if language not specified for original post
-            $src_lang = $core->blog->settings->system->lang;
+            $src_lang = dcCore::app()->blog->settings->system->lang;
         }
         if ($dst_lang == '' || !$dst_lang) {
             // Use blog language if language not specified for original post
-            $dst_lang = $core->blog->settings->system->lang;
+            $dst_lang = dcCore::app()->blog->settings->system->lang;
         }
         if ($src_lang == $dst_lang) {
             return false;
@@ -137,18 +133,18 @@ class rosettaData
             return false;
         }
 
-        $core->con->writeLock($core->prefix . 'rosetta');
+        dcCore::app()->con->writeLock(dcCore::app()->prefix . 'rosetta');
 
         try {
             // Remove the translations
-            $strReq = 'DELETE FROM ' . $core->prefix . 'rosetta ' .
+            $strReq = 'DELETE FROM ' . dcCore::app()->prefix . 'rosetta ' .
             'WHERE ' .
-            "(src_id = '" . $core->con->escape($dst_id) . "' AND src_lang = '" . $core->con->escape($dst_lang) . "') OR " .
-            "(dst_id = '" . $core->con->escape($dst_id) . "' AND dst_lang = '" . $core->con->escape($dst_lang) . "') ";
-            $core->con->execute($strReq);
-            $core->con->unlock();
+            "(src_id = '" . dcCore::app()->con->escape($dst_id) . "' AND src_lang = '" . dcCore::app()->con->escape($dst_lang) . "') OR " .
+            "(dst_id = '" . dcCore::app()->con->escape($dst_id) . "' AND dst_lang = '" . dcCore::app()->con->escape($dst_lang) . "') ";
+            dcCore::app()->con->execute($strReq);
+            dcCore::app()->con->unlock();
         } catch (Exception $e) {
-            $core->con->unlock();
+            dcCore::app()->con->unlock();
 
             throw $e;
         }
@@ -160,35 +156,33 @@ class rosettaData
      * Find direct posts/pages associated with a post/page id and lang
      *
      * @param  integer $id   original post/page id
-     * @param  string  $lang original lang
+     * @param  mixed   $lang original lang
      * @param  boolean $full result should include original post/page+lang
      *
-     * @return array         associative array (lang => id), false if nothing found
+     * @return mixed         associative array (lang => id), false if nothing found
      */
     private static function findDirectTranslations($id, $lang, $full = false)
     {
-        global $core;
-
         if ($lang == '' || !$lang) {
             // Use blog language if language not specified for original post
-            $lang = $core->blog->settings->system->lang;
+            $lang = dcCore::app()->blog->settings->system->lang;
         }
 
-        $strReq = 'SELECT * FROM ' . $core->prefix . 'rosetta R ' .
+        $strReq = 'SELECT * FROM ' . dcCore::app()->prefix . 'rosetta R ' .
         'WHERE ' .
-        "(R.src_id = '" . $core->con->escape($id) . "' AND R.src_lang = '" . $core->con->escape($lang) . "') OR " .
-        "(R.dst_id = '" . $core->con->escape($id) . "' AND R.dst_lang = '" . $core->con->escape($lang) . "') ";
+        "(R.src_id = '" . dcCore::app()->con->escape($id) . "' AND R.src_lang = '" . dcCore::app()->con->escape($lang) . "') OR " .
+        "(R.dst_id = '" . dcCore::app()->con->escape($id) . "' AND R.dst_lang = '" . dcCore::app()->con->escape($lang) . "') ";
 
-        $rs = $core->con->select($strReq);
+        $rs = dcCore::app()->con->select($strReq);
         if ($rs->count()) {
             $list = [];
             while ($rs->fetch()) {
                 // Add src couple if requested
-                if (($full) || (!$full && ($rs->src_id != $id || $rs->src_lang != $lang))) {
+                if (($full) || (($rs->src_id != $id || $rs->src_lang != $lang))) {
                     $list[$rs->src_lang] = $rs->src_id;
                 }
                 // Add dst couple if requested
-                if (($full) || (!$full && ($rs->dst_id != $id || $rs->dst_lang != $lang))) {
+                if (($full) || (($rs->dst_id != $id || $rs->dst_lang != $lang))) {
                     $list[$rs->dst_lang] = $rs->dst_id;
                 }
             }
@@ -204,18 +198,16 @@ class rosettaData
      * Find all posts/pages associated with a post/page id and lang
      *
      * @param  integer $id           original post/page id
-     * @param  string  $lang         original lang
+     * @param  mixed   $lang         original lang
      * @param  boolean $full         result should include original post/page+lang
      *
-     * @return array                 associative array (lang => id), false if nothing found
+     * @return mixed                 associative array (lang => id), false if nothing found
      */
     public static function findAllTranslations($id, $lang, $full = false)
     {
-        global $core;
-
         if ($lang == '' || !$lang) {
             // Use blog language if language not specified for original post
-            $lang = $core->blog->settings->system->lang;
+            $lang = dcCore::app()->blog->settings->system->lang;
         }
 
         // Get direct associations
@@ -258,7 +250,7 @@ class rosettaData
      * Find a post/page id with the requested lang
      *
      * @param  integer $src_id   original post/page id
-     * @param  string  $src_lang original lang
+     * @param  mixed   $src_lang original lang
      * @param  string  $dst_lang requested lang
      * @param  boolean $indirect look also for indirect associations
      *
@@ -266,21 +258,19 @@ class rosettaData
      */
     public static function findTranslation($src_id, $src_lang, $dst_lang, $indirect = true)
     {
-        global $core;
-
         if ($src_lang == '' || !$src_lang) {
             // Use blog language if language not specified for original post
-            $src_lang = $core->blog->settings->system->lang;
+            $src_lang = dcCore::app()->blog->settings->system->lang;
         }
 
         // Looks for a post/page with an association with the corresponding lang
-        $strReq = 'SELECT * FROM ' . $core->prefix . 'rosetta R ' .
+        $strReq = 'SELECT * FROM ' . dcCore::app()->prefix . 'rosetta R ' .
         'WHERE ' .
-        "(R.src_id = '" . $core->con->escape($src_id) . "' AND R.dst_lang = '" . $core->con->escape($dst_lang) . "') OR " .
-        "(R.dst_id = '" . $core->con->escape($src_id) . "' AND R.src_lang = '" . $core->con->escape($dst_lang) . "') " .
+        "(R.src_id = '" . dcCore::app()->con->escape($src_id) . "' AND R.dst_lang = '" . dcCore::app()->con->escape($dst_lang) . "') OR " .
+        "(R.dst_id = '" . dcCore::app()->con->escape($src_id) . "' AND R.src_lang = '" . dcCore::app()->con->escape($dst_lang) . "') " .
             'ORDER BY R.dst_id DESC';
 
-        $rs = $core->con->select($strReq);
+        $rs = dcCore::app()->con->select($strReq);
         if ($rs->count()) {
             // Load first record
             $rs->fetch();

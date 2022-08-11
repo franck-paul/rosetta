@@ -1,12 +1,12 @@
 /*global $ */
 'use strict';
 
-$(function () {
-  $('#rosetta-new-cancel').on('click', function () {
+$(() => {
+  $('#rosetta-new-cancel').on('click', () => {
     window.close();
   });
 
-  $('#rosetta-new-ok').on('click', function (e) {
+  $('#rosetta-new-ok').on('click', (e) => {
     e.preventDefault();
     const parent_doc = window.opener.document;
     const rosetta_title = parent_doc.getElementById('rosetta_title');

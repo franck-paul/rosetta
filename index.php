@@ -16,29 +16,29 @@ if (!defined('DC_CONTEXT_ADMIN')) {
 
 // Open specific popup if required
 if (!empty($_REQUEST['popup_new'])) {
-    require dirname(__FILE__) . '/' . 'popup_new.php';
+    require __DIR__ . '/' . 'popup_new.php';
 
     return;
 }
 
 // Main page of plugin
-$core->blog->settings->addNamespace('rosetta');
-$rosetta_active          = $core->blog->settings->rosetta->active;
-$rosetta_accept_language = $core->blog->settings->rosetta->accept_language;
+dcCore::app()->blog->settings->addNamespace('rosetta');
+$rosetta_active          = dcCore::app()->blog->settings->rosetta->active;
+$rosetta_accept_language = dcCore::app()->blog->settings->rosetta->accept_language;
 
-$p_url = $core->adminurl->get('admin.plugin.rosetta');
+$p_url = dcCore::app()->adminurl->get('admin.plugin.rosetta');
 $tab   = empty($_REQUEST['tab']) ? '' : $_REQUEST['tab'];
 
 // Save Rosetta settings
 if (!empty($_POST['save_settings'])) {
     try {
-        $core->blog->settings->rosetta->put('active', empty($_POST['active']) ? false : true, 'boolean');
-        $core->blog->settings->rosetta->put('accept_language', empty($_POST['accept_language']) ? false : true, 'boolean');
+        dcCore::app()->blog->settings->rosetta->put('active', empty($_POST['active']) ? false : true, 'boolean');
+        dcCore::app()->blog->settings->rosetta->put('accept_language', empty($_POST['accept_language']) ? false : true, 'boolean');
 
         dcPage::addSuccessNotice(__('Configuration successfully updated.'));
         http::redirect($p_url . '&tab=' . $tab . '#' . $tab);
     } catch (Exception $e) {
-        $core->error->add($e->getMessage());
+        dcCore::app()->error->add($e->getMessage());
     }
 }
 
@@ -51,8 +51,8 @@ dcPage::jsPageTabs($tab) .
 
 echo dcPage::breadcrumb(
     [
-        html::escapeHTML($core->blog->name) => '',
-        __('Rosetta')                       => ''
+        html::escapeHTML(dcCore::app()->blog->name) => '',
+        __('Rosetta')                               => '',
     ]
 ) . dcPage::notices();
 
@@ -68,12 +68,12 @@ echo
 echo
 '<p class="field"><input type="submit" value="' . __('Save') . '" /> ' .
 form::hidden(['tab'], 'posts') .
-$core->formNonce() . '</p>' .
+dcCore::app()->formNonce() . '</p>' .
     '</form>' .
     '</div>';
 
 // 2. Pages translations
-if ($core->plugins->moduleExists('pages')) {
+if (dcCore::app()->plugins->moduleExists('pages')) {
     echo
     '<div id="pages" class="multi-part" title="' . __('Pages tranlations') . '">' .
     '<h3>' . __('Pages tranlations') . '</h3>' .
@@ -84,12 +84,12 @@ if ($core->plugins->moduleExists('pages')) {
     echo
     '<p class="field"><input type="submit" value="' . __('Save') . '" /> ' .
     form::hidden(['tab'], 'pages') .
-    $core->formNonce() . '</p>' .
+    dcCore::app()->formNonce() . '</p>' .
         '</form>' .
         '</div>';
 }
 
-if ($core->auth->check('admin', $core->blog->id)) {
+if (dcCore::app()->auth->check('admin', dcCore::app()->blog->id)) {
     // 3. Plugin settings
     echo
     '<div id="settings" class="multi-part" title="' . __('Settings') . '">' .
@@ -108,7 +108,7 @@ if ($core->auth->check('admin', $core->blog->id)) {
     '<p class="field wide"><input type="submit" value="' . __('Save') . '" /> ' .
     form::hidden(['tab'], 'settings') .
     form::hidden(['save_settings'], 1) .
-    $core->formNonce() . '</p>' .
+    dcCore::app()->formNonce() . '</p>' .
         '</form>' .
         '</div>';
 }
