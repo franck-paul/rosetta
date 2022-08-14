@@ -17,7 +17,7 @@ class rosettaAdminBehaviors
 {
     public static $args_rosetta = '&amp;lang=%s&amp;type=%s&amp;rosetta=%s&amp;rosetta_id=%s&amp;rosetta_lang=%s';
 
-    public static function adminDashboardFavorites($core = null, $favs)
+    public static function adminDashboardFavorites($core, $favs)
     {
         $favs->register('rosetta', [
             'title'       => __('Rosetta'),
@@ -232,7 +232,7 @@ class rosettaAdminBehaviors
         return dcPage::jsModuleLoad('rosetta/js/popup_posts.js', dcCore::app()->getVersion('rosetta'));
     }
 
-    public static function adminColumnsLists($core = null, $cols)
+    public static function adminColumnsLists($core, $cols)
     {
         $cols['posts'][1]['language']     = [true, __('Language')];
         $cols['posts'][1]['translations'] = [true, __('Translations')];
@@ -240,7 +240,7 @@ class rosettaAdminBehaviors
         $cols['pages'][1]['translations'] = [true, __('Translations')];
     }
 
-    private static function adminEntryListHeader($core = null, $rs, $cols)
+    private static function adminEntryListHeader($core, $rs, $cols)
     {
         dcCore::app()->blog->settings->addNamespace('rosetta');
         if (dcCore::app()->blog->settings->rosetta->active) {
@@ -249,17 +249,17 @@ class rosettaAdminBehaviors
         }
     }
 
-    public static function adminPostListHeader($core = null, $rs, $cols)
+    public static function adminPostListHeader($core, $rs, $cols)
     {
         self::adminEntryListHeader(dcCore::app(), $rs, $cols);
     }
 
-    public static function adminPagesListHeader($core = null, $rs, $cols)
+    public static function adminPagesListHeader($core, $rs, $cols)
     {
         self::adminEntryListHeader(dcCore::app(), $rs, $cols);
     }
 
-    public static function adminEntryListValue($core = null, $rs, $cols)
+    public static function adminEntryListValue($core, $rs, $cols)
     {
         dcCore::app()->blog->settings->addNamespace('rosetta');
         if (dcCore::app()->blog->settings->rosetta->active) {
@@ -295,17 +295,17 @@ class rosettaAdminBehaviors
         }
     }
 
-    public static function adminPostListValue($core = null, $rs, $cols)
+    public static function adminPostListValue($core, $rs, $cols)
     {
         self::adminEntryListValue(dcCore::app(), $rs, $cols);
     }
 
-    public static function adminPagesListValue($core = null, $rs, $cols)
+    public static function adminPagesListValue($core, $rs, $cols)
     {
         self::adminEntryListValue(dcCore::app(), $rs, $cols);
     }
 
-    public static function adminPostMiniListHeader($core = null, $rs, $cols)
+    public static function adminPostMiniListHeader($core, $rs, $cols)
     {
         dcCore::app()->blog->settings->addNamespace('rosetta');
         if (dcCore::app()->blog->settings->rosetta->active) {
@@ -313,7 +313,7 @@ class rosettaAdminBehaviors
         }
     }
 
-    public static function adminPostMiniListValue($core = null, $rs, $cols)
+    public static function adminPostMiniListValue($core, $rs, $cols)
     {
         dcCore::app()->blog->settings->addNamespace('rosetta');
         if (dcCore::app()->blog->settings->rosetta->active) {
@@ -321,12 +321,12 @@ class rosettaAdminBehaviors
         }
     }
 
-    public static function adminFiltersLists($core = null, $sorts)
+    public static function adminFiltersLists($core, $sorts)
     {
         // TODO when 1st and 2nd tab of index will be developped, if necessary
     }
 
-    public static function exportSingle($core = null, $exp, $blog_id)
+    public static function exportSingle($core, $exp, $blog_id)
     {
         $exp->export(
             'rosetta',
@@ -337,12 +337,12 @@ class rosettaAdminBehaviors
         );
     }
 
-    public static function exportFull($core = null, $exp)
+    public static function exportFull($core, $exp)
     {
         $exp->exportTable('rosetta');
     }
 
-    public static function importInit($fi, $core = null)
+    public static function importInit($fi, $core)
     {
         $fi->cur_rosetta = dcCore::app()->con->openCursor(dcCore::app()->prefix . 'rosetta');
     }
@@ -359,7 +359,7 @@ class rosettaAdminBehaviors
         $fi->cur_rosetta->insert();
     }
 
-    public static function importSingle($line, $fi, $core = null)
+    public static function importSingle($line, $fi, $core)
     {
         if ($line->__name == 'rosetta') {
             if (isset($fi->old_ids['post'][(int) $line->src_id]) && isset($fi->old_ids['post'][(int) $line->dst_id])) {
@@ -377,7 +377,7 @@ class rosettaAdminBehaviors
         }
     }
 
-    public static function importFull($line, $fi, $core = null)
+    public static function importFull($line, $fi, $core)
     {
         if ($line->__name == 'rosetta') {
             self::insertRosettaLine($line, $fi);

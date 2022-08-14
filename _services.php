@@ -16,7 +16,7 @@ if (!defined('DC_CONTEXT_ADMIN')) {
 
 class rosettaRest
 {
-    public static function newTranslation($core = null, $get)
+    public static function newTranslation($core, $get)
     {
         $id            = !empty($get['id']) ? $get['id'] : -1;
         $lang          = !empty($get['lang']) ? $get['lang'] : '';
@@ -90,7 +90,7 @@ class rosettaRest
      *
      * @return     xmlTag  The xml tag.
      */
-    public static function addTranslation($core = null, $get)
+    public static function addTranslation($core, $get)
     {
         $id           = !empty($get['id']) ? $get['id'] : -1;
         $lang         = !empty($get['lang']) ? $get['lang'] : '';
@@ -132,7 +132,7 @@ class rosettaRest
      *
      * @return     xmlTag  The xml tag.
      */
-    public static function removeTranslation($core = null, $get)
+    public static function removeTranslation($core, $get)
     {
         $id           = !empty($get['id']) ? $get['id'] : -1;
         $lang         = !empty($get['lang']) ? $get['lang'] : '';
@@ -152,7 +152,7 @@ class rosettaRest
         return $rsp;
     }
 
-    public static function getTranslationRow($core = null, $get)
+    public static function getTranslationRow($core, $get)
     {
         $id         = !empty($get['id']) ? $get['id'] : -1;
         $lang       = !empty($get['lang']) ? $get['lang'] : '';

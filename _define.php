@@ -18,7 +18,7 @@ $this->registerModule(
     'Rosetta',                       // Name
     'Manage post/page translations', // Description
     'Franck Paul',                   // Author
-    '0.10',
+    '0.10.1',
     [
         'requires'    => [['core', '2.23']],                       // Dependencies
         'permissions' => 'usage,contentadmin',                     // Permissions
