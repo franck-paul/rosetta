@@ -39,10 +39,10 @@ Nota : dans les popup de sélection de billet ou de page, une seule colonne est 
 ## Composants publics
 
 - Widget traductions dispos (billet/page) dans le contexte du billet/de la page seul(e) :
-  liste des URLs des billets (<a href="url-billet">langue</a>)
+  liste des URLs des billets (`<a href="url-billet">langue</a>`)
 - Balise template équivalente (utilisable aussi dans les contextes de liste des billets) :
   {{tpl:RosettaEntryList [include_current={std|link|none}]}} (std par défaut)
-- Injection meta : alternate / hreflang dans le <head> (contexte post/page)
+- Injection meta : alternate / hreflang dans le `<head>` (contexte post/page)
 
 ## Notes
 

@@ -10,7 +10,10 @@
  * @copyright Franck Paul carnet.franck.paul@gmail.com
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-dcPage::check('usage,contentadmin');
+dcPage::check(dcCore::app()->auth->makePermissions([
+    dcAuth::PERMISSION_USAGE,
+    dcAuth::PERMISSION_CONTENT_ADMIN,
+]));
 
 $id   = !empty($_GET['id']) ? $_GET['id'] : '';
 $type = !empty($_GET['type']) ? $_GET['type'] : '';

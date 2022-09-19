@@ -178,11 +178,11 @@ class rosettaData
             $list = [];
             while ($rs->fetch()) {
                 // Add src couple if requested
-                if (($full) || (($rs->src_id != $id || $rs->src_lang != $lang))) {
+                if (($full) || ($rs->src_id != $id || $rs->src_lang != $lang)) {
                     $list[$rs->src_lang] = $rs->src_id;
                 }
                 // Add dst couple if requested
-                if (($full) || (($rs->dst_id != $id || $rs->dst_lang != $lang))) {
+                if (($full) || ($rs->dst_id != $id || $rs->dst_lang != $lang)) {
                     $list[$rs->dst_lang] = $rs->dst_id;
                 }
             }
@@ -232,11 +232,9 @@ class rosettaData
                     }
                 }
             }
-            if (!$full) {
+            if (!$full && $key = array_search($id, $list, true)) {
                 // Remove original from list
-                if ($key = array_search($id, $list, true)) {
-                    unset($list[$key]);
-                }
+                unset($list[$key]);
             }
 
             return $list;
@@ -282,10 +280,8 @@ class rosettaData
         if ($indirect) {
             // Looks for an indirect post/page association, ie a -> b and b-> c in table, src = b, looking for c
             $list = self::findAllTranslations($src_id, $src_lang, false);
-            if (is_array($list)) {
-                if (array_key_exists($dst_lang, $list)) {
-                    return $list[$dst_lang];
-                }
+            if (is_array($list) && array_key_exists($dst_lang, $list)) {
+                return $list[$dst_lang];
             }
         }
 

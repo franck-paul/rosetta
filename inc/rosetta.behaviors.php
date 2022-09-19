@@ -342,7 +342,7 @@ class rosettaAdminBehaviors
         $exp->exportTable('rosetta');
     }
 
-    public static function importInit($fi, $core)
+    public static function importInit($fi)
     {
         $fi->cur_rosetta = dcCore::app()->con->openCursor(dcCore::app()->prefix . 'rosetta');
     }
@@ -359,7 +359,7 @@ class rosettaAdminBehaviors
         $fi->cur_rosetta->insert();
     }
 
-    public static function importSingle($line, $fi, $core)
+    public static function importSingle($line, $fi)
     {
         if ($line->__name == 'rosetta') {
             if (isset($fi->old_ids['post'][(int) $line->src_id]) && isset($fi->old_ids['post'][(int) $line->dst_id])) {
@@ -377,7 +377,7 @@ class rosettaAdminBehaviors
         }
     }
 
-    public static function importFull($line, $fi, $core)
+    public static function importFull($line, $fi)
     {
         if ($line->__name == 'rosetta') {
             self::insertRosettaLine($line, $fi);
@@ -519,26 +519,20 @@ class rosettaPublicBehaviors
         }
 
         dcCore::app()->blog->settings->addNamespace('rosetta');
-        if (dcCore::app()->blog->settings->rosetta->active) {
-            if (in_array(dcCore::app()->url->type, $urlTypes)) {
-                if (in_array(dcCore::app()->ctx->posts->post_type, $postTypes)) {
-                    // Find translations and add meta in header
-                    $list = rosettaTpl::EntryListHelper(
-                        dcCore::app()->ctx->posts->post_id,
-                        dcCore::app()->ctx->posts->post_lang,
-                        dcCore::app()->ctx->posts->post_type,
-                        'none',
-                        $current,
-                        true
-                    );
-                    if (is_array($list)) {
-                        if (count($list)) {
-                            echo '<!-- Rosetta: translated version of this entry -->' . "\n";
-                            foreach ($list as $lang => $url) {
-                                echo '<link rel="alternate" href="' . $url . '" hreflang="' . $lang . '" />' . "\n";
-                            }
-                        }
-                    }
+        if (dcCore::app()->blog->settings->rosetta->active && in_array(dcCore::app()->url->type, $urlTypes) && in_array(dcCore::app()->ctx->posts->post_type, $postTypes)) {
+            // Find translations and add meta in header
+            $list = rosettaTpl::EntryListHelper(
+                dcCore::app()->ctx->posts->post_id,
+                dcCore::app()->ctx->posts->post_lang,
+                dcCore::app()->ctx->posts->post_type,
+                'none',
+                $current,
+                true
+            );
+            if (is_array($list) && count($list)) {
+                echo '<!-- Rosetta: translated version of this entry -->' . "\n";
+                foreach ($list as $lang => $url) {
+                    echo '<link rel="alternate" href="' . $url . '" hreflang="' . $lang . '" />' . "\n";
                 }
             }
         }
@@ -588,7 +582,7 @@ class rosettaPublicBehaviors
 
                     // Redirect to translated post
                     $url = $rsDst->getURL();
-                    if (!preg_match('%^http[s]?://%', $url)) {
+                    if (!preg_match('%^https?://%', $url)) {
                         // Prepend scheme if not present
                         $url = (isset($_SERVER['HTTPS']) ? 'https:' : 'http:') . $url;
                     }

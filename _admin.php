@@ -17,7 +17,7 @@ if (!defined('DC_CONTEXT_ADMIN')) {
 // dead but useful code, in order to have translations
 __('Rosetta') . __('Manage post/page translations');
 
-$_menu['Blog']->addItem(
+dcCore::app()->menu['Blog']->addItem(
     __('Rosetta'),
     'plugin.php?p=rosetta',
     urldecode(dcPage::getPF('rosetta/icon.svg')),
