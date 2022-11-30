@@ -14,8 +14,6 @@ if (!defined('DC_RC_PATH')) {
     return;
 }
 
-dcCore::app()->addBehavior('initWidgets', ['rosettaWidgets', 'initWidgets']);
-
 class rosettaWidgets
 {
     public static function initWidgets($w)
@@ -46,3 +44,5 @@ class rosettaWidgets
             ->addOffline();
     }
 }
+
+dcCore::app()->addBehavior('initWidgets', [rosettaWidgets::class, 'initWidgets']);

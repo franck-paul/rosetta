@@ -44,7 +44,7 @@ class rosettaRest
                 }
 
                 // Create a new entry with given title and lang
-                $cur = dcCore::app()->con->openCursor(dcCore::app()->prefix . 'post');
+                $cur = dcCore::app()->con->openCursor(dcCore::app()->prefix . dcBlog::POST_TABLE_NAME);
 
                 $cur->post_title = $rosetta_title;
                 $cur->post_type  = $type;
@@ -53,7 +53,7 @@ class rosettaRest
                 $cur->user_id           = dcCore::app()->auth->userID();
                 $cur->post_content      = $content;
                 $cur->post_format       = $format;
-                $cur->post_status       = -2; // forced to pending
+                $cur->post_status       = dcBlog::POST_PENDING; // forced to pending
                 $cur->post_open_comment = (int) dcCore::app()->blog->settings->system->allow_comments;
                 $cur->post_open_tb      = (int) dcCore::app()->blog->settings->system->allow_trackbacks;
 

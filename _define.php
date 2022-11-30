@@ -15,18 +15,21 @@ if (!defined('DC_RC_PATH')) {
 }
 
 $this->registerModule(
-    'Rosetta',                       // Name
-    'Manage post/page translations', // Description
-    'Franck Paul',                   // Author
-    '0.10.1',
+    'Rosetta',
+    'Manage post/page translations',
+    'Franck Paul',
+    '1.0',
     [
-        'requires'    => [['core', '2.24']],                       // Dependencies
-        'permissions' => 'usage,contentadmin',                     // Permissions
-        'priority'    => 1001,                                     // Must be higher than pages plugin // Priority
-        'type'        => 'plugin',                                 // Type
+        'requires'    => [['core', '2.24']],
+        'permissions' => dcCore::app()->auth->makePermissions([
+            dcAuth::PERMISSION_USAGE,
+            dcAuth::PERMISSION_CONTENT_ADMIN,
+        ]),
+        'priority' => 1001,
+        'type'     => 'plugin',
 
-        'details'    => 'https://open-time.net/?q=rosetta',       // Details URL
-        'support'    => 'https://github.com/franck-paul/rosetta', // Support URL
+        'details'    => 'https://open-time.net/?q=rosetta',
+        'support'    => 'https://github.com/franck-paul/rosetta',
         'repository' => 'https://raw.githubusercontent.com/franck-paul/rosetta/master/dcstore.xml',
     ]
 );

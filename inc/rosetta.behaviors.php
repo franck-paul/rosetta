@@ -17,14 +17,17 @@ class rosettaAdminBehaviors
 {
     public static $args_rosetta = '&amp;lang=%s&amp;type=%s&amp;rosetta=%s&amp;rosetta_id=%s&amp;rosetta_lang=%s';
 
-    public static function adminDashboardFavorites($core, $favs)
+    public static function adminDashboardFavorites($favs)
     {
         $favs->register('rosetta', [
             'title'       => __('Rosetta'),
             'url'         => 'plugin.php?p=rosetta',
             'small-icon'  => urldecode(dcPage::getPF('rosetta/icon.svg')),
             'large-icon'  => urldecode(dcPage::getPF('rosetta/icon.svg')),
-            'permissions' => 'usage,contentadmin',
+            'permissions' => dcCore::app()->auth->makePermissions([
+                dcAuth::PERMISSION_USAGE,
+                dcAuth::PERMISSION_CONTENT_ADMIN,
+            ]),
         ]);
     }
 
@@ -92,8 +95,6 @@ class rosettaAdminBehaviors
 
     private static function adminEntryForm($post, $post_type = 'post')
     {
-        global $post_link, $redir_url;
-
         dcCore::app()->blog->settings->addNamespace('rosetta');
         if (dcCore::app()->blog->settings->rosetta->active) {
             if (!$post || !$post->post_id) {
@@ -110,7 +111,7 @@ class rosettaAdminBehaviors
             if ($post_type == 'post') {
                 $url = dcCore::app()->adminurl->get('admin.post', ['id' => $post->post_id]);
             } else {
-                $url = $redir_url . '&id=' . $post->post_id;
+                $url = dcCore::app()->adminurl->get('admin.plugin.pages', ['act' => 'page', 'id' => $post->post_id]);
             }
 
             $html_block = '<div class="table-outer">' .
@@ -149,7 +150,7 @@ class rosettaAdminBehaviors
                             $lang,
                             $name,
                             $rs->post_title,
-                            $post_link,
+                            dcCore::app()->admin->post_link,    // see plugins/pages/page.php and admin/post.php
                             $url
                         );
                     }
@@ -232,7 +233,7 @@ class rosettaAdminBehaviors
         return dcPage::jsModuleLoad('rosetta/js/popup_posts.js', dcCore::app()->getVersion('rosetta'));
     }
 
-    public static function adminColumnsLists($core, $cols)
+    public static function adminColumnsLists($cols)
     {
         $cols['posts'][1]['language']     = [true, __('Language')];
         $cols['posts'][1]['translations'] = [true, __('Translations')];
@@ -249,12 +250,12 @@ class rosettaAdminBehaviors
         }
     }
 
-    public static function adminPostListHeader($core, $rs, $cols)
+    public static function adminPostListHeader($rs, $cols)
     {
         self::adminEntryListHeader(dcCore::app(), $rs, $cols);
     }
 
-    public static function adminPagesListHeader($core, $rs, $cols)
+    public static function adminPagesListHeader($rs, $cols)
     {
         self::adminEntryListHeader(dcCore::app(), $rs, $cols);
     }
@@ -295,17 +296,17 @@ class rosettaAdminBehaviors
         }
     }
 
-    public static function adminPostListValue($core, $rs, $cols)
+    public static function adminPostListValue($rs, $cols)
     {
         self::adminEntryListValue(dcCore::app(), $rs, $cols);
     }
 
-    public static function adminPagesListValue($core, $rs, $cols)
+    public static function adminPagesListValue($rs, $cols)
     {
         self::adminEntryListValue(dcCore::app(), $rs, $cols);
     }
 
-    public static function adminPostMiniListHeader($core, $rs, $cols)
+    public static function adminPostMiniListHeader($rs, $cols)
     {
         dcCore::app()->blog->settings->addNamespace('rosetta');
         if (dcCore::app()->blog->settings->rosetta->active) {
@@ -321,12 +322,12 @@ class rosettaAdminBehaviors
         }
     }
 
-    public static function adminFiltersLists($core, $sorts)
+    public static function adminFiltersLists($sorts)
     {
         // TODO when 1st and 2nd tab of index will be developped, if necessary
     }
 
-    public static function exportSingle($core, $exp, $blog_id)
+    public static function exportSingle($exp, $blog_id)
     {
         $exp->export(
             'rosetta',
@@ -337,7 +338,7 @@ class rosettaAdminBehaviors
         );
     }
 
-    public static function exportFull($core, $exp)
+    public static function exportFull($exp)
     {
         $exp->exportTable('rosetta');
     }

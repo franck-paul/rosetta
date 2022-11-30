@@ -16,10 +16,12 @@ if (!defined('DC_RC_PATH')) {
 
 // Public and Admin mode
 
-$__autoload['rosettaPublicBehaviors'] = __DIR__ . '/inc/rosetta.behaviors.php';
-$__autoload['rosettaTpl']             = __DIR__ . '/inc/rosetta.tpl.php';
-$__autoload['rosettaData']            = __DIR__ . '/inc/rosetta.data.php';
-$__autoload['rosettaRest']            = __DIR__ . '/_services.php';
+Clearbricks::lib()->autoload([
+    'rosettaPublicBehaviors' => __DIR__ . '/inc/rosetta.behaviors.php',
+    'rosettaTpl'             => __DIR__ . '/inc/rosetta.tpl.php',
+    'rosettaData'            => __DIR__ . '/inc/rosetta.data.php',
+    'rosettaRest'            => __DIR__ . '/_services.php',
+]);
 
 if (!defined('DC_CONTEXT_ADMIN')) {
     return false;
@@ -27,4 +29,4 @@ if (!defined('DC_CONTEXT_ADMIN')) {
 
 // Admin mode only
 
-$__autoload['rosettaAdminBehaviors'] = __DIR__ . '/inc/rosetta.behaviors.php';
+Clearbricks::lib()->autoload(['rosettaAdminBehaviors' => __DIR__ . '/inc/rosetta.behaviors.php']);

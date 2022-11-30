@@ -38,6 +38,13 @@
 class rosettaData
 {
     /**
+     * Table name
+     *
+     * @var        string
+     */
+    public const ROSETTA_TABLE_NAME = 'rosetta';
+
+    /**
      * Add a new translation for a post/page (only if it does not already exists)
      *
      * @param integer $src_id   original post/page id
@@ -72,8 +79,8 @@ class rosettaData
         try {
             if (!$list) {
                 // No translation yet, add direct one
-                dcCore::app()->con->writeLock(dcCore::app()->prefix . 'rosetta');
-                $cur           = dcCore::app()->con->openCursor(dcCore::app()->prefix . 'rosetta');
+                dcCore::app()->con->writeLock(dcCore::app()->prefix . self::ROSETTA_TABLE_NAME);
+                $cur           = dcCore::app()->con->openCursor(dcCore::app()->prefix . self::ROSETTA_TABLE_NAME);
                 $cur->src_id   = $src_id;
                 $cur->src_lang = $src_lang;
                 $cur->dst_id   = $dst_id;
@@ -84,8 +91,8 @@ class rosettaData
                 foreach ($list as $lang => $id) {
                     if (self::findTranslation($id, $lang, $dst_lang, false) == -1) {
                         // Add the new translation
-                        dcCore::app()->con->writeLock(dcCore::app()->prefix . 'rosetta');
-                        $cur           = dcCore::app()->con->openCursor(dcCore::app()->prefix . 'rosetta');
+                        dcCore::app()->con->writeLock(dcCore::app()->prefix . self::ROSETTA_TABLE_NAME);
+                        $cur           = dcCore::app()->con->openCursor(dcCore::app()->prefix . self::ROSETTA_TABLE_NAME);
                         $cur->src_id   = $id;
                         $cur->src_lang = $lang;
                         $cur->dst_id   = $dst_id;
@@ -133,11 +140,11 @@ class rosettaData
             return false;
         }
 
-        dcCore::app()->con->writeLock(dcCore::app()->prefix . 'rosetta');
+        dcCore::app()->con->writeLock(dcCore::app()->prefix . self::ROSETTA_TABLE_NAME);
 
         try {
             // Remove the translations
-            $strReq = 'DELETE FROM ' . dcCore::app()->prefix . 'rosetta ' .
+            $strReq = 'DELETE FROM ' . dcCore::app()->prefix . self::ROSETTA_TABLE_NAME . ' ' .
             'WHERE ' .
             "(src_id = '" . dcCore::app()->con->escape($dst_id) . "' AND src_lang = '" . dcCore::app()->con->escape($dst_lang) . "') OR " .
             "(dst_id = '" . dcCore::app()->con->escape($dst_id) . "' AND dst_lang = '" . dcCore::app()->con->escape($dst_lang) . "') ";
@@ -168,12 +175,12 @@ class rosettaData
             $lang = dcCore::app()->blog->settings->system->lang;
         }
 
-        $strReq = 'SELECT * FROM ' . dcCore::app()->prefix . 'rosetta R ' .
+        $strReq = 'SELECT * FROM ' . dcCore::app()->prefix . self::ROSETTA_TABLE_NAME . ' R ' .
         'WHERE ' .
         "(R.src_id = '" . dcCore::app()->con->escape($id) . "' AND R.src_lang = '" . dcCore::app()->con->escape($lang) . "') OR " .
         "(R.dst_id = '" . dcCore::app()->con->escape($id) . "' AND R.dst_lang = '" . dcCore::app()->con->escape($lang) . "') ";
 
-        $rs = dcCore::app()->con->select($strReq);
+        $rs = new dcRecord(dcCore::app()->con->select($strReq));
         if ($rs->count()) {
             $list = [];
             while ($rs->fetch()) {
@@ -262,13 +269,13 @@ class rosettaData
         }
 
         // Looks for a post/page with an association with the corresponding lang
-        $strReq = 'SELECT * FROM ' . dcCore::app()->prefix . 'rosetta R ' .
+        $strReq = 'SELECT * FROM ' . dcCore::app()->prefix . self::ROSETTA_TABLE_NAME . ' R ' .
         'WHERE ' .
         "(R.src_id = '" . dcCore::app()->con->escape($src_id) . "' AND R.dst_lang = '" . dcCore::app()->con->escape($dst_lang) . "') OR " .
         "(R.dst_id = '" . dcCore::app()->con->escape($src_id) . "' AND R.src_lang = '" . dcCore::app()->con->escape($dst_lang) . "') " .
             'ORDER BY R.dst_id DESC';
 
-        $rs = dcCore::app()->con->select($strReq);
+        $rs = new dcRecord(dcCore::app()->con->select($strReq));
         if ($rs->count()) {
             // Load first record
             $rs->fetch();

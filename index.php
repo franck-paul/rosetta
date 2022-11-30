@@ -26,8 +26,7 @@ dcCore::app()->blog->settings->addNamespace('rosetta');
 $rosetta_active          = dcCore::app()->blog->settings->rosetta->active;
 $rosetta_accept_language = dcCore::app()->blog->settings->rosetta->accept_language;
 
-$p_url = dcCore::app()->adminurl->get('admin.plugin.rosetta');
-$tab   = empty($_REQUEST['tab']) ? '' : $_REQUEST['tab'];
+$tab = empty($_REQUEST['tab']) ? '' : $_REQUEST['tab'];
 
 // Save Rosetta settings
 if (!empty($_POST['save_settings'])) {
@@ -89,7 +88,9 @@ if (dcCore::app()->plugins->moduleExists('pages')) {
         '</div>';
 }
 
-if (dcCore::app()->auth->check('admin', dcCore::app()->blog->id)) {
+if (dcCore::app()->auth->check(dcCore::app()->auth->makePermissions([
+    dcAuth::PERMISSION_ADMIN,
+]), dcCore::app()->blog->id)) {
     // 3. Plugin settings
     echo
     '<div id="settings" class="multi-part" title="' . __('Settings') . '">' .

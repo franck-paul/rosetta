@@ -17,7 +17,7 @@ if (!defined('DC_CONTEXT_ADMIN')) {
 $new_version = dcCore::app()->plugins->moduleInfo('rosetta', 'version');
 $old_version = dcCore::app()->getVersion('rosetta');
 
-if (version_compare($old_version, $new_version, '>=')) {
+if (version_compare((string) $old_version, $new_version, '>=')) {
     return;
 }
 
@@ -45,8 +45,8 @@ try {
     $s->rosetta->index('idx_rosetta_src_id_src_lang', 'btree', 'src_id', 'src_lang');
     $s->rosetta->index('idx_rosetta_dst_id_dst_lang', 'btree', 'dst_id', 'dst_lang');
 
-    $s->rosetta->reference('fk_rosetta_src', 'src_id', 'post', 'post_id', 'cascade', 'cascade');
-    $s->rosetta->reference('fk_rosetta_dst', 'dst_id', 'post', 'post_id', 'cascade', 'cascade');
+    $s->rosetta->reference('fk_rosetta_src', 'src_id', dcBlog::POST_TABLE_NAME, 'post_id', 'cascade', 'cascade');
+    $s->rosetta->reference('fk_rosetta_dst', 'dst_id', dcBlog::POST_TABLE_NAME, 'post_id', 'cascade', 'cascade');
 
     // Schema installation
     $si      = new dbStruct(dcCore::app()->con, dcCore::app()->prefix);
