@@ -35,7 +35,7 @@ if (!empty($_POST['save_settings'])) {
         dcCore::app()->blog->settings->rosetta->put('accept_language', empty($_POST['accept_language']) ? false : true, 'boolean');
 
         dcPage::addSuccessNotice(__('Configuration successfully updated.'));
-        http::redirect($p_url . '&tab=' . $tab . '#' . $tab);
+        http::redirect(dcCore::app()->admin->getPageURL() . '&tab=' . $tab . '#' . $tab);
     } catch (Exception $e) {
         dcCore::app()->error->add($e->getMessage());
     }
@@ -60,7 +60,7 @@ echo dcPage::breadcrumb(
 echo
 '<div id="posts" class="multi-part" title="' . __('Posts tranlations') . '">' .
 '<h3>' . __('Posts tranlations') . '</h3>' .
-    '<form action="' . $p_url . '" method="post">';
+    '<form action="' . dcCore::app()->admin->getPageURL() . '" method="post">';
 
 // TODO
 
@@ -76,7 +76,7 @@ if (dcCore::app()->plugins->moduleExists('pages')) {
     echo
     '<div id="pages" class="multi-part" title="' . __('Pages tranlations') . '">' .
     '<h3>' . __('Pages tranlations') . '</h3>' .
-        '<form action="' . $p_url . '" method="post">';
+        '<form action="' . dcCore::app()->admin->getPageURL() . '" method="post">';
 
     // TODO
 
@@ -95,7 +95,7 @@ if (dcCore::app()->auth->check(dcCore::app()->auth->makePermissions([
     echo
     '<div id="settings" class="multi-part" title="' . __('Settings') . '">' .
     '<h3>' . __('Settings') . '</h3>' .
-    '<form action="' . $p_url . '" method="post">' .
+    '<form action="' . dcCore::app()->admin->getPageURL() . '" method="post">' .
 
     '<h4 class="pretty-title">' . __('Activation') . '</h4>' .
     '<p>' . form::checkbox('active', 1, $rosetta_active) .

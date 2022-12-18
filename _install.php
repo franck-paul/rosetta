@@ -14,10 +14,7 @@ if (!defined('DC_CONTEXT_ADMIN')) {
     return;
 }
 
-$new_version = dcCore::app()->plugins->moduleInfo('rosetta', 'version');
-$old_version = dcCore::app()->getVersion('rosetta');
-
-if (version_compare((string) $old_version, $new_version, '>=')) {
+if (!dcCore::app()->newVersion(basename(__DIR__), dcCore::app()->plugins->moduleInfo(basename(__DIR__), 'version'))) {
     return;
 }
 
@@ -58,8 +55,6 @@ try {
     // Default state is inactive
     dcCore::app()->blog->settings->rosetta->put('active', false, 'boolean', 'Active', false, true);
     dcCore::app()->blog->settings->rosetta->put('accept_language', false, 'boolean', 'Take care of browser accept-language', false, true);
-
-    dcCore::app()->setVersion('rosetta', $new_version);
 
     return true;
 } catch (Exception $e) {
