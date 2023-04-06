@@ -1,5 +1,12 @@
 # Plugin Rosetta pour Dotclear 2
 
+[![Release](https://img.shields.io/github/v/release/franck-paul/rosetta)](https://github.com/franck-paul/rosetta/releases)
+[![Date](https://img.shields.io/github/release-date/franck-paul/rosetta)](https://github.com/franck-paul/rosetta/releases)
+[![Issues](https://img.shields.io/github/issues/franck-paul/rosetta)](https://github.com/franck-paul/rosetta/issues)
+[![Dotclear](https://img.shields.io/badge/dotclear-v2.24-blue.svg)](https://fr.dotclear.org/download)
+[![Dotaddict](https://img.shields.io/badge/dotaddict-official-green.svg)](https://plugins.dotaddict.org/dc2/details/rosetta)
+[![License](https://img.shields.io/github/license/franck-paul/rosetta)](https://github.com/franck-paul/rosetta/blob/master/LICENSE)
+
 Gestion des traductions de billets et de pages.
 Lire également l'article de blog : [Plugin-Rosetta-07-pour-Dotclear](https://open-time.net/post/2017/12/07/Plugin-Rosetta-07-pour-Dotclear).
 

@@ -10,6 +10,9 @@
  * @copyright Franck Paul carnet.franck.paul@gmail.com
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
+
+use Dotclear\Helper\Html\Html;
+
 dcPage::check(dcCore::app()->auth->makePermissions([
     dcAuth::PERMISSION_USAGE,
     dcAuth::PERMISSION_CONTENT_ADMIN,
@@ -46,7 +49,7 @@ if (is_array($ids)) {
                     unset($lang_combo[$lc][$name]);
                 }
             }
-            if (!count($lang_combo[$lc])) {
+            if (!(is_countable($lang_combo[$lc]) ? count($lang_combo[$lc]) : 0)) {
                 unset($lang_combo[$lc]);
             }
         }
@@ -57,7 +60,7 @@ echo
 '<form id="link-insert-form" action="#" method="get">' .
 
 '<p><label for="title">' . __('Entry title:') . '</label> ' .
-form::field('title', 35, 512, html::escapeHTML($title)) . '</p>' .
+form::field('title', 35, 512, Html::escapeHTML($title)) . '</p>' .
 
 '<p><label for="lang">' . __('Entry language:') . '</label> ' .
 form::combo('lang', $lang_combo, $lang) . '</p>' .

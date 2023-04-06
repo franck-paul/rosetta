@@ -11,6 +11,9 @@
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use Dotclear\Helper\Html\Html;
+use Dotclear\Helper\Network\Http;
+
 // Admin behaviours
 
 class rosettaAdminBehaviors
@@ -44,7 +47,6 @@ class rosettaAdminBehaviors
 
     public static function adminPostHeaders()
     {
-        dcCore::app()->blog->settings->addNamespace('rosetta');
         if (dcCore::app()->blog->settings->rosetta->active) {
             return
             dcPage::jsJson('rosetta_type', ['post_type' => 'post']) .
@@ -54,7 +56,6 @@ class rosettaAdminBehaviors
 
     public static function adminPageHeaders()
     {
-        dcCore::app()->blog->settings->addNamespace('rosetta');
         if (dcCore::app()->blog->settings->rosetta->active) {
             return
             dcPage::jsJson('rosetta_type', ['post_type' => 'page']) .
@@ -88,14 +89,13 @@ class rosettaAdminBehaviors
         return sprintf(
             $html_line,
             $lang . ' - ' . $name,
-            sprintf($post_link, $id, __('Edit this entry'), html::escapeHTML($title)),
+            sprintf($post_link, $id, __('Edit this entry'), Html::escapeHTML($title)),
             sprintf($action_remove, $url_page . sprintf(self::$args_rosetta, $src_lang, '', 'remove', $id, $lang))
         );
     }
 
     private static function adminEntryForm($post, $post_type = 'post')
     {
-        dcCore::app()->blog->settings->addNamespace('rosetta');
         if (dcCore::app()->blog->settings->rosetta->active) {
             if (!$post || !$post->post_id) {
                 // Manage translation only on already created posts/pages
@@ -130,7 +130,7 @@ class rosettaAdminBehaviors
 
             $list = rosettaData::findAllTranslations($post->post_id, $post->post_lang, false);
             if (is_array($list) && count($list)) {
-                dcUtils::lexicalKeySort($list, 'admin');
+                dcUtils::lexicalKeySort($list, dcUtils::ADMIN_LOCALE);
 
                 $langs = l10n::getLanguagesName();
                 foreach ($list as $lang => $id) {
@@ -243,7 +243,6 @@ class rosettaAdminBehaviors
 
     private static function adminEntryListHeader($core, $rs, $cols)
     {
-        dcCore::app()->blog->settings->addNamespace('rosetta');
         if (dcCore::app()->blog->settings->rosetta->active) {
             $cols['language']     = '<th scope="col">' . __('Language') . '</th>';
             $cols['translations'] = '<th scope="col">' . __('Translations') . '</th>';
@@ -262,12 +261,11 @@ class rosettaAdminBehaviors
 
     public static function adminEntryListValue($core, $rs, $cols)
     {
-        dcCore::app()->blog->settings->addNamespace('rosetta');
         if (dcCore::app()->blog->settings->rosetta->active) {
             $translations = '';
             $list         = rosettaData::findAllTranslations($rs->post_id, $rs->post_lang, false);
             if (is_array($list) && count($list)) {
-                dcUtils::lexicalKeySort($list, 'admin');
+                dcUtils::lexicalKeySort($list, dcUtils::ADMIN_LOCALE);
                 $langs = l10n::getLanguagesName();
                 foreach ($list as $lang => $id) {
                     // Display existing translations
@@ -308,7 +306,6 @@ class rosettaAdminBehaviors
 
     public static function adminPostMiniListHeader($rs, $cols)
     {
-        dcCore::app()->blog->settings->addNamespace('rosetta');
         if (dcCore::app()->blog->settings->rosetta->active) {
             $cols['language'] = '<th scope="col">' . __('Language') . '</th>';
         }
@@ -316,7 +313,6 @@ class rosettaAdminBehaviors
 
     public static function adminPostMiniListValue($core, $rs, $cols)
     {
-        dcCore::app()->blog->settings->addNamespace('rosetta');
         if (dcCore::app()->blog->settings->rosetta->active) {
             $cols['language'] = '<td class="nowrap">' . $rs->post_lang . '</td>';
         }
@@ -370,9 +366,9 @@ class rosettaAdminBehaviors
             } else {
                 throw new Exception(sprintf(
                     __('ID of "%3$s" does not match on record "%1$s" at line %2$s of backup file.'),
-                    html::escapeHTML($line->__name),
-                    html::escapeHTML($line->__line),
-                    html::escapeHTML('rosetta')
+                    Html::escapeHTML($line->__name),
+                    Html::escapeHTML($line->__line),
+                    Html::escapeHTML('rosetta')
                 ));
             }
         }
@@ -398,7 +394,6 @@ class rosettaPublicBehaviors
 
     public static function coreBlogBeforeGetPosts($params)
     {
-        dcCore::app()->blog->settings->addNamespace('rosetta');
         if (dcCore::app()->blog->settings->rosetta->active) {
             if (rosettaPublicBehaviors::$state != ROSETTA_NONE || isset($params['post_lang'])) {
                 return;
@@ -442,16 +437,15 @@ class rosettaPublicBehaviors
 
     public static function coreBlogAfterGetPosts($rs, $alt)
     {
-        dcCore::app()->blog->settings->addNamespace('rosetta');
         if (dcCore::app()->blog->settings->rosetta->active && dcCore::app()->blog->settings->rosetta->accept_language && $rs->count()) {
             // Start replacing posts only if in Filtering posts state
             if (rosettaPublicBehaviors::$state == ROSETTA_FILTER) {
                 $cols = $rs->columns();
-                if (count($cols) > 1 || strpos($cols[0], 'count(') != 0) {
+                if ((is_countable($cols) ? count($cols) : 0) > 1 || strpos($cols[0], 'count(') != 0) {
                     // Only operate when not counting (aka getPosts() called with $count_only = true)
                     rosettaPublicBehaviors::$state = ROSETTA_SWITCH;
                     // replace translated posts if any may be using core->getPosts()
-                    $langs = http::getAcceptLanguages();
+                    $langs = Http::getAcceptLanguages();
                     if (count($langs)) {
                         $ids = [];
                         $nbx = 0;
@@ -512,6 +506,7 @@ class rosettaPublicBehaviors
 
     public static function publicHeadContent()
     {
+        $current   = null;
         $urlTypes  = ['post'];
         $postTypes = ['post'];
         if (dcCore::app()->plugins->moduleExists('pages')) {
@@ -519,7 +514,6 @@ class rosettaPublicBehaviors
             $postTypes[] = 'page';
         }
 
-        dcCore::app()->blog->settings->addNamespace('rosetta');
         if (dcCore::app()->blog->settings->rosetta->active && in_array(dcCore::app()->url->type, $urlTypes) && in_array(dcCore::app()->ctx->posts->post_type, $postTypes)) {
             // Find translations and add meta in header
             $list = rosettaTpl::EntryListHelper(
@@ -587,7 +581,7 @@ class rosettaPublicBehaviors
                         // Prepend scheme if not present
                         $url = (isset($_SERVER['HTTPS']) ? 'https:' : 'http:') . $url;
                     }
-                    http::redirect($url);
+                    Http::redirect($url);
                     exit;
                 }
             }
@@ -598,7 +592,6 @@ class rosettaPublicBehaviors
 
     public static function urlHandlerGetArgsDocument($handler)
     {
-        dcCore::app()->blog->settings->addNamespace('rosetta');
         if (!dcCore::app()->blog->settings->rosetta->active) {
             return;
         }
@@ -616,7 +609,7 @@ class rosettaPublicBehaviors
             $handler->getArgs($_SERVER['URL_REQUEST_PART'], $urlType, $urlPart);
             if (in_array($urlType, ['post', 'pages'])) {
                 // It is a post or page: Try to find a translation according to the browser settings
-                $langs = http::getAcceptLanguages();
+                $langs = Http::getAcceptLanguages();
             }
         }
 

@@ -10,6 +10,9 @@
  * @copyright Franck Paul carnet.franck.paul@gmail.com
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
+
+use Dotclear\Helper\Html\Html;
+
 class rosettaTpl
 {
     public static function EntryListHelper($post_id, $post_lang, $post_type, $include, &$current, $code_only = false)
@@ -42,8 +45,7 @@ class rosettaTpl
                 $rs = dcCore::app()->blog->getPosts($params);
                 if ($rs->count()) {
                     $rs->fetch();
-                    $url = dcCore::app()->blog->url . dcCore::app()->getPostPublicURL($post_type, html::sanitizeURL($rs->post_url));
-                    dcCore::app()->blog->settings->addNamespace('rosetta');
+                    $url = dcCore::app()->blog->url . dcCore::app()->getPostPublicURL($post_type, Html::sanitizeURL($rs->post_url));
                     if (dcCore::app()->blog->settings->rosetta->accept_language) {
                         // Add lang parameter to the URL to prevent accept-language auto redirect
                         $url .= (strpos($url, '?') === false ? '?' : '&') . 'lang=' . $lang;
@@ -55,19 +57,18 @@ class rosettaTpl
         if (!count($table)) {
             return false;
         }
-        dcUtils::lexicalKeySort($table, 'public');
+        dcUtils::lexicalKeySort($table, dcUtils::PUBLIC_LOCALE);
 
         return $table;
     }
 
     public static function rosettaEntryList($attr)
     {
-        dcCore::app()->blog->settings->addNamespace('rosetta');
         if (!dcCore::app()->blog->settings->rosetta->active) {
             return;
         }
 
-        $option = !empty($attr['include_current']) ? $attr['include_current'] : 'std';
+        $option = !empty($attr['include_current']) ? (string) $attr['include_current'] : 'std';
 
         if (!preg_match('#^(std|link|none)$#', $option)) {
             $option = 'std';
@@ -84,7 +85,7 @@ class rosettaTpl
                       \$rosetta_class = (\$rosetta_name == \$rosetta_current ? 'class="current"' : '');
                       echo '<li'.\$rosetta_class.'>'.
                         (\$rosetta_link ? '<a href="'.\$rosetta_url.'">' : '').
-                        (\$rosetta_class ? '<strong>' : '').html::escapeHTML(\$rosetta_name).(\$rosetta_class ? '</strong>' : '').
+                        (\$rosetta_class ? '<strong>' : '').\\Dotclear\\Helper\\Html\\Html::escapeHTML(\$rosetta_name).(\$rosetta_class ? '</strong>' : '').
                         (\$rosetta_link ? '</a>' : '').
                         '</li>'."\n";
                     }
@@ -97,7 +98,6 @@ class rosettaTpl
 
     public static function rosettaEntryWidget($w)
     {
-        dcCore::app()->blog->settings->addNamespace('rosetta');
         if (!dcCore::app()->blog->settings->rosetta->active) {
             return;
         }
@@ -124,17 +124,17 @@ class rosettaTpl
         }
 
         // Render widget title
-        $res = ($w->title ? $w->renderTitle(html::escapeHTML($w->title)) . "\n" : '');
+        $res = ($w->title ? $w->renderTitle(Html::escapeHTML($w->title)) . "\n" : '');
 
         // Render widget list of translations
         $list = '';
         foreach ($table as $name => $url) {
             $link  = ($name != $current || $w->current == 'link');
-            $class = ($name                            == $current ? ' class="current"' : '');
+            $class = ($name == $current ? ' class="current"' : '');
 
             $list .= '<li' . $class . '>' .
             ($link ? '<a href="' . $url . '">' : '') .
-            ($class ? '<strong>' : '') . html::escapeHTML($name) . ($class ? '</strong>' : '') .
+            ($class ? '<strong>' : '') . Html::escapeHTML($name) . ($class ? '</strong>' : '') .
                 ($link ? '</a>' : '') .
                 '</li>' . "\n";
         }

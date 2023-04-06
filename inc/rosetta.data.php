@@ -146,8 +146,8 @@ class rosettaData
             // Remove the translations
             $strReq = 'DELETE FROM ' . dcCore::app()->prefix . self::ROSETTA_TABLE_NAME . ' ' .
             'WHERE ' .
-            "(src_id = '" . dcCore::app()->con->escape($dst_id) . "' AND src_lang = '" . dcCore::app()->con->escape($dst_lang) . "') OR " .
-            "(dst_id = '" . dcCore::app()->con->escape($dst_id) . "' AND dst_lang = '" . dcCore::app()->con->escape($dst_lang) . "') ";
+            "(src_id = '" . dcCore::app()->con->escape((string) $dst_id) . "' AND src_lang = '" . dcCore::app()->con->escape($dst_lang) . "') OR " .
+            "(dst_id = '" . dcCore::app()->con->escape((string) $dst_id) . "' AND dst_lang = '" . dcCore::app()->con->escape($dst_lang) . "') ";
             dcCore::app()->con->execute($strReq);
             dcCore::app()->con->unlock();
         } catch (Exception $e) {
@@ -177,8 +177,8 @@ class rosettaData
 
         $strReq = 'SELECT * FROM ' . dcCore::app()->prefix . self::ROSETTA_TABLE_NAME . ' R ' .
         'WHERE ' .
-        "(R.src_id = '" . dcCore::app()->con->escape($id) . "' AND R.src_lang = '" . dcCore::app()->con->escape($lang) . "') OR " .
-        "(R.dst_id = '" . dcCore::app()->con->escape($id) . "' AND R.dst_lang = '" . dcCore::app()->con->escape($lang) . "') ";
+        "(R.src_id = '" . dcCore::app()->con->escape((string) $id) . "' AND R.src_lang = '" . dcCore::app()->con->escape($lang) . "') OR " .
+        "(R.dst_id = '" . dcCore::app()->con->escape((string) $id) . "' AND R.dst_lang = '" . dcCore::app()->con->escape($lang) . "') ";
 
         $rs = new dcRecord(dcCore::app()->con->select($strReq));
         if ($rs->count()) {
@@ -271,8 +271,8 @@ class rosettaData
         // Looks for a post/page with an association with the corresponding lang
         $strReq = 'SELECT * FROM ' . dcCore::app()->prefix . self::ROSETTA_TABLE_NAME . ' R ' .
         'WHERE ' .
-        "(R.src_id = '" . dcCore::app()->con->escape($src_id) . "' AND R.dst_lang = '" . dcCore::app()->con->escape($dst_lang) . "') OR " .
-        "(R.dst_id = '" . dcCore::app()->con->escape($src_id) . "' AND R.src_lang = '" . dcCore::app()->con->escape($dst_lang) . "') " .
+        "(R.src_id = '" . dcCore::app()->con->escape((string) $src_id) . "' AND R.dst_lang = '" . dcCore::app()->con->escape($dst_lang) . "') OR " .
+        "(R.dst_id = '" . dcCore::app()->con->escape((string) $src_id) . "' AND R.src_lang = '" . dcCore::app()->con->escape($dst_lang) . "') " .
             'ORDER BY R.dst_id DESC';
 
         $rs = new dcRecord(dcCore::app()->con->select($strReq));

@@ -10,6 +10,9 @@
  * @copyright Franck Paul carnet.franck.paul@gmail.com
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
+
+use Dotclear\Helper\Html\XmlTag;
+
 if (!defined('DC_CONTEXT_ADMIN')) {
     return;
 }
@@ -23,7 +26,7 @@ class rosettaRest
         $type          = !empty($get['type']) ? $get['type'] : 'post';
         $rosetta_title = !empty($get['rosetta_title']) ? $get['rosetta_title'] : '';
         $rosetta_lang  = !empty($get['rosetta_lang']) ? $get['rosetta_lang'] : '';
-        $rsp           = new xmlTag('rosetta');
+        $rsp           = new XmlTag('rosetta');
 
         $ret        = false;
         $rosetta_id = -1;
@@ -88,7 +91,7 @@ class rosettaRest
      * @param      dcCore  $core   The dcCore instance
      * @param      array   $get    The cleaned $_GET
      *
-     * @return     xmlTag  The xml tag.
+     * @return     XmlTag  The xml tag.
      */
     public static function addTranslation($core, $get)
     {
@@ -96,7 +99,7 @@ class rosettaRest
         $lang         = !empty($get['lang']) ? $get['lang'] : '';
         $rosetta_id   = !empty($get['rosetta_id']) ? $get['rosetta_id'] : -1;
         $rosetta_lang = !empty($get['rosetta_lang']) ? $get['rosetta_lang'] : '';
-        $rsp          = new xmlTag('rosetta');
+        $rsp          = new XmlTag('rosetta');
 
         $ret = false;
         if ($id != -1 && $rosetta_id != -1) {
@@ -130,7 +133,7 @@ class rosettaRest
      * @param      dcCore  $core   The dcCore instance
      * @param      array   $get    The cleaned $_GET
      *
-     * @return     xmlTag  The xml tag.
+     * @return     XmlTag  The xml tag.
      */
     public static function removeTranslation($core, $get)
     {
@@ -138,7 +141,7 @@ class rosettaRest
         $lang         = !empty($get['lang']) ? $get['lang'] : '';
         $rosetta_id   = !empty($get['rosetta_id']) ? $get['rosetta_id'] : -1;
         $rosetta_lang = !empty($get['rosetta_lang']) ? $get['rosetta_lang'] : '';
-        $rsp          = new xmlTag('rosetta');
+        $rsp          = new XmlTag('rosetta');
 
         $ret = false;
         if ($id != -1 && $rosetta_id != -1) {
@@ -157,7 +160,7 @@ class rosettaRest
         $id         = !empty($get['id']) ? $get['id'] : -1;
         $lang       = !empty($get['lang']) ? $get['lang'] : '';
         $rosetta_id = !empty($get['rosetta_id']) ? $get['rosetta_id'] : -1;
-        $rsp        = new xmlTag('rosetta');
+        $rsp        = new XmlTag('rosetta');
 
         $ret = false;
         $row = '';

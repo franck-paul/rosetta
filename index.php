@@ -10,6 +10,10 @@
  * @copyright Franck Paul carnet.franck.paul@gmail.com
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
+
+use Dotclear\Helper\Html\Html;
+use Dotclear\Helper\Network\Http;
+
 if (!defined('DC_CONTEXT_ADMIN')) {
     return;
 }
@@ -22,7 +26,6 @@ if (!empty($_REQUEST['popup_new'])) {
 }
 
 // Main page of plugin
-dcCore::app()->blog->settings->addNamespace('rosetta');
 $rosetta_active          = dcCore::app()->blog->settings->rosetta->active;
 $rosetta_accept_language = dcCore::app()->blog->settings->rosetta->accept_language;
 
@@ -35,7 +38,7 @@ if (!empty($_POST['save_settings'])) {
         dcCore::app()->blog->settings->rosetta->put('accept_language', empty($_POST['accept_language']) ? false : true, 'boolean');
 
         dcPage::addSuccessNotice(__('Configuration successfully updated.'));
-        http::redirect(dcCore::app()->admin->getPageURL() . '&tab=' . $tab . '#' . $tab);
+        Http::redirect(dcCore::app()->admin->getPageURL() . '&tab=' . $tab . '#' . $tab);
     } catch (Exception $e) {
         dcCore::app()->error->add($e->getMessage());
     }
@@ -50,7 +53,7 @@ dcPage::jsPageTabs($tab) .
 
 echo dcPage::breadcrumb(
     [
-        html::escapeHTML(dcCore::app()->blog->name) => '',
+        Html::escapeHTML(dcCore::app()->blog->name) => '',
         __('Rosetta')                               => '',
     ]
 ) . dcPage::notices();

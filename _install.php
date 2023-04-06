@@ -49,9 +49,6 @@ try {
     $si      = new dbStruct(dcCore::app()->con, dcCore::app()->prefix);
     $changes = $si->synchronize($s);
 
-    // Blog settings
-    dcCore::app()->blog->settings->addNamespace('rosetta');
-
     // Default state is inactive
     dcCore::app()->blog->settings->rosetta->put('active', false, 'boolean', 'Active', false, true);
     dcCore::app()->blog->settings->rosetta->put('accept_language', false, 'boolean', 'Take care of browser accept-language', false, true);
