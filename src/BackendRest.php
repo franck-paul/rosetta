@@ -5,19 +5,23 @@
  * @package Dotclear
  * @subpackage Plugins
  *
- * @author Franck Paul
+ * @author Franck Paul and contributors
  *
  * @copyright Franck Paul carnet.franck.paul@gmail.com
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
+declare(strict_types=1);
 
+namespace Dotclear\Plugin\rosetta;
+
+use ArrayObject;
+use dcBlog;
+use dcCore;
 use Dotclear\Helper\Html\XmlTag;
+use Dotclear\Helper\L10n;
+use Exception;
 
-if (!defined('DC_CONTEXT_ADMIN')) {
-    return;
-}
-
-class rosettaRest
+class BackendRest
 {
     public static function newTranslation($core, $get)
     {
@@ -69,7 +73,7 @@ class rosettaRest
                 dcCore::app()->callBehavior('adminAfterPostCreate', $cur, $rosetta_id);
 
                 // add the translation link
-                $ret = rosettaData::addTranslation($id, $lang, $rosetta_id, $rosetta_lang);
+                $ret = CoreData::addTranslation($id, $lang, $rosetta_id, $rosetta_lang);
             } catch (Exception $e) {
                 $rosetta_id = -1;
             }
@@ -118,7 +122,7 @@ class rosettaRest
                 }
             }
             // add the translation link
-            $ret = rosettaData::addTranslation($id, $lang, $rosetta_id, $rosetta_lang);
+            $ret = CoreData::addTranslation($id, $lang, $rosetta_id, $rosetta_lang);
         }
 
         $rsp->ret = $ret;
@@ -146,7 +150,7 @@ class rosettaRest
         $ret = false;
         if ($id != -1 && $rosetta_id != -1) {
             // Remove the translation link
-            $ret = rosettaData::removeTranslation($id, $lang, $rosetta_id, $rosetta_lang);
+            $ret = CoreData::removeTranslation($id, $lang, $rosetta_id, $rosetta_lang);
         }
 
         $rsp->ret = $ret;
@@ -183,10 +187,10 @@ class rosettaRest
                 if ($rs->count()) {
                     $rs->fetch();
                     $post_link = '<a id="r-%s" href="' . dcCore::app()->getPostAdminURL($rs->post_type, $rs->post_id) . '" title="%s">%s</a>';
-                    $langs     = l10n::getLanguagesName();
+                    $langs     = L10n::getLanguagesName();
                     $name      = $langs[$rs->post_lang] ?? $langs[dcCore::app()->blog->settings->system->lang];
                     // Get the translation row
-                    $row = rosettaAdminBehaviors::translationRow(
+                    $row = BackendBehaviors::translationRow(
                         $lang,
                         $rosetta_id,
                         $rs->post_lang,

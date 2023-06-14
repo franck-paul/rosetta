@@ -5,11 +5,18 @@
  * @package Dotclear
  * @subpackage Plugins
  *
- * @author Franck Paul
+ * @author Franck Paul and contributors
  *
  * @copyright Franck Paul carnet.franck.paul@gmail.com
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
+declare(strict_types=1);
+
+namespace Dotclear\Plugin\rosetta;
+
+use dcCore;
+use Dotclear\Database\MetaRecord;
+use Exception;
 
 /**
  * Rosetta table schema:
@@ -35,7 +42,7 @@
  * Avantage : La suppression d'un billet ou d'une page n'entraîne du coup pas de rupture dans la chaîne de traduction.
  * Inconvénient : Le nombre de tuples peut vite grimper (factorielle du nb de langues / chaîne) si on gère beaucoup de langues.
  */
-class rosettaData
+class CoreData
 {
     /**
      * Table name
@@ -180,7 +187,7 @@ class rosettaData
         "(R.src_id = '" . dcCore::app()->con->escape((string) $id) . "' AND R.src_lang = '" . dcCore::app()->con->escape($lang) . "') OR " .
         "(R.dst_id = '" . dcCore::app()->con->escape((string) $id) . "' AND R.dst_lang = '" . dcCore::app()->con->escape($lang) . "') ";
 
-        $rs = new dcRecord(dcCore::app()->con->select($strReq));
+        $rs = new MetaRecord(dcCore::app()->con->select($strReq));
         if ($rs->count()) {
             $list = [];
             while ($rs->fetch()) {
@@ -275,7 +282,7 @@ class rosettaData
         "(R.dst_id = '" . dcCore::app()->con->escape((string) $src_id) . "' AND R.src_lang = '" . dcCore::app()->con->escape($dst_lang) . "') " .
             'ORDER BY R.dst_id DESC';
 
-        $rs = new dcRecord(dcCore::app()->con->select($strReq));
+        $rs = new MetaRecord(dcCore::app()->con->select($strReq));
         if ($rs->count()) {
             // Load first record
             $rs->fetch();

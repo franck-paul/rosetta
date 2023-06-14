@@ -5,21 +5,27 @@
  * @package Dotclear
  * @subpackage Plugins
  *
- * @author Franck Paul
+ * @author Franck Paul and contributors
  *
  * @copyright Franck Paul carnet.franck.paul@gmail.com
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-class rosettaWidgets
+declare(strict_types=1);
+
+namespace Dotclear\Plugin\rosetta;
+
+use Dotclear\Plugin\widgets\WidgetsStack;
+
+class Widgets
 {
-    public static function initWidgets($w)
+    public static function initWidgets(WidgetsStack $w)
     {
         // Widget for currently displayed post
         $w
             ->create(
                 'rosettaEntry',
                 __('Entry\'s translations'),
-                ['rosettaTpl', 'rosettaEntryWidget'],
+                [FrontendWidgets::class, 'rosettaEntryWidget'],
                 null,
                 __('Translation(s) of this entry')
             )
@@ -40,5 +46,3 @@ class rosettaWidgets
             ->addOffline();
     }
 }
-
-dcCore::app()->addBehavior('initWidgets', [rosettaWidgets::class, 'initWidgets']);

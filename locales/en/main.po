@@ -17,28 +17,28 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "Manage post/page translations"
-msgstr "Gestion des traductions des billets et pages"
+msgstr ""
 
 msgid "Rosetta"
-msgstr "Rosetta"
+msgstr ""
 
 msgid "Are you sure to remove this translation?"
-msgstr "Êtes-vous sûr·e de vouloir retirer cette traduction ?"
+msgstr ""
 
 msgid "Remove this translation's link"
-msgstr "Retirer le lien vers cette traduction"
+msgstr ""
 
 msgid "Edit this entry"
-msgstr "Éditer cette publication"
+msgstr ""
 
 msgid "Page's translations:"
-msgstr "Traductions de cette page :"
+msgstr ""
 
 msgid "Post's translations:"
-msgstr "Traductions de ce billet :"
+msgstr ""
 
 msgid "Attached Translations"
-msgstr "Traductions attachées"
+msgstr ""
 
 msgid "Language"
 msgstr ""
@@ -47,59 +47,58 @@ msgid "Entry"
 msgstr ""
 
 msgid "Attach a translation"
-msgstr "Attacher une traduction"
+msgstr ""
 
 msgid "Create a new translation"
-msgstr "Créer une nouvelle traduction"
+msgstr ""
 
 msgid "Create and edit a new translation"
-msgstr "Créer et éditer une nouvelle traduction"
+msgstr ""
 
 msgid "New translation created."
-msgstr "Nouvelle traduction créée."
+msgstr ""
 
 msgid "Error during new translation creation."
-msgstr "Erreur pendant la création de cette nouvelle traduction."
+msgstr ""
 
 msgid "Error during newly created translation attachment."
-msgstr "Erreur pendant l'ajout de cette traduction nouvellement créée."
+msgstr ""
 
 msgid "Error during translation attachment."
-msgstr "Erreur pendant l'ajout de cette traduction."
+msgstr ""
 
 msgid "New translation attached."
-msgstr "Nouvelle traduction attachée."
+msgstr ""
 
 msgid "Error during removing translation attachment."
-msgstr "Erreur pendant le retrait de cette traduction."
+msgstr ""
 
 msgid "Translation removed."
-msgstr "Traduction retirée."
+msgstr ""
 
 msgid "Posts tranlations"
-msgstr "Traductions des billets"
+msgstr ""
 
 msgid "Save"
 msgstr ""
 
 msgid "Pages tranlations"
-msgstr "Traductions des pages"
+msgstr ""
 
 msgid "Enable posts/pages translations for this blog"
-msgstr "Activer la gestion des traductions des billets et pages"
+msgstr ""
 
 msgid "Options"
 msgstr ""
 
 msgid "Automatic posts/pages redirect on browser's language for this blog"
-msgstr "Redirection automatique des billets et des pages en fonction de la langue du navigateur"
+msgstr ""
 
 msgid "Entry title:"
-msgstr "Titre de la publication :"
+msgstr ""
 
-#, fuzzy
 msgid "Entry language:"
-msgstr "Titre de la publication :"
+msgstr ""
 
 msgid "Cancel"
 msgstr ""
@@ -108,22 +107,19 @@ msgid "Create"
 msgstr ""
 
 msgid "Entry's translations"
-msgstr "Traductions de la publication"
+msgstr ""
 
 msgid "Translation(s) of this entry"
-msgstr "Traductions disponibles"
+msgstr ""
 
 msgid "Include current entry:"
-msgstr "Inclus la publication courante :"
+msgstr ""
 
 msgid "Without its URL"
-msgstr "Sans son URL"
+msgstr ""
 
 msgid "With its URL"
-msgstr "Avec son URL"
+msgstr ""
 
 msgid "None"
 msgstr ""
-
-#~ msgid "Settings"
-#~ msgstr "Configuration"

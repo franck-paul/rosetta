@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dotclear 2 rosetta module\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-17 10:46+0100\n"
+"POT-Creation-Date: 2023-06-14 09:20+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,123 +16,161 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../hg-plugins/rosetta//_admin.php:16
+#: ../git-plugins/rosetta/src/Backend.php:28
 msgid "Manage post/page translations"
 msgstr ""
 
-#: ../hg-plugins/rosetta//_admin.php:16 ../hg-plugins/rosetta//_admin.php:18
-#: ../hg-plugins/rosetta//inc/rosetta.behaviors.php:22
-#: ../hg-plugins/rosetta//index.php:45 ../hg-plugins/rosetta//index.php:53
+#: ../git-plugins/rosetta/src/Backend.php:28
+#: ../git-plugins/rosetta/src/Backend.php:40
+#: ../git-plugins/rosetta/src/BackendBehaviors.php:35
+#: ../git-plugins/rosetta/src/Manage.php:98
+#: ../git-plugins/rosetta/src/Manage.php:103
+#: ../git-plugins/rosetta/src/ManagePopup.php:92
 msgid "Rosetta"
 msgstr ""
 
-#: ../hg-plugins/rosetta//_services.php:60
-msgid "New translation created."
-msgstr ""
-
-#: ../hg-plugins/rosetta//_services.php:61
-msgid "Error during new translation creation."
-msgstr ""
-
-#: ../hg-plugins/rosetta//_services.php:62
-msgid "Error during newly created translation attachment."
-msgstr ""
-
-#: ../hg-plugins/rosetta//_services.php:106
-msgid "Error during translation attachment."
-msgstr ""
-
-#: ../hg-plugins/rosetta//_services.php:106
-msgid "New translation attached."
-msgstr ""
-
-#: ../hg-plugins/rosetta//_services.php:134
-msgid "Error during removing translation attachment."
-msgstr ""
-
-#: ../hg-plugins/rosetta//_services.php:134
-msgid "Translation removed."
-msgstr ""
-
-#: ../hg-plugins/rosetta//_widgets.php:22
-msgid "Entry's translations"
-msgstr ""
-
-#: ../hg-plugins/rosetta//_widgets.php:23
-msgid "Translation(s) of this entry"
-msgstr ""
-
-#: ../hg-plugins/rosetta//_widgets.php:25
-msgid "Include current entry:"
-msgstr ""
-
-#: ../hg-plugins/rosetta//_widgets.php:26
-msgid "With its URL"
-msgstr ""
-
-#: ../hg-plugins/rosetta//_widgets.php:26
-msgid "Without its URL"
-msgstr ""
-
-#: ../hg-plugins/rosetta//inc/rosetta.behaviors.php:36
+#: ../git-plugins/rosetta/src/BackendBehaviors.php:47
 msgid "Are you sure to remove this translation?"
 msgstr ""
 
-#: ../hg-plugins/rosetta//inc/rosetta.behaviors.php:92
-#: ../hg-plugins/rosetta//inc/rosetta.behaviors.php:94
+#: ../git-plugins/rosetta/src/BackendBehaviors.php:93
+#: ../git-plugins/rosetta/src/BackendBehaviors.php:95
 msgid "Remove this translation's link"
 msgstr ""
 
-#: ../hg-plugins/rosetta//inc/rosetta.behaviors.php:97
+#: ../git-plugins/rosetta/src/BackendBehaviors.php:100
 msgid "Edit this entry"
 msgstr ""
 
-#: ../hg-plugins/rosetta//inc/rosetta.behaviors.php:117
+#: ../git-plugins/rosetta/src/BackendBehaviors.php:117
 msgid "Page's translations:"
 msgstr ""
 
-#: ../hg-plugins/rosetta//inc/rosetta.behaviors.php:117
+#: ../git-plugins/rosetta/src/BackendBehaviors.php:117
 msgid "Post's translations:"
 msgstr ""
 
-#: ../hg-plugins/rosetta//inc/rosetta.behaviors.php:128
+#: ../git-plugins/rosetta/src/BackendBehaviors.php:127
 msgid "Attached Translations"
 msgstr ""
 
-#: ../hg-plugins/rosetta//inc/rosetta.behaviors.php:169
+#: ../git-plugins/rosetta/src/BackendBehaviors.php:130
+#: ../git-plugins/rosetta/src/BackendBehaviors.php:247
+#: ../git-plugins/rosetta/src/BackendBehaviors.php:249
+#: ../git-plugins/rosetta/src/BackendBehaviors.php:257
+#: ../git-plugins/rosetta/src/BackendBehaviors.php:322
+msgid "Language"
+msgstr ""
+
+#: ../git-plugins/rosetta/src/BackendBehaviors.php:131
+msgid "Entry"
+msgstr ""
+
+#: ../git-plugins/rosetta/src/BackendBehaviors.php:173
 msgid "Attach a translation"
 msgstr ""
 
-#: ../hg-plugins/rosetta//inc/rosetta.behaviors.php:183
-#: ../hg-plugins/rosetta//popup_new.php:24
-#: ../hg-plugins/rosetta//popup_new.php:29
+#: ../git-plugins/rosetta/src/BackendBehaviors.php:191
+#: ../git-plugins/rosetta/src/ManagePopup.php:87
 msgid "Create a new translation"
 msgstr ""
 
-#: ../hg-plugins/rosetta//inc/rosetta.behaviors.php:185
+#: ../git-plugins/rosetta/src/BackendBehaviors.php:192
 msgid "Create and edit a new translation"
 msgstr ""
 
-#: ../hg-plugins/rosetta//index.php:60 ../hg-plugins/rosetta//index.php:61
+#: ../git-plugins/rosetta/src/BackendRest.php:83
+msgid "New translation created."
+msgstr ""
+
+#: ../git-plugins/rosetta/src/BackendRest.php:84
+msgid "Error during new translation creation."
+msgstr ""
+
+#: ../git-plugins/rosetta/src/BackendRest.php:85
+msgid "Error during newly created translation attachment."
+msgstr ""
+
+#: ../git-plugins/rosetta/src/BackendRest.php:129
+msgid "Error during translation attachment."
+msgstr ""
+
+#: ../git-plugins/rosetta/src/BackendRest.php:129
+msgid "New translation attached."
+msgstr ""
+
+#: ../git-plugins/rosetta/src/BackendRest.php:157
+msgid "Error during removing translation attachment."
+msgstr ""
+
+#: ../git-plugins/rosetta/src/BackendRest.php:157
+msgid "Translation removed."
+msgstr ""
+
+#: ../git-plugins/rosetta/src/Manage.php:113
+#: ../git-plugins/rosetta/src/Manage.php:114
 msgid "Posts tranlations"
 msgstr ""
 
-#: ../hg-plugins/rosetta//index.php:76 ../hg-plugins/rosetta//index.php:77
+#: ../git-plugins/rosetta/src/Manage.php:120
+#: ../git-plugins/rosetta/src/Manage.php:136
+#: ../git-plugins/rosetta/src/Manage.php:161
+msgid "Save"
+msgstr ""
+
+#: ../git-plugins/rosetta/src/Manage.php:129
+#: ../git-plugins/rosetta/src/Manage.php:130
 msgid "Pages tranlations"
 msgstr ""
 
-#: ../hg-plugins/rosetta//index.php:93 ../hg-plugins/rosetta//index.php:94
-msgid "Settings"
-msgstr ""
-
-#: ../hg-plugins/rosetta//index.php:99
+#: ../git-plugins/rosetta/src/Manage.php:154
 msgid "Enable posts/pages translations for this blog"
 msgstr ""
 
-#: ../hg-plugins/rosetta//index.php:103
+#: ../git-plugins/rosetta/src/Manage.php:156
+msgid "Options"
+msgstr ""
+
+#: ../git-plugins/rosetta/src/Manage.php:158
 msgid "Automatic posts/pages redirect on browser's language for this blog"
 msgstr ""
 
-#: ../hg-plugins/rosetta//popup_new.php:56
+#: ../git-plugins/rosetta/src/ManagePopup.php:100
 msgid "Entry title:"
+msgstr ""
+
+#: ../git-plugins/rosetta/src/ManagePopup.php:103
+msgid "Entry language:"
+msgstr ""
+
+#: ../git-plugins/rosetta/src/ManagePopup.php:108
+msgid "Cancel"
+msgstr ""
+
+#: ../git-plugins/rosetta/src/ManagePopup.php:109
+msgid "Create"
+msgstr ""
+
+#: ../git-plugins/rosetta/src/Widgets.php:27
+msgid "Entry's translations"
+msgstr ""
+
+#: ../git-plugins/rosetta/src/Widgets.php:30
+msgid "Translation(s) of this entry"
+msgstr ""
+
+#: ../git-plugins/rosetta/src/Widgets.php:35
+msgid "Include current entry:"
+msgstr ""
+
+#: ../git-plugins/rosetta/src/Widgets.php:39
+msgid "Without its URL"
+msgstr ""
+
+#: ../git-plugins/rosetta/src/Widgets.php:40
+msgid "With its URL"
+msgstr ""
+
+#: ../git-plugins/rosetta/src/Widgets.php:41
+msgid "None"
 msgstr ""
