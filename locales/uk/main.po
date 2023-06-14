@@ -1,0 +1,130 @@
+# SOME DESCRIPTIVE TITLE.
+# This file is put in the public domain.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+# Translators:
+# Franck Paul <carnet.franck.paul@gmail.com>, 2023
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Dotclear 2 rosetta module\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-06-14 09:20+0200\n"
+"PO-Revision-Date: 2023-06-14 07:23+0000\n"
+"Last-Translator: Franck Paul <carnet.franck.paul@gmail.com>, 2023\n"
+"Language-Team: Ukrainian (https://app.transifex.com/open-time/teams/109573/uk/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: uk\n"
+"Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != 11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || (n % 100 >=11 && n % 100 <=14 )) ? 2: 3);\n"
+
+msgid "Manage post/page translations"
+msgstr "Керування перекладами пост/сторінка"
+
+msgid "Rosetta"
+msgstr "Розетта"
+
+msgid "Are you sure to remove this translation?"
+msgstr "Ви впевнені, що хочете видалити цей переклад?"
+
+msgid "Remove this translation's link"
+msgstr "Видаліть посилання на цей переклад"
+
+msgid "Edit this entry"
+msgstr "Відредагуйте цей запис"
+
+msgid "Page's translations:"
+msgstr "Переклади Пейджа:"
+
+msgid "Post's translations:"
+msgstr "Переклади пошти:"
+
+msgid "Attached Translations"
+msgstr "Переклади, що додаються"
+
+msgid "Language"
+msgstr "Мова"
+
+msgid "Entry"
+msgstr "Вступ"
+
+msgid "Attach a translation"
+msgstr "Прикріпити переклад"
+
+msgid "Create a new translation"
+msgstr "Створіть новий переклад"
+
+msgid "Create and edit a new translation"
+msgstr "Створення та редагування нового перекладу"
+
+msgid "New translation created."
+msgstr "Створено новий переклад."
+
+msgid "Error during new translation creation."
+msgstr "Помилка під час створення нового перекладу."
+
+msgid "Error during newly created translation attachment."
+msgstr "Помилка під час створення нового вкладення перекладу."
+
+msgid "Error during translation attachment."
+msgstr "Помилка під час прикріплення перекладу."
+
+msgid "New translation attached."
+msgstr "Новий переклад додається."
+
+msgid "Error during removing translation attachment."
+msgstr "Помилка під час видалення вкладення перекладу."
+
+msgid "Translation removed."
+msgstr "Переклад видалено."
+
+msgid "Posts tranlations"
+msgstr "Переклади повідомлень"
+
+msgid "Save"
+msgstr "Зберегти"
+
+msgid "Pages tranlations"
+msgstr "Переклади сторінок"
+
+msgid "Enable posts/pages translations for this blog"
+msgstr "Увімкнути переклад дописів/сторінок для цього блогу"
+
+msgid "Options"
+msgstr "Параметри"
+
+msgid "Automatic posts/pages redirect on browser's language for this blog"
+msgstr ""
+"Автоматичне перенаправлення постів/сторінок на мову браузера для цього блогу"
+
+msgid "Entry title:"
+msgstr "Назва твору:"
+
+msgid "Entry language:"
+msgstr "Мова входу:"
+
+msgid "Cancel"
+msgstr "Скасувати"
+
+msgid "Create"
+msgstr "Створити"
+
+msgid "Entry's translations"
+msgstr "Переклади конкурсних робіт"
+
+msgid "Translation(s) of this entry"
+msgstr "Переклад(и) цього запису"
+
+msgid "Include current entry:"
+msgstr "Включити поточний запис:"
+
+msgid "Without its URL"
+msgstr "Без його URL-адреси"
+
+msgid "With its URL"
+msgstr "З його URL-адресою"
+
+msgid "None"
+msgstr "Ні."
