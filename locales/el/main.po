@@ -1,0 +1,131 @@
+# SOME DESCRIPTIVE TITLE.
+# This file is put in the public domain.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+# Translators:
+# Franck Paul <carnet.franck.paul@gmail.com>, 2023
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Dotclear 2 rosetta module\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-06-14 09:20+0200\n"
+"PO-Revision-Date: 2023-06-14 07:23+0000\n"
+"Last-Translator: Franck Paul <carnet.franck.paul@gmail.com>, 2023\n"
+"Language-Team: Greek (https://app.transifex.com/open-time/teams/109573/el/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: el\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Manage post/page translations"
+msgstr "Διαχείριση μεταφράσεων δημοσιεύσεων/σελίδων"
+
+msgid "Rosetta"
+msgstr "Rosetta"
+
+msgid "Are you sure to remove this translation?"
+msgstr "Είστε σίγουρος ότι θέλετε να αφαιρέσετε αυτή τη μετάφραση;"
+
+msgid "Remove this translation's link"
+msgstr "Αφαίρεση του συνδέσμου αυτής της μετάφρασης"
+
+msgid "Edit this entry"
+msgstr "Επεξεργασία αυτής της καταχώρησης"
+
+msgid "Page's translations:"
+msgstr "Μεταφράσεις Page:"
+
+msgid "Post's translations:"
+msgstr "Μεταφράσεις Post:"
+
+msgid "Attached Translations"
+msgstr "Συνημμένες μεταφράσεις"
+
+msgid "Language"
+msgstr "Γλώσσα"
+
+msgid "Entry"
+msgstr "Είσοδος"
+
+msgid "Attach a translation"
+msgstr "Επισυνάψτε μια μετάφραση"
+
+msgid "Create a new translation"
+msgstr "Δημιουργία νέας μετάφρασης"
+
+msgid "Create and edit a new translation"
+msgstr "Δημιουργία και επεξεργασία μιας νέας μετάφρασης"
+
+msgid "New translation created."
+msgstr "Δημιουργήθηκε νέα μετάφραση."
+
+msgid "Error during new translation creation."
+msgstr "Σφάλμα κατά τη δημιουργία νέας μετάφρασης."
+
+msgid "Error during newly created translation attachment."
+msgstr "Σφάλμα κατά τη διάρκεια της νέας δημιουργίας επισύναψης μετάφρασης."
+
+msgid "Error during translation attachment."
+msgstr "Σφάλμα κατά την επισύναψη της μετάφρασης."
+
+msgid "New translation attached."
+msgstr "Επισυνάπτεται νέα μετάφραση."
+
+msgid "Error during removing translation attachment."
+msgstr "Σφάλμα κατά την αφαίρεση του συνημμένου της μετάφρασης."
+
+msgid "Translation removed."
+msgstr "Η μετάφραση αφαιρέθηκε."
+
+msgid "Posts tranlations"
+msgstr "Θέσεις μεταφράσεις"
+
+msgid "Save"
+msgstr "Αποθήκευση"
+
+msgid "Pages tranlations"
+msgstr "Σελίδες μεταφράσεις"
+
+msgid "Enable posts/pages translations for this blog"
+msgstr "Ενεργοποίηση μεταφράσεων αναρτήσεων/σελίδων για αυτό το ιστολόγιο"
+
+msgid "Options"
+msgstr "Επιλογές"
+
+msgid "Automatic posts/pages redirect on browser's language for this blog"
+msgstr ""
+"Αυτόματη ανακατεύθυνση αναρτήσεων/σελίδων ανάλογα με τη γλώσσα του "
+"προγράμματος περιήγησης για αυτό το ιστολόγιο"
+
+msgid "Entry title:"
+msgstr "Τίτλος εισόδου:"
+
+msgid "Entry language:"
+msgstr "Γλώσσα εισόδου:"
+
+msgid "Cancel"
+msgstr "Ακύρωση"
+
+msgid "Create"
+msgstr "Δημιουργία"
+
+msgid "Entry's translations"
+msgstr "Μεταφράσεις της καταχώρησης"
+
+msgid "Translation(s) of this entry"
+msgstr "Μετάφραση(ες) αυτής της καταχώρησης"
+
+msgid "Include current entry:"
+msgstr "Συμπεριλάβετε την τρέχουσα καταχώρηση:"
+
+msgid "Without its URL"
+msgstr "Χωρίς το URL του"
+
+msgid "With its URL"
+msgstr "Με τη διεύθυνση URL"
+
+msgid "None"
+msgstr "Κανένα"
