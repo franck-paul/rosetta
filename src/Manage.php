@@ -20,7 +20,6 @@ use dcNamespace;
 use dcNsProcess;
 use dcPage;
 use Dotclear\Helper\Html\Html;
-use Dotclear\Helper\Network\Http;
 use Exception;
 use form;
 
@@ -62,7 +61,9 @@ class Manage extends dcNsProcess
                 $settings->put('accept_language', empty($_POST['accept_language']) ? false : true, dcNamespace::NS_BOOL);
 
                 dcPage::addSuccessNotice(__('Configuration successfully updated.'));
-                Http::redirect(dcCore::app()->admin->getPageURL() . '&tab=' . $tab . '#' . $tab);
+                dcCore::app()->adminurl->redirect('admin.plugin.' . My::id(), [
+                    'tab' => $tab,
+                ], '#' . $tab);
             } catch (Exception $e) {
                 dcCore::app()->error->add($e->getMessage());
             }
