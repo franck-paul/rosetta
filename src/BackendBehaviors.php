@@ -44,8 +44,14 @@ class BackendBehaviors
     {
         return
         dcPage::jsJson('rosetta_entry', [
-            'msg'              => ['confirm_remove_rosetta' => __('Are you sure to remove this translation?')],
-            'rosetta_post_url' => '',
+            'msg'     => ['confirm_remove_rosetta' => __('Are you sure to remove this translation?')],
+            'rosetta' => [
+                'popup_posts_url' => 'popup_posts.php?popup=1&plugin_id=rosetta&type=',
+                'plugin_url'      => dcCore::app()->adminurl->get('admin.plugin.' . My::id(), [
+                    'popup_new' => 1,
+                    'popup'     => 1,
+                ], '&'),
+            ],
         ]) .
         dcPage::jsModuleLoad(My::id() . '/js/rosetta_entry.js', dcCore::app()->getVersion(My::id())) . "\n" .
         dcPage::cssModuleLoad(My::id() . '/css/style.css', dcCore::app()->getVersion(My::id())) . "\n";

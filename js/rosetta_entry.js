@@ -36,19 +36,20 @@ $(() => {
           return;
         }
         // ret -> status (true/false)
-          // msg -> message to display
+        // msg -> message to display
         const ret = Number($('rsp>rosetta', data).attr('ret'));
-        const msg = $('rsp>rosetta', data).attr('msg');
-        if (ret) {
-          // Append the new line at the end of the table
-          $(table).append(msg);
-          // Bind removing translation function
-          $(`${table} tr:last td:last a`).bind('click', function (e) {
-            removeTranslation($(this));
-            e.preventDefault();
-          });
-          return true;
+        if (!ret) {
+          return;
         }
+        // Append the new line at the end of the table
+        const msg = $('rsp>rosetta', data).attr('msg');
+        $(table).append(msg);
+        // Bind removing translation function
+        $(`${table} tr:last td:last a`).bind('click', function (e) {
+          removeTranslation($(this));
+          e.preventDefault();
+        });
+        return true;
       })
       .fail((jqXHR, textStatus, errorThrown) => {
         window.console.log(`AJAX ${textStatus} (status: ${jqXHR.status} ${errorThrown})`);
@@ -85,7 +86,7 @@ $(() => {
           return;
         }
         // ret -> status (true/false)
-          // msg -> message to display
+        // msg -> message to display
         const ret = Number($('rsp>rosetta', data).attr('ret'));
         const msg = $('rsp>rosetta', data).attr('msg');
         if (ret) {
@@ -120,53 +121,54 @@ $(() => {
     // Call popup_posts.php in order to select entry (post/page)
     //    rosetta_hidden.value = '';
     const p_win = window.open(
-      `popup_posts.php?popup=1&plugin_id=rosetta&type=${post_type}`,
+      `${dotclear.rosetta.popup_posts_url}${post_type}`,
       'dc_popup',
-      'alwaysRaised=yes,dependent=yes,toolbar=yes,height=500,width=760,menubar=no,resizable=yes,scrollbars=yes,status=no'
+      'alwaysRaised=yes,dependent=yes,toolbar=yes,height=500,width=760,menubar=no,resizable=yes,scrollbars=yes,status=no',
     );
     // Wait for popup close
     const timer = setInterval(() => {
-      if (p_win.closed) {
-        clearInterval(timer);
-        // Get translation post/page id
-        const rosetta_id = getURLParameter(rosetta_hidden.value, 'id');
-        if (rosetta_id !== null && rosetta_id !== '') {
-          // Reset hidden fields to prevent dirtying form
-          rosetta_hidden.value = rosetta_hidden.defaultValue;
+      if (!p_win.closed) {
+        return;
+      }
+      clearInterval(timer);
+      // Get translation post/page id
+      const rosetta_id = getURLParameter(rosetta_hidden.value, 'id');
+      if (rosetta_id !== null && rosetta_id !== '') {
+        // Reset hidden fields to prevent dirtying form
+        rosetta_hidden.value = rosetta_hidden.defaultValue;
 
-          $.get('services.php', {
-            f: 'addTranslation',
-            xd_check: dotclear.nonce,
-            id: post_id,
-            lang: post_lang,
-            rosetta_id,
+        $.get('services.php', {
+          f: 'addTranslation',
+          xd_check: dotclear.nonce,
+          id: post_id,
+          lang: post_lang,
+          rosetta_id,
+        })
+          .done((data) => {
+            if ($('rsp[status=failed]', data).length > 0) {
+              // For debugging purpose only:
+              // console.log($('rsp',data).attr('message'));
+              window.console.log('Dotclear REST server error');
+              return;
+            }
+            // ret -> status (true/false)
+            // msg -> message to display
+            const ret = Number($('rsp>rosetta', data).attr('ret'));
+            const msg = $('rsp>rosetta', data).attr('msg');
+            if (ret) {
+              // Append new row at the end of translations list
+              addTranslationRow(post_id, post_lang, rosetta_id, '#rosetta-list');
+            } else {
+              // Display error message
+              window.alert(msg);
+            }
           })
-            .done((data) => {
-              if ($('rsp[status=failed]', data).length > 0) {
-                // For debugging purpose only:
-                // console.log($('rsp',data).attr('message'));
-                window.console.log('Dotclear REST server error');
-                return;
-              }
-              // ret -> status (true/false)
-                // msg -> message to display
-              const ret = Number($('rsp>rosetta', data).attr('ret'));
-              const msg = $('rsp>rosetta', data).attr('msg');
-              if (ret) {
-                // Append new row at the end of translations list
-                addTranslationRow(post_id, post_lang, rosetta_id, '#rosetta-list');
-              } else {
-                // Display error message
-                window.alert(msg);
-              }
-            })
-            .fail((jqXHR, textStatus, errorThrown) => {
-              window.console.log(`AJAX ${textStatus} (status: ${jqXHR.status} ${errorThrown})`);
-            })
-            .always(() => {
-              // Nothing here
-            });
-        }
+          .fail((jqXHR, textStatus, errorThrown) => {
+            window.console.log(`AJAX ${textStatus} (status: ${jqXHR.status} ${errorThrown})`);
+          })
+          .always(() => {
+            // Nothing here
+          });
       }
     }, 500);
     e.preventDefault();
@@ -182,15 +184,9 @@ $(() => {
     const rosetta_lang = document.getElementById('rosetta_lang');
     const edit_new = Number(getURLParameter(href, 'edit'));
     const p_win = window.open(
-      'plugin.php?p=rosetta&popup_new=1&popup=1&plugin_id=rosetta' +
-        '&type=' +
-        post_type +
-        '&id=' +
-        post_id +
-        '&lang=' +
-        post_lang,
+      `${dotclear.rosetta.plugin_url}&type=${post_type}&id=${post_id}&lang=${post_lang}`,
       'dc_popup',
-      'alwaysRaised=yes,dependent=yes,toolbar=yes,height=500,width=760,menubar=no,resizable=yes,scrollbars=yes,status=no'
+      'alwaysRaised=yes,dependent=yes,toolbar=yes,height=500,width=760,menubar=no,resizable=yes,scrollbars=yes,status=no',
     );
     // Wait for popup close
     const timer = setInterval(() => {
@@ -220,7 +216,7 @@ $(() => {
                 return;
               }
               // ret -> status (true/false)
-                // msg -> message to display
+              // msg -> message to display
               const ret = Number($('rsp>rosetta', data).attr('ret'));
               const msg = $('rsp>rosetta', data).attr('msg');
               if (ret) {
@@ -232,10 +228,10 @@ $(() => {
                   const edit = $('rsp>rosetta', data).attr('edit');
                   window.location.href = edit;
                 }
-              } else {
-                // Display error message
-                window.alert(msg);
+                return;
               }
+              // Display error message
+              window.alert(msg);
             })
             .fail((jqXHR, textStatus, errorThrown) => {
               window.console.log(`AJAX ${textStatus} (status: ${jqXHR.status} ${errorThrown})`);
