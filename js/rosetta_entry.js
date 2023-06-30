@@ -70,7 +70,7 @@ $(() => {
     const post_lang = getURLParameter(href, 'lang');
     const rosetta_id = getURLParameter(href, 'rosetta_id');
     const rosetta_lang = getURLParameter(href, 'rosetta_lang');
-    $.get('services.php', {
+    $.post('services.php', {
       f: 'removeTranslation',
       xd_check: dotclear.nonce,
       id: post_id,
@@ -137,7 +137,7 @@ $(() => {
         // Reset hidden fields to prevent dirtying form
         rosetta_hidden.value = rosetta_hidden.defaultValue;
 
-        $.get('services.php', {
+        $.post('services.php', {
           f: 'addTranslation',
           xd_check: dotclear.nonce,
           id: post_id,
@@ -199,7 +199,7 @@ $(() => {
           rosetta_lang.value !== null &&
           rosetta_lang.value !== ''
         ) {
-          $.get('services.php', {
+          $.post('services.php', {
             f: 'newTranslation',
             xd_check: dotclear.nonce,
             id: post_id,

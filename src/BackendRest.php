@@ -23,13 +23,22 @@ use Exception;
 
 class BackendRest
 {
-    public static function newTranslation($core, $get)
+    /**
+     * Serve method to add a new translation for current edited post/page.
+     *
+     * @param      dcCore  $core   The dcCore instance
+     * @param      array   $get    The cleaned $_GET
+     * @param      array   $post   The cleaned $_POST
+     *
+     * @return     XmlTag  The xml tag.
+     */
+    public static function newTranslation($core, $get, $post)
     {
-        $id            = !empty($get['id']) ? $get['id'] : -1;
-        $lang          = !empty($get['lang']) ? $get['lang'] : '';
-        $type          = !empty($get['type']) ? $get['type'] : 'post';
-        $rosetta_title = !empty($get['rosetta_title']) ? $get['rosetta_title'] : '';
-        $rosetta_lang  = !empty($get['rosetta_lang']) ? $get['rosetta_lang'] : '';
+        $id            = !empty($post['id']) ? $post['id'] : -1;
+        $lang          = !empty($post['lang']) ? $post['lang'] : '';
+        $type          = !empty($post['type']) ? $post['type'] : 'post';
+        $rosetta_title = !empty($post['rosetta_title']) ? $post['rosetta_title'] : '';
+        $rosetta_lang  = !empty($post['rosetta_lang']) ? $post['rosetta_lang'] : '';
         $rsp           = new XmlTag('rosetta');
 
         $ret        = false;
@@ -94,15 +103,16 @@ class BackendRest
      *
      * @param      dcCore  $core   The dcCore instance
      * @param      array   $get    The cleaned $_GET
+     * @param      array   $post   The cleaned $_POST
      *
      * @return     XmlTag  The xml tag.
      */
-    public static function addTranslation($core, $get)
+    public static function addTranslation($core, $get, $post)
     {
-        $id           = !empty($get['id']) ? $get['id'] : -1;
-        $lang         = !empty($get['lang']) ? $get['lang'] : '';
-        $rosetta_id   = !empty($get['rosetta_id']) ? $get['rosetta_id'] : -1;
-        $rosetta_lang = !empty($get['rosetta_lang']) ? $get['rosetta_lang'] : '';
+        $id           = !empty($post['id']) ? $post['id'] : -1;
+        $lang         = !empty($post['lang']) ? $post['lang'] : '';
+        $rosetta_id   = !empty($post['rosetta_id']) ? $post['rosetta_id'] : -1;
+        $rosetta_lang = !empty($post['rosetta_lang']) ? $post['rosetta_lang'] : '';
         $rsp          = new XmlTag('rosetta');
 
         $ret = false;
@@ -136,15 +146,16 @@ class BackendRest
      *
      * @param      dcCore  $core   The dcCore instance
      * @param      array   $get    The cleaned $_GET
+     * @param      array   $post   The cleaned $_POST
      *
      * @return     XmlTag  The xml tag.
      */
-    public static function removeTranslation($core, $get)
+    public static function removeTranslation($core, $get, $post)
     {
-        $id           = !empty($get['id']) ? $get['id'] : -1;
-        $lang         = !empty($get['lang']) ? $get['lang'] : '';
-        $rosetta_id   = !empty($get['rosetta_id']) ? $get['rosetta_id'] : -1;
-        $rosetta_lang = !empty($get['rosetta_lang']) ? $get['rosetta_lang'] : '';
+        $id           = !empty($post['id']) ? $post['id'] : -1;
+        $lang         = !empty($post['lang']) ? $post['lang'] : '';
+        $rosetta_id   = !empty($post['rosetta_id']) ? $post['rosetta_id'] : -1;
+        $rosetta_lang = !empty($post['rosetta_lang']) ? $post['rosetta_lang'] : '';
         $rsp          = new XmlTag('rosetta');
 
         $ret = false;
@@ -159,6 +170,14 @@ class BackendRest
         return $rsp;
     }
 
+    /**
+     * Serve method to get existing translations for current edited post/page.
+     *
+     * @param      dcCore  $core   The dcCore instance
+     * @param      array   $get    The cleaned $_GET
+     *
+     * @return     XmlTag  The xml tag.
+     */
     public static function getTranslationRow($core, $get)
     {
         $id         = !empty($get['id']) ? $get['id'] : -1;
