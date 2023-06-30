@@ -17,29 +17,26 @@ namespace Dotclear\Plugin\rosetta;
 use ArrayObject;
 use dcBlog;
 use dcCore;
-use Dotclear\Helper\Html\XmlTag;
 use Dotclear\Helper\L10n;
 use Exception;
 
 class BackendRest
 {
     /**
-     * Serve method to add a new translation for current edited post/page.
+     * Serve method to add a new translation for current edited post/page. (JSON)
      *
-     * @param      dcCore  $core   The dcCore instance
      * @param      array   $get    The cleaned $_GET
      * @param      array   $post   The cleaned $_POST
      *
-     * @return     XmlTag  The xml tag.
+     * @return     array
      */
-    public static function newTranslation($core, $get, $post)
+    public static function newTranslation(array $get, array $post): array
     {
         $id            = !empty($post['id']) ? $post['id'] : -1;
         $lang          = !empty($post['lang']) ? $post['lang'] : '';
         $type          = !empty($post['type']) ? $post['type'] : 'post';
         $rosetta_title = !empty($post['rosetta_title']) ? $post['rosetta_title'] : '';
         $rosetta_lang  = !empty($post['rosetta_lang']) ? $post['rosetta_lang'] : '';
-        $rsp           = new XmlTag('rosetta');
 
         $ret        = false;
         $rosetta_id = -1;
@@ -88,32 +85,30 @@ class BackendRest
             }
         }
 
-        $rsp->ret = $ret;
-        $rsp->msg = $ret ? __('New translation created.') : ($rosetta_id == -1 ?
-            __('Error during new translation creation.') :
-            __('Error during newly created translation attachment.'));
-        $rsp->id   = $rosetta_id;
-        $rsp->edit = DC_ADMIN_URL . dcCore::app()->getPostAdminURL($type, $rosetta_id);
-
-        return $rsp;
+        return [
+            'ret' => $ret,
+            'msg' => ($ret ? __('New translation created.') : ($rosetta_id == -1 ?
+                __('Error during new translation creation.') :
+                __('Error during newly created translation attachment.'))),
+            'id'   => $rosetta_id,
+            'edit' => DC_ADMIN_URL . dcCore::app()->getPostAdminURL($type, $rosetta_id),
+        ];
     }
 
     /**
-     * Serve method to add a new translation's link for current edited post/page.
+     * Serve method to add a new translation's link for current edited post/page. (JSON)
      *
-     * @param      dcCore  $core   The dcCore instance
      * @param      array   $get    The cleaned $_GET
      * @param      array   $post   The cleaned $_POST
      *
-     * @return     XmlTag  The xml tag.
+     * @return     array
      */
-    public static function addTranslation($core, $get, $post)
+    public static function addTranslation(array $get, array $post): array
     {
         $id           = !empty($post['id']) ? $post['id'] : -1;
         $lang         = !empty($post['lang']) ? $post['lang'] : '';
         $rosetta_id   = !empty($post['rosetta_id']) ? $post['rosetta_id'] : -1;
         $rosetta_lang = !empty($post['rosetta_lang']) ? $post['rosetta_lang'] : '';
-        $rsp          = new XmlTag('rosetta');
 
         $ret = false;
         if ($id != -1 && $rosetta_id != -1) {
@@ -135,28 +130,26 @@ class BackendRest
             $ret = CoreData::addTranslation($id, $lang, $rosetta_id, $rosetta_lang);
         }
 
-        $rsp->ret = $ret;
-        $rsp->msg = $ret ? __('New translation attached.') : __('Error during translation attachment.');
-
-        return $rsp;
+        return [
+            'ret' => $ret,
+            'msg' => ($ret ? __('New translation attached.') : __('Error during translation attachment.')),
+        ];
     }
 
     /**
-     * Serve method to remove an existing translation's link for current edited post/page.
+     * Serve method to remove an existing translation's link for current edited post/page. (JSON)
      *
-     * @param      dcCore  $core   The dcCore instance
      * @param      array   $get    The cleaned $_GET
      * @param      array   $post   The cleaned $_POST
      *
-     * @return     XmlTag  The xml tag.
+     * @return     array
      */
-    public static function removeTranslation($core, $get, $post)
+    public static function removeTranslation(array $get, array $post): array
     {
         $id           = !empty($post['id']) ? $post['id'] : -1;
         $lang         = !empty($post['lang']) ? $post['lang'] : '';
         $rosetta_id   = !empty($post['rosetta_id']) ? $post['rosetta_id'] : -1;
         $rosetta_lang = !empty($post['rosetta_lang']) ? $post['rosetta_lang'] : '';
-        $rsp          = new XmlTag('rosetta');
 
         $ret = false;
         if ($id != -1 && $rosetta_id != -1) {
@@ -164,26 +157,25 @@ class BackendRest
             $ret = CoreData::removeTranslation($id, $lang, $rosetta_id, $rosetta_lang);
         }
 
-        $rsp->ret = $ret;
-        $rsp->msg = $ret ? __('Translation removed.') : __('Error during removing translation attachment.');
-
-        return $rsp;
+        return [
+            'ret' => $ret,
+            'msg' => ($ret ? __('Translation removed.') : __('Error during removing translation attachment.')),
+        ];
     }
 
     /**
-     * Serve method to get existing translations for current edited post/page.
+     * Serve method to get existing translations for current edited post/page. (JSON)
      *
-     * @param      dcCore  $core   The dcCore instance
      * @param      array   $get    The cleaned $_GET
+     * @param      array   $post   The cleaned $_POST
      *
-     * @return     XmlTag  The xml tag.
+     * @return     array
      */
-    public static function getTranslationRow($core, $get)
+    public static function getTranslationRow(array $get, array $post): array
     {
-        $id         = !empty($get['id']) ? $get['id'] : -1;
-        $lang       = !empty($get['lang']) ? $get['lang'] : '';
-        $rosetta_id = !empty($get['rosetta_id']) ? $get['rosetta_id'] : -1;
-        $rsp        = new XmlTag('rosetta');
+        $id         = !empty($post['id']) ? $post['id'] : -1;
+        $lang       = !empty($post['lang']) ? $post['lang'] : '';
+        $rosetta_id = !empty($post['rosetta_id']) ? $post['rosetta_id'] : -1;
 
         $ret = false;
         $row = '';
@@ -223,9 +215,9 @@ class BackendRest
             }
         }
 
-        $rsp->ret = $ret;
-        $rsp->msg = $row;
-
-        return $rsp;
+        return [
+            'ret' => $ret,
+            'msg' => $row,
+        ];
     }
 }

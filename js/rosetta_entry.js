@@ -21,25 +21,18 @@ $(() => {
   }
 
   function addTranslationRow(post_id, post_lang, rosetta_id, table) {
-    dotclear.servicesGet(
+    dotclear.jsonServicesPost(
       'getTranslationRow',
       (data) => {
-        const xml = new DOMParser().parseFromString(data, 'text/xml');
-        if ($('rsp[status=failed]', xml).length > 0) {
-          window.console.log('Dotclear REST server error');
-          return;
-        }
         // ret -> status (true/false)
-        // msg -> message to display
-        const ret = Number($('rsp>rosetta', xml).attr('ret'));
-        if (!ret) {
+        // msg -> line to add
+        if (!data.ret) {
           return;
         }
         // Append the new line at the end of the table
-        const msg = $('rsp>rosetta', xml).attr('msg');
-        $(table).append(msg);
+        $(table).append(data.msg);
         // Bind removing translation function
-        $(`${table} tr:last td:last a`).bind('click', function (e) {
+        $(`${table} tr:last td:last a`).on('click', function (e) {
           removeTranslation($(this));
           e.preventDefault();
         });
@@ -63,24 +56,17 @@ $(() => {
     const href = link.attr('href');
     const row = link.parent().parent();
 
-    dotclear.servicesPost(
+    dotclear.jsonServicesPost(
       'removeTranslation',
       (data) => {
-        const xml = new DOMParser().parseFromString(data, 'text/xml');
-        if ($('rsp[status=failed]', xml).length > 0) {
-          window.console.log('Dotclear REST server error');
-          return;
-        }
         // ret -> status (true/false)
         // msg -> message to display
-        const ret = Number($('rsp>rosetta', xml).attr('ret'));
-        const msg = $('rsp>rosetta', xml).attr('msg');
-        if (ret) {
+        if (data.ret) {
           // Remove corresponding line in table
           row.remove();
         } else {
           // Display error message
-          window.alert(msg);
+          window.alert(data.msg);
         }
       },
       {
@@ -124,24 +110,17 @@ $(() => {
         // Reset hidden fields to prevent dirtying form
         rosetta_hidden.value = rosetta_hidden.defaultValue;
 
-        dotclear.servicesPost(
+        dotclear.jsonServicesPost(
           'addTranslation',
           (data) => {
-            const xml = new DOMParser().parseFromString(data, 'text/xml');
-            if ($('rsp[status=failed]', xml).length > 0) {
-              window.console.log('Dotclear REST server error');
-              return;
-            }
             // ret -> status (true/false)
             // msg -> message to display
-            const ret = Number($('rsp>rosetta', xml).attr('ret'));
-            const msg = $('rsp>rosetta', xml).attr('msg');
-            if (ret) {
+            if (data.ret) {
               // Append new row at the end of translations list
               addTranslationRow(post_id, post_lang, rosetta_id, '#rosetta-list');
             } else {
               // Display error message
-              window.alert(msg);
+              window.alert(data.msg);
             }
           },
           {
@@ -180,26 +159,17 @@ $(() => {
           rosetta_lang.value !== null &&
           rosetta_lang.value !== ''
         ) {
-          dotclear.servicesPost(
+          dotclear.jsonServicesPost(
             'newTranslation',
             (data) => {
-              const xml = new DOMParser().parseFromString(data, 'text/xml');
-              if ($('rsp[status=failed]', xml).length > 0) {
-                window.console.log('Dotclear REST server error');
-                return;
-              }
               // ret -> status (true/false)
               // msg -> message to display
-              const ret = Number($('rsp>rosetta', xml).attr('ret'));
-              const msg = $('rsp>rosetta', xml).attr('msg');
-              if (ret) {
+              if (data.ret) {
                 // Append new row at the end of translations list
-                const rosetta_id = Number($('rsp>rosetta', xml).attr('id'));
-                addTranslationRow(post_id, post_lang, rosetta_id, '#rosetta-list');
+                addTranslationRow(post_id, post_lang, data.id, '#rosetta-list');
                 if (edit_new) {
                   // Redirect to new entry edition if requested
-                  const edit = $('rsp>rosetta', xml).attr('edit');
-                  window.location.href = edit;
+                  window.location.href = data.edit;
                 }
                 // Reset hidden fields to prevent dirtying form
                 rosetta_title.value = rosetta_title.defaultValue;
@@ -210,7 +180,7 @@ $(() => {
               rosetta_title.value = rosetta_title.defaultValue;
               rosetta_lang.value = rosetta_lang.defaultValue;
               // Display error message
-              window.alert(msg);
+              window.alert(data.msg);
             },
             {
               id: post_id,
