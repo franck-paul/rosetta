@@ -122,10 +122,11 @@ class BackendBehaviors
             }
 
             echo
-                '<div id="rosetta-area" class="area">' . "\n" .
-                '<label>' .
-                ($post_type == 'post' ? __('Post\'s translations:') : __('Page\'s translations:')) .
-                '</label>' . "\n";
+            '<div id="rosetta-area" class="area">' . "\n" .
+            '<details id="rosetta-details">' .
+            '<summary>' .
+            ($post_type == 'post' ? __('Post\'s translations:') : __('Page\'s translations:')) .
+            '</summary>' . "\n";
 
             if ($post_type == 'post') {
                 $url = dcCore::app()->adminurl->get('admin.post', ['id' => $post->post_id]);
@@ -138,13 +139,13 @@ class BackendBehaviors
             '<thead>' .
             '<tr>' .
             '<th class="nowrap">' . __('Language') . '</th>' .
-                '<th>' . ($post_type == 'post' ? __('Entry') : __('Page')) . '</th>' .
-                '<th class="nowrap">' . '</th>' .
-                '</tr>' .
-                '</thead>' .
-                '<tbody>%s</tbody>' .
-                '</table>' .
-                '</div>';
+            '<th>' . ($post_type == 'post' ? __('Entry') : __('Page')) . '</th>' .
+            '<th class="nowrap">' . '</th>' .
+            '</tr>' .
+            '</thead>' .
+            '<tbody>%s</tbody>' .
+            '</table>' .
+            '</div>';
             $html_lines = '';
 
             $list = CoreData::findAllTranslations($post->post_id, $post->post_lang, false);
@@ -229,7 +230,9 @@ class BackendBehaviors
             form::hidden(['rosetta_lang', 'rosetta_lang'], '') .
                 '</p>';
 
-            echo '</div>' . "\n";
+            echo
+            '</details>' .
+            '</div>' . "\n";
         }
     }
 
