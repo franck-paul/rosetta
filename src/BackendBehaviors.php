@@ -121,31 +121,12 @@ class BackendBehaviors
                 return;
             }
 
-            echo
-            '<div id="rosetta-area" class="area">' . "\n" .
-            '<details id="rosetta-details">' .
-            '<summary>' .
-            ($post_type == 'post' ? __('Post\'s translations:') : __('Page\'s translations:')) .
-            '</summary>' . "\n";
-
             if ($post_type == 'post') {
                 $url = dcCore::app()->adminurl->get('admin.post', ['id' => $post->post_id]);
             } else {
                 $url = dcCore::app()->adminurl->get('admin.plugin.pages', ['act' => 'page', 'id' => $post->post_id]);
             }
 
-            $html_block = '<div class="table-outer">' .
-            '<table id="rosetta-list" summary="' . __('Attached Translations') . '" class="clear maximal">' .
-            '<thead>' .
-            '<tr>' .
-            '<th class="nowrap">' . __('Language') . '</th>' .
-            '<th>' . ($post_type == 'post' ? __('Entry') : __('Page')) . '</th>' .
-            '<th class="nowrap">' . '</th>' .
-            '</tr>' .
-            '</thead>' .
-            '<tbody>%s</tbody>' .
-            '</table>' .
-            '</div>';
             $html_lines = '';
 
             $list = CoreData::findAllTranslations($post->post_id, $post->post_lang, false);
@@ -176,6 +157,26 @@ class BackendBehaviors
                     }
                 }
             }
+
+            $html_block = '<div class="table-outer">' .
+            '<table id="rosetta-list" summary="' . __('Attached Translations') . '" class="clear maximal">' .
+            '<thead>' .
+            '<tr>' .
+            '<th class="nowrap">' . __('Language') . '</th>' .
+            '<th>' . ($post_type == 'post' ? __('Entry') : __('Page')) . '</th>' .
+            '<th class="nowrap">' . '</th>' .
+            '</tr>' .
+            '</thead>' .
+            '<tbody>%s</tbody>' .
+            '</table>' .
+            '</div>';
+
+            echo
+            '<div id="rosetta-area" class="area">' . "\n" .
+            '<details id="rosetta-details"' . ($html_lines !== '' ? ' open ' : '') . '>' .
+            '<summary>' .
+            ($post_type == 'post' ? __('Post\'s translations:') : __('Page\'s translations:')) .
+            '</summary>' . "\n";
 
             // Display table
             echo sprintf($html_block, $html_lines);

@@ -51,11 +51,12 @@ $(() => {
       });
     };
   }
+
   $('#edit-entry').on('onetabload', () => {
     // Add toggle capability on Rosetta area
     $('#rosetta-details').toggleWithDetails({
       user_pref: 'dcx_post_rosetta',
-      hide: false,
+      hide: $('#rosetta-list tbody').children().length === 0 ? true : false,
     });
   });
 
