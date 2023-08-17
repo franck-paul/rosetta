@@ -14,7 +14,7 @@ $this->registerModule(
     'Rosetta',
     'Manage post/page translations',
     'Franck Paul',
-    '2.7.1',
+    '2.7.2',
     [
         'requires'    => [['core', '2.26']],
         'permissions' => dcCore::app()->auth->makePermissions([
