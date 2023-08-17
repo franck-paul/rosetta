@@ -16,10 +16,11 @@ namespace Dotclear\Plugin\rosetta;
 
 use dcCore;
 use Dotclear\Helper\Html\Html;
+use Dotclear\Plugin\widgets\WidgetsElement;
 
 class FrontendWidgets
 {
-    public static function rosettaEntryWidget($w)
+    public static function rosettaEntryWidget(WidgetsElement $w)
     {
         $settings = dcCore::app()->blog->settings->get(My::id());
         if (!$settings->active) {
@@ -68,6 +69,6 @@ class FrontendWidgets
         $res .= '<ul>' . $list . '</ul>' . "\n";
 
         // Render full content
-        return $w->renderDiv($w->content_only, 'rosetta-entries ' . $w->class, '', $res);
+        return $w->renderDiv((bool) $w->content_only, 'rosetta-entries ' . $w->class, '', $res);
     }
 }
