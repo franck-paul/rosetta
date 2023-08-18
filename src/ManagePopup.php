@@ -14,24 +14,22 @@ declare(strict_types=1);
 
 namespace Dotclear\Plugin\rosetta;
 
-use dcAdminCombos;
 use dcCore;
-use dcNsProcess;
-use dcPage;
+use Dotclear\Core\Backend\Combos;
+use Dotclear\Core\Backend\Notices;
+use Dotclear\Core\Backend\Page;
+use Dotclear\Core\Process;
 use Dotclear\Helper\Html\Html;
 use form;
 
-class ManagePopup extends dcNsProcess
+class ManagePopup extends Process
 {
-    protected static $init = false; /** @deprecated since 2.27 */
     /**
      * Initializes the page.
      */
     public static function init(): bool
     {
-        static::$init = My::checkContext(My::MANAGE) && !empty($_REQUEST['popup_new']);
-
-        return static::$init;
+        return self::status(My::checkContext(My::MANAGE) && !empty($_REQUEST['popup_new']));
     }
 
     /**
@@ -39,7 +37,7 @@ class ManagePopup extends dcNsProcess
      */
     public static function process(): bool
     {
-        if (!static::$init) {
+        if (!self::status()) {
             return false;
         }
 
@@ -51,7 +49,7 @@ class ManagePopup extends dcNsProcess
      */
     public static function render(): void
     {
-        if (!static::$init) {
+        if (!self::status()) {
             return;
         }
 
@@ -63,7 +61,7 @@ class ManagePopup extends dcNsProcess
 
         // Languages combo
         $rs         = dcCore::app()->blog->getLangs(['order' => 'asc']);
-        $lang_combo = dcAdminCombos::getLangsCombo($rs, true);
+        $lang_combo = Combos::getLangsCombo($rs, true);
         // Remove empty select
         unset($lang_combo['']);
         // Remove already existed translation's languages from combo
@@ -83,17 +81,17 @@ class ManagePopup extends dcNsProcess
             }
         }
 
-        $head = dcPage::jsModuleLoad(My::id() . '/js/popup_new.js', dcCore::app()->getVersion('rosetta'));
+        $head = My::jsLoad('popup_new.js');
 
-        dcPage::openModule(__('Create a new translation'), $head);
+        Page::openModule(__('Create a new translation'), $head);
 
-        echo dcPage::breadcrumb(
+        echo Page::breadcrumb(
             [
                 Html::escapeHTML(dcCore::app()->blog->name) => '',
                 __('Rosetta')                               => '',
             ]
         );
-        echo dcPage::notices();
+        echo Notices::getNotices();
 
         echo
         '<form id="link-insert-form" action="#" method="get">' .
@@ -109,6 +107,6 @@ class ManagePopup extends dcNsProcess
         '<p><button class="reset" id="rosetta-new-cancel">' . __('Cancel') . '</button> - ' .
         '<button id="rosetta-new-ok"><strong>' . __('Create') . '</strong></button></p>' . "\n";
 
-        dcPage::closeModule();
+        Page::closeModule();
     }
 }

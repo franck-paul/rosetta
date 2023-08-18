@@ -15,21 +15,18 @@ declare(strict_types=1);
 namespace Dotclear\Plugin\rosetta;
 
 use dcCore;
-use dcNsProcess;
+use Dotclear\Core\Process;
 
-class Frontend extends dcNsProcess
+class Frontend extends Process
 {
-    protected static $init = false; /** @deprecated since 2.27 */
     public static function init(): bool
     {
-        static::$init = My::checkContext(My::FRONTEND);
-
-        return static::$init;
+        return self::status(My::checkContext(My::FRONTEND));
     }
 
     public static function process(): bool
     {
-        if (!static::$init) {
+        if (!self::status()) {
             return false;
         }
 
@@ -41,16 +38,16 @@ class Frontend extends dcNsProcess
 
         // Public behaviours
         dcCore::app()->addBehaviors([
-            'urlHandlerGetArgsDocument' => [FrontendBehaviors::class, 'urlHandlerGetArgsDocument'],
-            'publicHeadContent'         => [FrontendBehaviors::class, 'publicHeadContent'],
-            'coreBlogBeforeGetPosts'    => [FrontendBehaviors::class, 'coreBlogBeforeGetPosts'],
-            'coreBlogAfterGetPosts'     => [FrontendBehaviors::class, 'coreBlogAfterGetPosts'],
+            'urlHandlerGetArgsDocument' => FrontendBehaviors::urlHandlerGetArgsDocument(...),
+            'publicHeadContent'         => FrontendBehaviors::publicHeadContent(...),
+            'coreBlogBeforeGetPosts'    => FrontendBehaviors::coreBlogBeforeGetPosts(...),
+            'coreBlogAfterGetPosts'     => FrontendBehaviors::coreBlogAfterGetPosts(...),
 
-            'initWidgets' => [Widgets::class, 'initWidgets'],
+            'initWidgets' => Widgets::initWidgets(...),
         ]);
 
         // Public template tags
-        dcCore::app()->tpl->addValue('RosettaEntryList', [FrontendTemplate::class, 'rosettaEntryList']);
+        dcCore::app()->tpl->addValue('RosettaEntryList', FrontendTemplate::rosettaEntryList(...));
 
         return true;
     }

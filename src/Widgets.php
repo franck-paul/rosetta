@@ -25,7 +25,7 @@ class Widgets
             ->create(
                 'rosettaEntry',
                 __('Entry\'s translations'),
-                [FrontendWidgets::class, 'rosettaEntryWidget'],
+                FrontendWidgets::rosettaEntryWidget(...),
                 null,
                 __('Translation(s) of this entry')
             )

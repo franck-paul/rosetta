@@ -14,79 +14,70 @@ declare(strict_types=1);
 
 namespace Dotclear\Plugin\rosetta;
 
-use dcAdmin;
 use dcCore;
-use dcNsProcess;
+use Dotclear\Core\Backend\Menus;
+use Dotclear\Core\Process;
 
-class Backend extends dcNsProcess
+class Backend extends Process
 {
-    protected static $init = false; /** @deprecated since 2.27 */
     public static function init(): bool
     {
-        static::$init = My::checkContext(My::BACKEND);
-
         // dead but useful code, in order to have translations
         __('Rosetta') . __('Manage post/page translations');
 
-        return static::$init;
+        return self::status(My::checkContext(My::BACKEND));
     }
 
     public static function process(): bool
     {
-        if (!static::$init) {
+        if (!self::status()) {
             return false;
         }
 
-        dcCore::app()->menu[dcAdmin::MENU_BLOG]->addItem(
-            __('Rosetta'),
-            My::makeUrl(),
-            My::icons(),
-            preg_match(My::urlScheme(), $_SERVER['REQUEST_URI']),
-            My::checkContext(My::MENU)
-        );
+        My::addBackendMenuItem(Menus::MENU_BLOG);
 
         dcCore::app()->addBehaviors([
             // Register favorite
-            'adminDashboardFavoritesV2' => [BackendBehaviors::class, 'adminDashboardFavorites'],
+            'adminDashboardFavoritesV2' => BackendBehaviors::adminDashboardFavorites(...),
 
             // Add behaviour callback for post
-            'adminPostForm'    => [BackendBehaviors::class, 'adminPostForm'],
-            'adminPostHeaders' => [BackendBehaviors::class, 'adminPostHeaders'],
+            'adminPostForm'    => BackendBehaviors::adminPostForm(...),
+            'adminPostHeaders' => BackendBehaviors::adminPostHeaders(...),
 
             // Add behaviour callback for page
-            'adminPageForm'    => [BackendBehaviors::class, 'adminPageForm'],
-            'adminPageHeaders' => [BackendBehaviors::class, 'adminPageHeaders'],
+            'adminPageForm'    => BackendBehaviors::adminPageForm(...),
+            'adminPageHeaders' => BackendBehaviors::adminPageHeaders(...),
 
             // Add behaviour callback for post/page list popup
-            'adminPopupPosts' => [BackendBehaviors::class, 'adminPopupPosts'],
+            'adminPopupPosts' => BackendBehaviors::adminPopupPosts(...),
 
             // Add behaviour callback for post/page lists
-            'adminColumnsListsV2'       => [BackendBehaviors::class, 'adminColumnsLists'],
-            'adminPostListHeaderV2'     => [BackendBehaviors::class, 'adminPostListHeader'],
-            'adminPostListValueV2'      => [BackendBehaviors::class, 'adminPostListValue'],
-            'adminPostMiniListHeaderV2' => [BackendBehaviors::class, 'adminPostMiniListHeader'],
-            'adminPostMiniListValue'    => [BackendBehaviors::class, 'adminPostMiniListValue'],
-            'adminPagesListHeaderV2'    => [BackendBehaviors::class, 'adminPagesListHeader'],
-            'adminPagesListValueV2'     => [BackendBehaviors::class, 'adminPagesListValue'],
-            'adminFiltersListsV2'       => [BackendBehaviors::class, 'adminFiltersLists'],
+            'adminColumnsListsV2'       => BackendBehaviors::adminColumnsLists(...),
+            'adminPostListHeaderV2'     => BackendBehaviors::adminPostListHeader(...),
+            'adminPostListValueV2'      => BackendBehaviors::adminPostListValue(...),
+            'adminPostMiniListHeaderV2' => BackendBehaviors::adminPostMiniListHeader(...),
+            'adminPostMiniListValue'    => BackendBehaviors::adminPostMiniListValue(...),
+            'adminPagesListHeaderV2'    => BackendBehaviors::adminPagesListHeader(...),
+            'adminPagesListValueV2'     => BackendBehaviors::adminPagesListValue(...),
+            'adminFiltersListsV2'       => BackendBehaviors::adminFiltersLists(...),
 
             // Add behaviour callback for import/export
-            'exportSingleV2' => [BackendBehaviors::class, 'exportSingle'],
-            'exportFullV2'   => [BackendBehaviors::class, 'exportFull'],
-            'importInitV2'   => [BackendBehaviors::class, 'importInit'],
-            'importSingleV2' => [BackendBehaviors::class, 'importSingle'],
-            'importFullV2'   => [BackendBehaviors::class, 'importFull'],
+            'exportSingleV2' => BackendBehaviors::exportSingle(...),
+            'exportFullV2'   => BackendBehaviors::exportFull(...),
+            'importInitV2'   => BackendBehaviors::importInit(...),
+            'importSingleV2' => BackendBehaviors::importSingle(...),
+            'importFullV2'   => BackendBehaviors::importFull(...),
         ]);
 
         // Register REST methods
-        dcCore::app()->rest->addFunction('newTranslation', [BackendRest::class, 'newTranslation']);
-        dcCore::app()->rest->addFunction('addTranslation', [BackendRest::class, 'addTranslation']);
-        dcCore::app()->rest->addFunction('removeTranslation', [BackendRest::class, 'removeTranslation']);
-        dcCore::app()->rest->addFunction('getTranslationRow', [BackendRest::class, 'getTranslationRow']);
+        dcCore::app()->rest->addFunction('newTranslation', BackendRest::newTranslation(...));
+        dcCore::app()->rest->addFunction('addTranslation', BackendRest::addTranslation(...));
+        dcCore::app()->rest->addFunction('removeTranslation', BackendRest::removeTranslation(...));
+        dcCore::app()->rest->addFunction('getTranslationRow', BackendRest::getTranslationRow(...));
 
         if (My::checkContext(My::WIDGETS)) {
             dcCore::app()->addBehaviors([
-                'initWidgets' => [Widgets::class, 'initWidgets'],
+                'initWidgets' => Widgets::initWidgets(...),
             ]);
         }
 

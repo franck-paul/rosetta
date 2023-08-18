@@ -17,27 +17,26 @@ namespace Dotclear\Plugin\rosetta;
 use dcAuth;
 use dcCore;
 use dcNamespace;
-use dcNsProcess;
-use dcPage;
+use Dotclear\Core\Backend\Notices;
+use Dotclear\Core\Backend\Page;
+use Dotclear\Core\Process;
+use Dotclear\Helper\Html\Form\Hidden;
 use Dotclear\Helper\Html\Html;
 use Exception;
 use form;
 
-class Manage extends dcNsProcess
+class Manage extends Process
 {
-    protected static $init = false; /** @deprecated since 2.27 */
     /**
      * Initializes the page.
      */
     public static function init(): bool
     {
         if (My::checkContext(My::MANAGE)) {
-            static::$init = !empty($_REQUEST['popup_new']) ? ManagePopup::init() : true;
+            return self::status(!empty($_REQUEST['popup_new']) ? ManagePopup::init() : true);
         }
 
-        static::$init = My::checkContext(My::MANAGE);
-
-        return static::$init;
+        return self::status(My::checkContext(My::MANAGE));
     }
 
     /**
@@ -45,7 +44,7 @@ class Manage extends dcNsProcess
      */
     public static function process(): bool
     {
-        if (!static::$init) {
+        if (!self::status()) {
             return false;
         }
 
@@ -61,8 +60,8 @@ class Manage extends dcNsProcess
                 $settings->put('active', empty($_POST['active']) ? false : true, dcNamespace::NS_BOOL);
                 $settings->put('accept_language', empty($_POST['accept_language']) ? false : true, dcNamespace::NS_BOOL);
 
-                dcPage::addSuccessNotice(__('Configuration successfully updated.'));
-                dcCore::app()->adminurl->redirect('admin.plugin.' . My::id(), [
+                Notices::addSuccessNotice(__('Configuration successfully updated.'));
+                dcCore::app()->admin->url->redirect('admin.plugin.' . My::id(), [
                     'tab' => $tab,
                 ], '#' . $tab);
             } catch (Exception $e) {
@@ -78,7 +77,7 @@ class Manage extends dcNsProcess
      */
     public static function render(): void
     {
-        if (!static::$init) {
+        if (!self::status()) {
             return;
         }
 
@@ -95,17 +94,17 @@ class Manage extends dcNsProcess
 
         $tab = empty($_REQUEST['tab']) ? '' : $_REQUEST['tab'];
 
-        $head = dcPage::jsPageTabs($tab);
+        $head = Page::jsPageTabs($tab);
 
-        dcPage::openModule(__('Rosetta'), $head);
+        Page::openModule(__('Rosetta'), $head);
 
-        echo dcPage::breadcrumb(
+        echo Page::breadcrumb(
             [
                 Html::escapeHTML(dcCore::app()->blog->name) => '',
                 __('Rosetta')                               => '',
             ]
         );
-        echo dcPage::notices();
+        echo Notices::getNotices();
 
         // Form
 
@@ -120,7 +119,7 @@ class Manage extends dcNsProcess
 
         echo
         '<p class="field"><input type="submit" value="' . __('Save') . '" /> ' .
-        form::hidden(['tab'], 'posts') .
+        (new Hidden(['tab'], 'posts'))->render() .
         dcCore::app()->formNonce() . '</p>' .
             '</form>' .
             '</div>';
@@ -136,7 +135,7 @@ class Manage extends dcNsProcess
 
             echo
             '<p class="field"><input type="submit" value="' . __('Save') . '" /> ' .
-            form::hidden(['tab'], 'pages') .
+            (new Hidden(['tab'], 'pages'))->render() .
             dcCore::app()->formNonce() . '</p>' .
                 '</form>' .
                 '</div>';
@@ -161,13 +160,13 @@ class Manage extends dcNsProcess
 
             echo
             '<p class="field wide"><input type="submit" value="' . __('Save') . '" /> ' .
-            form::hidden(['tab'], 'settings') .
-            form::hidden(['save_settings'], 1) .
+            (new Hidden(['tab'], 'settings'))->render() .
+            (new Hidden(['save_settings'], '1'))->render() .
             dcCore::app()->formNonce() . '</p>' .
-                '</form>' .
-                '</div>';
+            '</form>' .
+            '</div>';
         }
 
-        dcPage::closeModule();
+        Page::closeModule();
     }
 }

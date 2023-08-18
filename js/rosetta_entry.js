@@ -5,46 +5,9 @@ dotclear.mergeDeep(dotclear, dotclear.getData('rosetta_entry'));
 dotclear.mergeDeep(dotclear, dotclear.getData('rosetta_type'));
 
 $(() => {
-  // Use $.toglleWithDetails with Dotclear 2.27+
-  $.fn.toggleWithDetailsRosetta = function (s) {
-    const target = this;
-    const defaults = {
-      unfolded_sections: dotclear.unfolded_sections,
-      hide: true, // Is section unfolded?
-      fn: false, // A function called on first display,
-      user_pref: false,
-      reverse_user_pref: false, // Reverse user pref behavior
-    };
-    const p = $.extend(defaults, s);
-    if (p.user_pref && p.unfolded_sections !== undefined && p.user_pref in p.unfolded_sections) {
-      p.hide = p.reverse_user_pref;
-    }
-    const toggle = () => {
-      if (!p.hide && p.fn) {
-        p.fn.apply(target);
-        p.fn = false;
-      }
-      p.hide = !p.hide;
-    };
-    return this.each(() => {
-      $(target).on('toggle', (e) => {
-        if (p.user_pref) {
-          dotclear.jsonServicesPost('setSectionFold', () => {}, {
-            section: p.user_pref,
-            value: p.hide ^ p.reverse_user_pref ? 1 : 0,
-          });
-        }
-        toggle();
-        e.preventDefault();
-        return false;
-      });
-      toggle();
-    });
-  };
-
   $('#edit-entry').on('onetabload', () => {
     // Add toggle capability on Rosetta area
-    $('#rosetta-details').toggleWithDetailsRosetta({
+    $('#rosetta-details').toggleWithDetails({
       user_pref: 'dcx_post_rosetta',
       hide: $('#rosetta-list tbody').children().length === 0 ? false : true,
     });

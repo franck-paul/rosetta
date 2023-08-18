@@ -16,12 +16,13 @@ namespace Dotclear\Plugin\rosetta;
 
 use ArrayObject;
 use dcCore;
-use dcPage;
 use dcUtils;
+use Dotclear\Core\Backend\Favorites;
+use Dotclear\Core\Backend\Page;
+use Dotclear\Helper\Html\Form\Hidden;
 use Dotclear\Helper\Html\Html;
 use Dotclear\Helper\L10n;
 use Exception;
-use form;
 
 // Admin behaviours
 
@@ -29,11 +30,11 @@ class BackendBehaviors
 {
     public static $args_rosetta = '&amp;lang=%s&amp;type=%s&amp;rosetta=%s&amp;rosetta_id=%s&amp;rosetta_lang=%s';
 
-    public static function adminDashboardFavorites($favs)
+    public static function adminDashboardFavorites(Favorites $favs)
     {
         $favs->register('rosetta', [
             'title'      => __('Rosetta'),
-            'url'        => My::makeUrl(),
+            'url'        => My::manageUrl(),
             'small-icon' => My::icons(),
             'large-icon' => My::icons(),
             My::checkContext(My::MENU),
@@ -43,22 +44,22 @@ class BackendBehaviors
     private static function adminEntryHeaders()
     {
         return
-        dcPage::jsJson('rosetta_entry', [
+        Page::jsJson('rosetta_entry', [
             'msg'     => ['confirm_remove_rosetta' => __('Are you sure to remove this translation?')],
             'rosetta' => [
-                'popup_posts_url' => dcCore::app()->adminurl->get('admin.popup_posts', [
+                'popup_posts_url' => dcCore::app()->admin->url->get('admin.popup_posts', [
                     'popup'     => 1,
                     'plugin_id' => 'rosetta',
                     'type'      => '',
                 ], '&'),
-                'plugin_url' => dcCore::app()->adminurl->get('admin.plugin.' . My::id(), [
+                'plugin_url' => dcCore::app()->admin->url->get('admin.plugin.' . My::id(), [
                     'popup_new' => 1,
                     'popup'     => 1,
                 ], '&'),
             ],
         ]) .
-        dcPage::jsModuleLoad(My::id() . '/js/rosetta_entry.js', dcCore::app()->getVersion(My::id())) . "\n" .
-        dcPage::cssModuleLoad(My::id() . '/css/style.css', dcCore::app()->getVersion(My::id())) . "\n";
+        My::jsLoad('rosetta_entry.js') . "\n" .
+        My::cssLoad('style.css') . "\n";
     }
 
     public static function adminPostHeaders()
@@ -66,7 +67,7 @@ class BackendBehaviors
         $settings = dcCore::app()->blog->settings->get(My::id());
         if ($settings->active) {
             return
-            dcPage::jsJson('rosetta_type', ['post_type' => 'post']) .
+            Page::jsJson('rosetta_type', ['post_type' => 'post']) .
             self::adminEntryHeaders();
         }
     }
@@ -76,7 +77,7 @@ class BackendBehaviors
         $settings = dcCore::app()->blog->settings->get(My::id());
         if ($settings->active) {
             return
-            dcPage::jsJson('rosetta_type', ['post_type' => 'page']) .
+            Page::jsJson('rosetta_type', ['post_type' => 'page']) .
             self::adminEntryHeaders();
         }
     }
@@ -101,7 +102,7 @@ class BackendBehaviors
         '<td class="minimal nowrap">%s</td>' . "\n" . // Action
         '</tr>' . "\n";
         $action_remove = '<a href="%s" class="rosetta-remove" title="' . __('Remove this translation\'s link') . '" name="delete">' .
-        '<img src="' . urldecode(dcPage::getPF(My::id() . '/img/unlink.png')) .
+        '<img src="' . urldecode(Page::getPF(My::id() . '/img/unlink.png')) .
         '" alt="' . __('Remove this translation\'s link') . '" /></a>';
 
         return sprintf(
@@ -122,9 +123,9 @@ class BackendBehaviors
             }
 
             if ($post_type == 'post') {
-                $url = dcCore::app()->adminurl->get('admin.post', ['id' => $post->post_id]);
+                $url = dcCore::app()->admin->url->get('admin.post', ['id' => $post->post_id]);
             } else {
-                $url = dcCore::app()->adminurl->get('admin.plugin.pages', ['act' => 'page', 'id' => $post->post_id]);
+                $url = dcCore::app()->admin->url->get('admin.plugin.pages', ['act' => 'page', 'id' => $post->post_id]);
             }
 
             $html_lines = '';
@@ -196,8 +197,8 @@ class BackendBehaviors
                     ''
                 )) .
             // Hidden field for selected post/page URL
-            form::hidden(['rosetta_url', 'rosetta_url'], '') .
-                '</p>';
+            (new Hidden('rosetta_url', ''))->render() .
+            '</p>';
 
             // Add a field (title), a combo (lang) and a button to create a new translation
             $action_new      = '<a href="%s" class="button add rosetta-new">' . __('Create a new translation') . '</a>';
@@ -227,9 +228,9 @@ class BackendBehaviors
                 ) .
                 '&amp;edit=1') .
             // Hidden fields for new entry title and lang
-            form::hidden(['rosetta_title', 'rosetta_title'], '') .
-            form::hidden(['rosetta_lang', 'rosetta_lang'], '') .
-                '</p>';
+            (new Hidden('rosetta_title', ''))->render() .
+            (new Hidden('rosetta_lang', ''))->render() .
+            '</p>';
 
             echo
             '</details>' .
@@ -253,7 +254,7 @@ class BackendBehaviors
             return;
         }
 
-        return dcPage::jsModuleLoad(My::id() . '/js/popup_posts.js', dcCore::app()->getVersion(My::id()));
+        return My::jsLoad('popup_posts.js');
     }
 
     public static function adminColumnsLists($cols)
