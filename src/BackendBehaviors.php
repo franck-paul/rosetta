@@ -58,8 +58,8 @@ class BackendBehaviors
                 ], '&'),
             ],
         ]) .
-        My::jsLoad('rosetta_entry.js') . "\n" .
-        My::cssLoad('style.css') . "\n";
+        My::jsLoad('rosetta_entry.js') .
+        My::cssLoad('style.css');
     }
 
     public static function adminPostHeaders()
