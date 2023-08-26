@@ -14,14 +14,13 @@ declare(strict_types=1);
 
 namespace Dotclear\Plugin\rosetta;
 
-use dcCore;
 use Dotclear\Helper\Html\Html;
 
 class FrontendTemplate
 {
     public static function rosettaEntryList($attr)
     {
-        $settings = dcCore::app()->blog->settings->get(My::id());
+        $settings = My::settings();
         if (!$settings->active) {
             return;
         }

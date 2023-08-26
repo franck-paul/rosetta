@@ -20,7 +20,6 @@ use dcNamespace;
 use Dotclear\Core\Backend\Notices;
 use Dotclear\Core\Backend\Page;
 use Dotclear\Core\Process;
-use Dotclear\Helper\Html\Form\Hidden;
 use Dotclear\Helper\Html\Html;
 use Exception;
 use form;
@@ -56,7 +55,7 @@ class Manage extends Process
             $tab = empty($_REQUEST['tab']) ? '' : $_REQUEST['tab'];
 
             try {
-                $settings = dcCore::app()->blog->settings->get(My::id());
+                $settings = My::settings();
                 $settings->put('active', empty($_POST['active']) ? false : true, dcNamespace::NS_BOOL);
                 $settings->put('accept_language', empty($_POST['accept_language']) ? false : true, dcNamespace::NS_BOOL);
 
@@ -88,7 +87,7 @@ class Manage extends Process
         }
 
         // Main page of plugin
-        $settings                = dcCore::app()->blog->settings->get(My::id());
+        $settings                = My::settings();
         $rosetta_active          = $settings->active;
         $rosetta_accept_language = $settings->accept_language;
 
@@ -96,7 +95,7 @@ class Manage extends Process
 
         $head = Page::jsPageTabs($tab);
 
-        Page::openModule(__('Rosetta'), $head);
+        Page::openModule(My::name(), $head);
 
         echo Page::breadcrumb(
             [
@@ -119,10 +118,12 @@ class Manage extends Process
 
         echo
         '<p class="field"><input type="submit" value="' . __('Save') . '" /> ' .
-        (new Hidden(['tab'], 'posts'))->render() .
-        dcCore::app()->formNonce() . '</p>' .
-            '</form>' .
-            '</div>';
+        My::parsedHiddenFields([
+            'tab' => 'posts',
+        ]) .
+        '</p>' .
+        '</form>' .
+        '</div>';
 
         // 2. Pages translations
         if (dcCore::app()->plugins->moduleExists('pages')) {
@@ -135,10 +136,12 @@ class Manage extends Process
 
             echo
             '<p class="field"><input type="submit" value="' . __('Save') . '" /> ' .
-            (new Hidden(['tab'], 'pages'))->render() .
-            dcCore::app()->formNonce() . '</p>' .
-                '</form>' .
-                '</div>';
+            My::parsedHiddenFields([
+                'tab' => 'pages',
+            ]) .
+            '</p>' .
+            '</form>' .
+            '</div>';
         }
 
         if (dcCore::app()->auth->check(dcCore::app()->auth->makePermissions([
@@ -160,9 +163,11 @@ class Manage extends Process
 
             echo
             '<p class="field wide"><input type="submit" value="' . __('Save') . '" /> ' .
-            (new Hidden(['tab'], 'settings'))->render() .
-            (new Hidden(['save_settings'], '1'))->render() .
-            dcCore::app()->formNonce() . '</p>' .
+            My::parsedHiddenFields([
+                'tab'           => 'settings',
+                'save_settings' => '1',
+            ]) .
+            '</p>' .
             '</form>' .
             '</div>';
         }

@@ -53,7 +53,7 @@ class FrontendHelper
                 if ($rs->count()) {
                     $rs->fetch();
                     $url      = dcCore::app()->blog->url . dcCore::app()->getPostPublicURL($post_type, Html::sanitizeURL($rs->post_url));
-                    $settings = dcCore::app()->blog->settings->get(My::id());
+                    $settings = My::settings();
                     if ($settings->accept_language) {
                         // Add lang parameter to the URL to prevent accept-language auto redirect
                         $url .= (strpos($url, '?') === false ? '?' : '&') . 'lang=' . $lang;

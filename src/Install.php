@@ -66,7 +66,7 @@ class Install extends Process
             $current_structure->synchronize($new_structure);
 
             // Default state is inactive
-            $settings = dcCore::app()->blog->settings->get(My::id());
+            $settings = My::settings();
             $settings->put('active', false, dcNamespace::NS_BOOL, 'Active', false, true);
             $settings->put('accept_language', false, dcNamespace::NS_BOOL, 'Take care of browser accept-language', false, true);
         } catch (Exception $e) {

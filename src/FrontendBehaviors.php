@@ -28,7 +28,7 @@ class FrontendBehaviors
 
     public static function coreBlogBeforeGetPosts($params)
     {
-        $settings = dcCore::app()->blog->settings->get(My::id());
+        $settings = My::settings();
         if ($settings->active) {
             if (static::$state != self::ROSETTA_NONE || isset($params['post_lang'])) {
                 return;
@@ -66,13 +66,14 @@ class FrontendBehaviors
 
             return $rs->post_lang;
         }
+
         // Return blog default lang
         return dcCore::app()->blog->settings->system->lang;
     }
 
     public static function coreBlogAfterGetPosts($rs, $alt)
     {
-        $settings = dcCore::app()->blog->settings->get(My::id());
+        $settings = My::settings();
         if ($settings->active && $settings->accept_language && $rs->count()) {
             // Start replacing posts only if in Filtering posts state
             if (static::$state == self::ROSETTA_FILTER) {
@@ -115,6 +116,7 @@ class FrontendBehaviors
                                         $ids[] = $id;
                                         $nbx++;
                                         $exchanged = true;
+
                                         // Switch done
                                         break;
                                     }
@@ -150,7 +152,7 @@ class FrontendBehaviors
             $postTypes[] = 'page';
         }
 
-        $settings = dcCore::app()->blog->settings->get(My::id());
+        $settings = My::settings();
         if ($settings->active && in_array(dcCore::app()->url->type, $urlTypes) && in_array(dcCore::app()->ctx->posts->post_type, $postTypes)) {
             // Find translations and add meta in header
             $list = FrontendHelper::EntryListHelper(
@@ -229,7 +231,7 @@ class FrontendBehaviors
 
     public static function urlHandlerGetArgsDocument($handler)
     {
-        $settings = dcCore::app()->blog->settings->get(My::id());
+        $settings = My::settings();
         if (!$settings->active) {
             return;
         }

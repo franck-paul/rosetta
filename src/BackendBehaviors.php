@@ -47,7 +47,7 @@ class BackendBehaviors
         Page::jsJson('rosetta_entry', [
             'msg'     => ['confirm_remove_rosetta' => __('Are you sure to remove this translation?')],
             'rosetta' => [
-                'popup_posts_url' => dcCore::app()->admin->url->get('admin.popup_posts', [
+                'popup_posts_url' => dcCore::app()->admin->url->get('admin.posts.popup', [
                     'popup'     => 1,
                     'plugin_id' => 'rosetta',
                     'type'      => '',
@@ -64,7 +64,7 @@ class BackendBehaviors
 
     public static function adminPostHeaders()
     {
-        $settings = dcCore::app()->blog->settings->get(My::id());
+        $settings = My::settings();
         if ($settings->active) {
             return
             Page::jsJson('rosetta_type', ['post_type' => 'post']) .
@@ -74,7 +74,7 @@ class BackendBehaviors
 
     public static function adminPageHeaders()
     {
-        $settings = dcCore::app()->blog->settings->get(My::id());
+        $settings = My::settings();
         if ($settings->active) {
             return
             Page::jsJson('rosetta_type', ['post_type' => 'page']) .
@@ -115,7 +115,7 @@ class BackendBehaviors
 
     private static function adminEntryForm($post, $post_type = 'post')
     {
-        $settings = dcCore::app()->blog->settings->get(My::id());
+        $settings = My::settings();
         if ($settings->active) {
             if (!$post || !$post->post_id) {
                 // Manage translation only on already created posts/pages
@@ -267,7 +267,7 @@ class BackendBehaviors
 
     private static function adminEntryListHeader($core, $rs, $cols)
     {
-        $settings = dcCore::app()->blog->settings->get(My::id());
+        $settings = My::settings();
         if ($settings->active) {
             $cols['language']     = '<th scope="col">' . __('Language') . '</th>';
             $cols['translations'] = '<th scope="col">' . __('Translations') . '</th>';
@@ -286,7 +286,7 @@ class BackendBehaviors
 
     public static function adminEntryListValue($core, $rs, $cols)
     {
-        $settings = dcCore::app()->blog->settings->get(My::id());
+        $settings = My::settings();
         if ($settings->active) {
             $translations = '';
             $list         = CoreData::findAllTranslations($rs->post_id, $rs->post_lang, false);
@@ -332,7 +332,7 @@ class BackendBehaviors
 
     public static function adminPostMiniListHeader($rs, $cols)
     {
-        $settings = dcCore::app()->blog->settings->get(My::id());
+        $settings = My::settings();
         if ($settings->active) {
             $cols['language'] = '<th scope="col">' . __('Language') . '</th>';
         }
@@ -340,7 +340,7 @@ class BackendBehaviors
 
     public static function adminPostMiniListValue($core, $rs, $cols)
     {
-        $settings = dcCore::app()->blog->settings->get(My::id());
+        $settings = My::settings();
         if ($settings->active) {
             $cols['language'] = '<td class="nowrap">' . $rs->post_lang . '</td>';
         }
