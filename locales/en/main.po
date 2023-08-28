@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dotclear 2 rosetta module\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-14 09:20+0200\n"
+"POT-Creation-Date: 2023-08-28 09:22+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -31,12 +31,6 @@ msgstr ""
 msgid "Edit this entry"
 msgstr ""
 
-msgid "Page's translations:"
-msgstr ""
-
-msgid "Post's translations:"
-msgstr ""
-
 msgid "Attached Translations"
 msgstr ""
 
@@ -44,6 +38,12 @@ msgid "Language"
 msgstr ""
 
 msgid "Entry"
+msgstr ""
+
+msgid "Page's translations:"
+msgstr ""
+
+msgid "Post's translations:"
 msgstr ""
 
 msgid "Attach a translation"

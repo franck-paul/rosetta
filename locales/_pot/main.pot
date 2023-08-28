@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dotclear 2 rosetta module\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-14 09:20+0200\n"
+"POT-Creation-Date: 2023-08-28 09:22+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,94 +16,92 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../git-plugins/rosetta/src/Backend.php:28
+#: ../git-plugins/rosetta/src/Backend.php:26
 msgid "Manage post/page translations"
 msgstr ""
 
-#: ../git-plugins/rosetta/src/Backend.php:28
-#: ../git-plugins/rosetta/src/Backend.php:40
-#: ../git-plugins/rosetta/src/BackendBehaviors.php:35
-#: ../git-plugins/rosetta/src/Manage.php:98
+#: ../git-plugins/rosetta/src/Backend.php:26
+#: ../git-plugins/rosetta/src/BackendBehaviors.php:36
 #: ../git-plugins/rosetta/src/Manage.php:103
-#: ../git-plugins/rosetta/src/ManagePopup.php:92
+#: ../git-plugins/rosetta/src/ManagePopup.php:91
 msgid "Rosetta"
 msgstr ""
 
-#: ../git-plugins/rosetta/src/BackendBehaviors.php:47
+#: ../git-plugins/rosetta/src/BackendBehaviors.php:48
 msgid "Are you sure to remove this translation?"
 msgstr ""
 
-#: ../git-plugins/rosetta/src/BackendBehaviors.php:93
-#: ../git-plugins/rosetta/src/BackendBehaviors.php:95
+#: ../git-plugins/rosetta/src/BackendBehaviors.php:104
+#: ../git-plugins/rosetta/src/BackendBehaviors.php:106
 msgid "Remove this translation's link"
 msgstr ""
 
-#: ../git-plugins/rosetta/src/BackendBehaviors.php:100
+#: ../git-plugins/rosetta/src/BackendBehaviors.php:111
 msgid "Edit this entry"
 msgstr ""
 
-#: ../git-plugins/rosetta/src/BackendBehaviors.php:117
-msgid "Page's translations:"
-msgstr ""
-
-#: ../git-plugins/rosetta/src/BackendBehaviors.php:117
-msgid "Post's translations:"
-msgstr ""
-
-#: ../git-plugins/rosetta/src/BackendBehaviors.php:127
+#: ../git-plugins/rosetta/src/BackendBehaviors.php:163
 msgid "Attached Translations"
 msgstr ""
 
-#: ../git-plugins/rosetta/src/BackendBehaviors.php:130
-#: ../git-plugins/rosetta/src/BackendBehaviors.php:247
-#: ../git-plugins/rosetta/src/BackendBehaviors.php:249
-#: ../git-plugins/rosetta/src/BackendBehaviors.php:257
-#: ../git-plugins/rosetta/src/BackendBehaviors.php:322
+#: ../git-plugins/rosetta/src/BackendBehaviors.php:166
+#: ../git-plugins/rosetta/src/BackendBehaviors.php:262
+#: ../git-plugins/rosetta/src/BackendBehaviors.php:264
+#: ../git-plugins/rosetta/src/BackendBehaviors.php:272
+#: ../git-plugins/rosetta/src/BackendBehaviors.php:337
 msgid "Language"
 msgstr ""
 
-#: ../git-plugins/rosetta/src/BackendBehaviors.php:131
+#: ../git-plugins/rosetta/src/BackendBehaviors.php:167
 msgid "Entry"
 msgstr ""
 
-#: ../git-plugins/rosetta/src/BackendBehaviors.php:173
+#: ../git-plugins/rosetta/src/BackendBehaviors.php:179
+msgid "Page's translations:"
+msgstr ""
+
+#: ../git-plugins/rosetta/src/BackendBehaviors.php:179
+msgid "Post's translations:"
+msgstr ""
+
+#: ../git-plugins/rosetta/src/BackendBehaviors.php:186
 msgid "Attach a translation"
 msgstr ""
 
-#: ../git-plugins/rosetta/src/BackendBehaviors.php:191
-#: ../git-plugins/rosetta/src/ManagePopup.php:87
+#: ../git-plugins/rosetta/src/BackendBehaviors.php:204
+#: ../git-plugins/rosetta/src/ManagePopup.php:86
 msgid "Create a new translation"
 msgstr ""
 
-#: ../git-plugins/rosetta/src/BackendBehaviors.php:192
+#: ../git-plugins/rosetta/src/BackendBehaviors.php:205
 msgid "Create and edit a new translation"
 msgstr ""
 
-#: ../git-plugins/rosetta/src/BackendRest.php:83
+#: ../git-plugins/rosetta/src/BackendRest.php:90
 msgid "New translation created."
 msgstr ""
 
-#: ../git-plugins/rosetta/src/BackendRest.php:84
+#: ../git-plugins/rosetta/src/BackendRest.php:91
 msgid "Error during new translation creation."
 msgstr ""
 
-#: ../git-plugins/rosetta/src/BackendRest.php:85
+#: ../git-plugins/rosetta/src/BackendRest.php:92
 msgid "Error during newly created translation attachment."
 msgstr ""
 
-#: ../git-plugins/rosetta/src/BackendRest.php:129
+#: ../git-plugins/rosetta/src/BackendRest.php:135
 msgid "Error during translation attachment."
 msgstr ""
 
-#: ../git-plugins/rosetta/src/BackendRest.php:129
+#: ../git-plugins/rosetta/src/BackendRest.php:135
 msgid "New translation attached."
 msgstr ""
 
-#: ../git-plugins/rosetta/src/BackendRest.php:157
+#: ../git-plugins/rosetta/src/BackendRest.php:162
 msgid "Error during removing translation attachment."
 msgstr ""
 
-#: ../git-plugins/rosetta/src/BackendRest.php:157
+#: ../git-plugins/rosetta/src/BackendRest.php:162
 msgid "Translation removed."
 msgstr ""
 
@@ -113,41 +111,41 @@ msgid "Posts tranlations"
 msgstr ""
 
 #: ../git-plugins/rosetta/src/Manage.php:120
-#: ../git-plugins/rosetta/src/Manage.php:136
-#: ../git-plugins/rosetta/src/Manage.php:161
+#: ../git-plugins/rosetta/src/Manage.php:138
+#: ../git-plugins/rosetta/src/Manage.php:165
 msgid "Save"
 msgstr ""
 
-#: ../git-plugins/rosetta/src/Manage.php:129
-#: ../git-plugins/rosetta/src/Manage.php:130
+#: ../git-plugins/rosetta/src/Manage.php:131
+#: ../git-plugins/rosetta/src/Manage.php:132
 msgid "Pages tranlations"
 msgstr ""
 
-#: ../git-plugins/rosetta/src/Manage.php:154
+#: ../git-plugins/rosetta/src/Manage.php:158
 msgid "Enable posts/pages translations for this blog"
 msgstr ""
 
-#: ../git-plugins/rosetta/src/Manage.php:156
+#: ../git-plugins/rosetta/src/Manage.php:160
 msgid "Options"
 msgstr ""
 
-#: ../git-plugins/rosetta/src/Manage.php:158
+#: ../git-plugins/rosetta/src/Manage.php:162
 msgid "Automatic posts/pages redirect on browser's language for this blog"
 msgstr ""
 
-#: ../git-plugins/rosetta/src/ManagePopup.php:100
+#: ../git-plugins/rosetta/src/ManagePopup.php:99
 msgid "Entry title:"
 msgstr ""
 
-#: ../git-plugins/rosetta/src/ManagePopup.php:103
+#: ../git-plugins/rosetta/src/ManagePopup.php:102
 msgid "Entry language:"
 msgstr ""
 
-#: ../git-plugins/rosetta/src/ManagePopup.php:108
+#: ../git-plugins/rosetta/src/ManagePopup.php:107
 msgid "Cancel"
 msgstr ""
 
-#: ../git-plugins/rosetta/src/ManagePopup.php:109
+#: ../git-plugins/rosetta/src/ManagePopup.php:108
 msgid "Create"
 msgstr ""
 
