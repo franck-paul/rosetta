@@ -14,15 +14,21 @@ declare(strict_types=1);
 
 namespace Dotclear\Plugin\rosetta;
 
+use ArrayObject;
 use Dotclear\Helper\Html\Html;
 
 class FrontendTemplate
 {
-    public static function rosettaEntryList($attr)
+    /**
+     * @param      array<string, mixed>|\ArrayObject<string, mixed>  $attr      The attribute
+     *
+     * @return     string
+     */
+    public static function rosettaEntryList(array|ArrayObject $attr): string
     {
         $settings = My::settings();
         if (!$settings->active) {
-            return;
+            return '';
         }
 
         $option = !empty($attr['include_current']) ? (string) $attr['include_current'] : 'std';

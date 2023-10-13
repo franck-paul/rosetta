@@ -25,10 +25,10 @@ class BackendRest
     /**
      * Serve method to add a new translation for current edited post/page. (JSON)
      *
-     * @param      array   $get    The cleaned $_GET
-     * @param      array   $post   The cleaned $_POST
+     * @param      array<string, string>   $get    The cleaned $_GET
+     * @param      array<string, string>   $post   The cleaned $_POST
      *
-     * @return     array
+     * @return     array<string, mixed>
      */
     public static function newTranslation(array $get, array $post): array
     {
@@ -98,10 +98,10 @@ class BackendRest
     /**
      * Serve method to add a new translation's link for current edited post/page. (JSON)
      *
-     * @param      array   $get    The cleaned $_GET
-     * @param      array   $post   The cleaned $_POST
+     * @param      array<string, string>   $get    The cleaned $_GET
+     * @param      array<string, string>   $post   The cleaned $_POST
      *
-     * @return     array
+     * @return     array<string, mixed>
      */
     public static function addTranslation(array $get, array $post): array
     {
@@ -139,10 +139,10 @@ class BackendRest
     /**
      * Serve method to remove an existing translation's link for current edited post/page. (JSON)
      *
-     * @param      array   $get    The cleaned $_GET
-     * @param      array   $post   The cleaned $_POST
+     * @param      array<string, string>   $get    The cleaned $_GET
+     * @param      array<string, string>   $post   The cleaned $_POST
      *
-     * @return     array
+     * @return     array<string, mixed>
      */
     public static function removeTranslation(array $get, array $post): array
     {
@@ -166,10 +166,10 @@ class BackendRest
     /**
      * Serve method to get existing translations for current edited post/page. (JSON)
      *
-     * @param      array   $get    The cleaned $_GET
-     * @param      array   $post   The cleaned $_POST
+     * @param      array<string, string>   $get    The cleaned $_GET
+     * @param      array<string, string>   $post   The cleaned $_POST
      *
-     * @return     array
+     * @return     array<string, mixed>
      */
     public static function getTranslationRow(array $get, array $post): array
     {

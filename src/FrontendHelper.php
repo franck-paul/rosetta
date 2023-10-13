@@ -22,7 +22,17 @@ use Dotclear\Helper\L10n;
 
 class FrontendHelper
 {
-    public static function EntryListHelper($post_id, $post_lang, $post_type, $include, &$current, $code_only = false)
+    /**
+     * @param      int          $post_id    The post identifier
+     * @param      null|string  $post_lang  The post language
+     * @param      string       $post_type  The post type
+     * @param      string       $include    The include
+     * @param      string|null  $current    The current
+     * @param      bool         $code_only  The code only
+     *
+     * @return     array<string, string>|bool
+     */
+    public static function EntryListHelper(int $post_id, ?string $post_lang, string $post_type, string $include, ?string &$current, bool $code_only = false): array|bool
     {
         // Get associated entries
         $ids = CoreData::findAllTranslations($post_id, $post_lang, ($include != 'none'));
@@ -56,7 +66,7 @@ class FrontendHelper
                     $settings = My::settings();
                     if ($settings->accept_language) {
                         // Add lang parameter to the URL to prevent accept-language auto redirect
-                        $url .= (strpos($url, '?') === false ? '?' : '&') . 'lang=' . $lang;
+                        $url .= (str_contains($url, '?') ? '&' : '?') . 'lang=' . $lang;
                     }
                     $table[($code_only ? $lang : $name)] = $url;
                 }

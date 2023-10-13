@@ -82,6 +82,7 @@ class CoreData
 
         // Get all existing translations -> [lang => id]
         $list = self::findAllTranslations($src_id, $src_lang, true);
+
         // Add the new translation attachment for all existing translations
         try {
             if (!$list) {
@@ -211,13 +212,13 @@ class CoreData
     /**
      * Find all posts/pages associated with a post/page id and lang
      *
-     * @param  integer $id           original post/page id
-     * @param  mixed   $lang         original lang
-     * @param  boolean $full         result should include original post/page+lang
+     * @param  int          $id           original post/page id
+     * @param  null|string  $lang         original lang
+     * @param  bool         $full         result should include original post/page+lang
      *
-     * @return mixed                 associative array (lang => id), false if nothing found
+     * @return array<string, int>|bool    associative array (lang => id), false if nothing found
      */
-    public static function findAllTranslations($id, $lang, $full = false)
+    public static function findAllTranslations(int $id, ?string $lang, bool $full = false)
     {
         if ($lang == '' || !$lang) {
             // Use blog language if language not specified for original post

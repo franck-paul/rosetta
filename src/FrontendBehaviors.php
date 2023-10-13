@@ -16,6 +16,8 @@ namespace Dotclear\Plugin\rosetta;
 
 use ArrayObject;
 use dcCore;
+use dcUrlHandlers;
+use Dotclear\Database\MetaRecord;
 use Dotclear\Helper\Network\Http;
 
 class FrontendBehaviors
@@ -24,14 +26,17 @@ class FrontendBehaviors
     public const ROSETTA_FILTER = 1;
     public const ROSETTA_SWITCH = 2;
 
-    public static $state = self::ROSETTA_NONE;
+    public static int $state = self::ROSETTA_NONE;
 
-    public static function coreBlogBeforeGetPosts($params)
+    /**
+     * @param      ArrayObject<string, mixed>  $params  The parameters
+     */
+    public static function coreBlogBeforeGetPosts(ArrayObject $params): string
     {
         $settings = My::settings();
         if ($settings->active) {
-            if (static::$state != self::ROSETTA_NONE || isset($params['post_lang'])) {
-                return;
+            if (static::$state !== self::ROSETTA_NONE || isset($params['post_lang'])) {
+                return '';
             }
 
             if (!isset($params['no_context']) && !isset($params['post_url']) && !isset($params['post_id'])) {
@@ -43,18 +48,26 @@ class FrontendBehaviors
                     'search',
                     'archive', ];
                 if (in_array(dcCore::app()->url->type, $url_types)) {
-                    if (static::$state == self::ROSETTA_NONE) {
-                        // Set language according to blog default language setting
-                        $params['post_lang'] = dcCore::app()->blog->settings->system->lang;
-                        // Filtering posts state
-                        static::$state = self::ROSETTA_FILTER;
-                    }
+                    // Set language according to blog default language setting
+                    $params['post_lang'] = dcCore::app()->blog->settings->system->lang;
+                    // Filtering posts state
+                    static::$state = self::ROSETTA_FILTER;
                 }
             }
         }
+
+        return '';
     }
 
-    private static function getPostLang($id, $type)
+    /**
+     * Gets the post language.
+     *
+     * @param      int          $id     The identifier
+     * @param      string       $type   The type
+     *
+     * @return     null|string  The post language.
+     */
+    private static function getPostLang(int $id, string $type): ?string
     {
         $params = new ArrayObject([
             'post_id'    => $id,
@@ -71,14 +84,20 @@ class FrontendBehaviors
         return dcCore::app()->blog->settings->system->lang;
     }
 
-    public static function coreBlogAfterGetPosts($rs, $alt)
+    /**
+     * @param      MetaRecord                   $rs     Recordset
+     * @param      ArrayObject<string, mixed>   $alt    The alternate params
+     *
+     * @return     string                         ( description_of_the_return_value )
+     */
+    public static function coreBlogAfterGetPosts(MetaRecord $rs, ArrayObject $alt): string
     {
         $settings = My::settings();
         if ($settings->active && $settings->accept_language && $rs->count()) {
             // Start replacing posts only if in Filtering posts state
-            if (static::$state == self::ROSETTA_FILTER) {
+            if (static::$state === self::ROSETTA_FILTER) {
                 $cols = $rs->columns();
-                if ((is_countable($cols) ? count($cols) : 0) > 1 || strpos($cols[0], 'count(') != 0) {
+                if (count($cols) > 1 || strpos($cols[0], 'count(') != 0) {
                     // Only operate when not counting (aka getPosts() called with $count_only = true)
                     static::$state = self::ROSETTA_SWITCH;
                     // replace translated posts if any may be using core->getPosts()
@@ -140,9 +159,11 @@ class FrontendBehaviors
                 static::$state = self::ROSETTA_NONE;
             }
         }
+
+        return '';
     }
 
-    public static function publicHeadContent()
+    public static function publicHeadContent(): string
     {
         $current   = null;
         $urlTypes  = ['post'];
@@ -170,9 +191,19 @@ class FrontendBehaviors
                 }
             }
         }
+
+        return '';
     }
 
-    private static function findTranslatedEntry($handler, $lang)
+    /**
+     * Finds a translated entry.
+     *
+     * @param      dcUrlHandlers  $handler  The handler
+     * @param      string         $lang     The language
+     *
+     * @return     bool
+     */
+    private static function findTranslatedEntry(dcUrlHandlers $handler, string $lang)
     {
         $postTypes = ['post'];
         if (dcCore::app()->plugins->moduleExists('pages')) {
@@ -229,11 +260,11 @@ class FrontendBehaviors
         return false;
     }
 
-    public static function urlHandlerGetArgsDocument($handler)
+    public static function urlHandlerGetArgsDocument(dcUrlHandlers $handler): string
     {
         $settings = My::settings();
         if (!$settings->active) {
-            return;
+            return '';
         }
 
         $langs = [];
@@ -262,5 +293,7 @@ class FrontendBehaviors
                 }
             }
         }
+
+        return '';
     }
 }

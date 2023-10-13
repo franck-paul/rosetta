@@ -56,7 +56,7 @@ class Backend extends Process
             'adminPostListHeaderV2'     => BackendBehaviors::adminPostListHeader(...),
             'adminPostListValueV2'      => BackendBehaviors::adminPostListValue(...),
             'adminPostMiniListHeaderV2' => BackendBehaviors::adminPostMiniListHeader(...),
-            'adminPostMiniListValue'    => BackendBehaviors::adminPostMiniListValue(...),
+            'adminPostMiniListValueV2'  => BackendBehaviors::adminPostMiniListValue(...),
             'adminPagesListHeaderV2'    => BackendBehaviors::adminPagesListHeader(...),
             'adminPagesListValueV2'     => BackendBehaviors::adminPagesListValue(...),
             'adminFiltersListsV2'       => BackendBehaviors::adminFiltersLists(...),

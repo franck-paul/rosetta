@@ -19,18 +19,22 @@ use dcCore;
 use dcUtils;
 use Dotclear\Core\Backend\Favorites;
 use Dotclear\Core\Backend\Page;
+use Dotclear\Database\MetaRecord;
 use Dotclear\Helper\Html\Form\Hidden;
 use Dotclear\Helper\Html\Html;
 use Dotclear\Helper\L10n;
+use Dotclear\Plugin\importExport\FlatBackupItem;
+use Dotclear\Plugin\importExport\FlatExport;
+use Dotclear\Plugin\importExport\FlatImportV2;
 use Exception;
 
 // Admin behaviours
 
 class BackendBehaviors
 {
-    public static $args_rosetta = '&amp;lang=%s&amp;type=%s&amp;rosetta=%s&amp;rosetta_id=%s&amp;rosetta_lang=%s';
+    public static string $args_rosetta = '&amp;lang=%s&amp;type=%s&amp;rosetta=%s&amp;rosetta_id=%s&amp;rosetta_lang=%s';
 
-    public static function adminDashboardFavorites(Favorites $favs)
+    public static function adminDashboardFavorites(Favorites $favs): string
     {
         $favs->register('rosetta', [
             'title'      => __('Rosetta'),
@@ -39,9 +43,11 @@ class BackendBehaviors
             'large-icon' => My::icons(),
             My::checkContext(My::MENU),
         ]);
+
+        return '';
     }
 
-    private static function adminEntryHeaders()
+    private static function adminEntryHeaders(): string
     {
         return
         Page::jsJson('rosetta_entry', [
@@ -62,7 +68,7 @@ class BackendBehaviors
         My::cssLoad('style.css');
     }
 
-    public static function adminPostHeaders()
+    public static function adminPostHeaders(): string
     {
         $settings = My::settings();
         if ($settings->active) {
@@ -70,9 +76,11 @@ class BackendBehaviors
             Page::jsJson('rosetta_type', ['post_type' => 'post']) .
             self::adminEntryHeaders();
         }
+
+        return '';
     }
 
-    public static function adminPageHeaders()
+    public static function adminPageHeaders(): string
     {
         $settings = My::settings();
         if ($settings->active) {
@@ -80,6 +88,8 @@ class BackendBehaviors
             Page::jsJson('rosetta_type', ['post_type' => 'page']) .
             self::adminEntryHeaders();
         }
+
+        return '';
     }
 
     /**
@@ -92,9 +102,10 @@ class BackendBehaviors
      * @param  string $title     title of translated post or page
      * @param  string $post_link sprintf format for post/page edition (post-id, label, post-title)
      * @param  string $url_page  current admin page URL
+     *
      * @return string            row (<tr>…</tr>)
      */
-    public static function translationRow($src_lang, $id, $lang, $name, $title, $post_link, $url_page)
+    public static function translationRow(string $src_lang, string $id, string $lang, string $name, string $title, string $post_link, string $url_page): string
     {
         $html_line = '<tr class="line wide">' . "\n" .
         '<td class="minimal nowrap">%s</td>' . "\n" . // language
@@ -113,13 +124,19 @@ class BackendBehaviors
         );
     }
 
-    private static function adminEntryForm($post, $post_type = 'post')
+    /**
+     * @param      MetaRecord|null  $post       The post
+     * @param      string           $post_type  The post type
+     *
+     * @return     string
+     */
+    private static function adminEntryForm(?MetaRecord $post, string $post_type = 'post'): string
     {
         $settings = My::settings();
         if ($settings->active) {
             if (!$post || !$post->post_id) {
                 // Manage translation only on already created posts/pages
-                return;
+                return '';
             }
 
             if ($post_type == 'post') {
@@ -148,7 +165,7 @@ class BackendBehaviors
                         $rs->fetch();
                         $html_lines .= self::translationRow(
                             $post->post_lang,
-                            $id,
+                            strval($id),
                             $lang,
                             $name,
                             $rs->post_title,
@@ -236,55 +253,99 @@ class BackendBehaviors
             '</details>' .
             '</div>' . "\n";
         }
+
+        return '';
     }
 
-    public static function adminPostForm($post)
+    /**
+     * @param      MetaRecord|null  $post   The post
+     *
+     * @return     string
+     */
+    public static function adminPostForm(?MetaRecord $post): string
     {
-        self::adminEntryForm($post, 'post');
+        return self::adminEntryForm($post, 'post');
     }
 
-    public static function adminPageForm($post)
+    /**
+     * @param      MetaRecord|null  $post   The post
+     *
+     * @return     string
+     */
+    public static function adminPageForm(?MetaRecord $post): string
     {
-        self::adminEntryForm($post, 'page');
+        return self::adminEntryForm($post, 'page');
     }
 
-    public static function adminPopupPosts($editor = '')
+    public static function adminPopupPosts(string $editor = ''): string
     {
         if (empty($editor) || $editor != My::id()) {
-            return;
+            return '';
         }
 
         return My::jsLoad('popup_posts.js');
     }
 
-    public static function adminColumnsLists($cols)
+    /**
+     * @param      ArrayObject<string, mixed>  $cols   The cols
+     *
+     * @return     string
+     */
+    public static function adminColumnsLists(ArrayObject $cols): string
     {
         $cols['posts'][1]['language']     = [true, __('Language')];
         $cols['posts'][1]['translations'] = [true, __('Translations')];
         $cols['pages'][1]['language']     = [true, __('Language')];
         $cols['pages'][1]['translations'] = [true, __('Translations')];
+
+        return '';
     }
 
-    private static function adminEntryListHeader($core, $rs, $cols)
+    /**
+     * @param      ArrayObject<string, string>    $cols   The cols
+     *
+     * @return     string
+     */
+    private static function adminEntryListHeader(ArrayObject $cols): string
     {
         $settings = My::settings();
         if ($settings->active) {
             $cols['language']     = '<th scope="col">' . __('Language') . '</th>';
             $cols['translations'] = '<th scope="col">' . __('Translations') . '</th>';
         }
+
+        return '';
     }
 
-    public static function adminPostListHeader($rs, $cols)
+    /**
+     * @param      MetaRecord                     $rs     The recordset
+     * @param      ArrayObject<string, string>    $cols   The cols
+     *
+     * @return     string
+     */
+    public static function adminPostListHeader(MetaRecord $rs, ArrayObject $cols): string
     {
-        self::adminEntryListHeader(dcCore::app(), $rs, $cols);
+        return self::adminEntryListHeader($cols);
     }
 
-    public static function adminPagesListHeader($rs, $cols)
+    /**
+     * @param      MetaRecord                     $rs     The recordset
+     * @param      ArrayObject<string, string>    $cols   The cols
+     *
+     * @return     string
+     */
+    public static function adminPagesListHeader(MetaRecord $rs, ArrayObject $cols): string
     {
-        self::adminEntryListHeader(dcCore::app(), $rs, $cols);
+        return self::adminEntryListHeader($cols);
     }
 
-    public static function adminEntryListValue($core, $rs, $cols)
+    /**
+     * @param      MetaRecord                     $rs     The recordset
+     * @param      ArrayObject<string, string>    $cols   The cols
+     *
+     * @return     string
+     */
+    private static function adminEntryListValue(MetaRecord $rs, ArrayObject $cols): string
     {
         $settings = My::settings();
         if ($settings->active) {
@@ -318,40 +379,76 @@ class BackendBehaviors
             $cols['language']     = '<td class="nowrap">' . $rs->post_lang . '</td>';
             $cols['translations'] = '<td class="nowrap">' . $translations . '</td>';
         }
+
+        return '';
     }
 
-    public static function adminPostListValue($rs, $cols)
+    /**
+     * @param      MetaRecord                     $rs     The recordset
+     * @param      ArrayObject<string, string>    $cols   The cols
+     *
+     * @return     string
+     */
+    public static function adminPostListValue(MetaRecord $rs, ArrayObject $cols): string
     {
-        self::adminEntryListValue(dcCore::app(), $rs, $cols);
+        return self::adminEntryListValue($rs, $cols);
     }
 
-    public static function adminPagesListValue($rs, $cols)
+    /**
+     * @param      MetaRecord                     $rs     The recordset
+     * @param      ArrayObject<string, string>    $cols   The cols
+     *
+     * @return     string
+     */
+    public static function adminPagesListValue(MetaRecord $rs, ArrayObject $cols): string
     {
-        self::adminEntryListValue(dcCore::app(), $rs, $cols);
+        return self::adminEntryListValue($rs, $cols);
     }
 
-    public static function adminPostMiniListHeader($rs, $cols)
+    /**
+     * @param      MetaRecord                     $rs     The recordset
+     * @param      ArrayObject<string, string>    $cols   The cols
+     *
+     * @return     string
+     */
+    public static function adminPostMiniListHeader(MetaRecord $rs, ArrayObject $cols): string
     {
         $settings = My::settings();
         if ($settings->active) {
             $cols['language'] = '<th scope="col">' . __('Language') . '</th>';
         }
+
+        return '';
     }
 
-    public static function adminPostMiniListValue($core, $rs, $cols)
+    /**
+     * @param      MetaRecord                     $rs     The recordset
+     * @param      ArrayObject<string, string>    $cols   The cols
+     *
+     * @return     string
+     */
+    public static function adminPostMiniListValue(MetaRecord $rs, ArrayObject $cols): string
     {
         $settings = My::settings();
         if ($settings->active) {
             $cols['language'] = '<td class="nowrap">' . $rs->post_lang . '</td>';
         }
+
+        return '';
     }
 
-    public static function adminFiltersLists($sorts)
+    /**
+     * @param      ArrayObject<string, mixed>  $sorts  The sorts
+     *
+     * @return     string
+     */
+    public static function adminFiltersLists(ArrayObject $sorts): string
     {
         // TODO when 1st and 2nd tab of index will be developped, if necessary
+        return '';
     }
 
-    public static function exportSingle($exp, $blog_id)
+    public static function exportSingle(FlatExport $exp, string $blog_id): string
     {
         $exp->export(
             'rosetta',
@@ -360,52 +457,65 @@ class BackendBehaviors
             'WHERE P.post_id = R.src_id ' .
             "AND P.blog_id = '" . $blog_id . "'"
         );
+
+        return '';
     }
 
-    public static function exportFull($exp)
+    public static function exportFull(FlatExport $exp): string
     {
         $exp->exportTable('rosetta');
+
+        return '';
     }
 
-    public static function importInit($fi)
+    public static function importInit(FlatImportV2 $fi): string
     {
-        $fi->cur_rosetta = dcCore::app()->con->openCursor(dcCore::app()->prefix . 'rosetta');
+        $fi->setExtraCursor('rosetta', dcCore::app()->con->openCursor(dcCore::app()->prefix . 'rosetta'));
+
+        return '';
     }
 
-    private static function insertRosettaLine($line, $fi)
+    private static function insertRosettaLine(FlatBackupItem $line, FlatImportV2 $fi): void
     {
-        $fi->cur_rosetta->clean();
+        $cur = $fi->getExtraCursor('rosetta');
+        if (!is_null($cur)) {
+            $cur->clean();
 
-        $fi->cur_rosetta->src_id   = (int) $line->src_id;
-        $fi->cur_rosetta->src_lang = (string) $line->src_lang;
-        $fi->cur_rosetta->dst_id   = (int) $line->dst_id;
-        $fi->cur_rosetta->dst_lang = (string) $line->dst_lang;
+            $cur->src_id   = (int) $line->src_id;   // @phpstan-ignore-line
+            $cur->src_lang = (string) $line->src_lang;  // @phpstan-ignore-line
+            $cur->dst_id   = (int) $line->dst_id;   // @phpstan-ignore-line
+            $cur->dst_lang = (string) $line->dst_lang;  // @phpstan-ignore-line
 
-        $fi->cur_rosetta->insert();
+            $cur->insert();
+        }
     }
 
-    public static function importSingle($line, $fi)
+    public static function importSingle(FlatBackupItem $line, FlatImportV2 $fi): string
     {
         if ($line->__name == 'rosetta') {
-            if (isset($fi->old_ids['post'][(int) $line->src_id]) && isset($fi->old_ids['post'][(int) $line->dst_id])) {
-                $line->src_id = $fi->old_ids['post'][(int) $line->src_id];
-                $line->dst_id = $fi->old_ids['post'][(int) $line->dst_id];
+            if (isset($fi->old_ids['post'][(int) $line->src_id]) && isset($fi->old_ids['post'][(int) $line->dst_id])) { // @phpstan-ignore-line
+                $line->src_id = $fi->old_ids['post'][(int) $line->src_id];  // @phpstan-ignore-line
+                $line->dst_id = $fi->old_ids['post'][(int) $line->dst_id];  // @phpstan-ignore-line
                 self::insertRosettaLine($line, $fi);
             } else {
                 throw new Exception(sprintf(
                     __('ID of "%3$s" does not match on record "%1$s" at line %2$s of backup file.'),
                     Html::escapeHTML($line->__name),
-                    Html::escapeHTML($line->__line),
+                    Html::escapeHTML((string) $line->__line),
                     Html::escapeHTML('rosetta')
                 ));
             }
         }
+
+        return '';
     }
 
-    public static function importFull($line, $fi)
+    public static function importFull(FlatBackupItem $line, FlatImportV2 $fi): string
     {
         if ($line->__name == 'rosetta') {
             self::insertRosettaLine($line, $fi);
         }
+
+        return '';
     }
 }

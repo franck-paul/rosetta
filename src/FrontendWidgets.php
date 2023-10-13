@@ -20,15 +20,15 @@ use Dotclear\Plugin\widgets\WidgetsElement;
 
 class FrontendWidgets
 {
-    public static function rosettaEntryWidget(WidgetsElement $w)
+    public static function rosettaEntryWidget(WidgetsElement $w): string
     {
         $settings = My::settings();
         if (!$settings->active) {
-            return;
+            return '';
         }
 
         if ($w->offline) {
-            return;
+            return '';
         }
 
         $urlTypes = ['post'];
@@ -37,7 +37,7 @@ class FrontendWidgets
         }
 
         if (!in_array(dcCore::app()->url->type, $urlTypes)) {
-            return;
+            return '';
         }
 
         // Get list of available translations for current entry
@@ -45,7 +45,7 @@ class FrontendWidgets
         $current   = '';
         $table     = FrontendHelper::EntryListHelper(dcCore::app()->ctx->posts->post_id, dcCore::app()->ctx->posts->post_lang, $post_type, $w->current, $current);
         if (!$table) {
-            return;
+            return '';
         }
 
         // Render widget title
@@ -64,7 +64,7 @@ class FrontendWidgets
                 '</li>' . "\n";
         }
         if ($list == '') {
-            return;
+            return '';
         }
         $res .= '<ul>' . $list . '</ul>' . "\n";
 
