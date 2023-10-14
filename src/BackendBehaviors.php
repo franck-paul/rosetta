@@ -53,12 +53,12 @@ class BackendBehaviors
         Page::jsJson('rosetta_entry', [
             'msg'     => ['confirm_remove_rosetta' => __('Are you sure to remove this translation?')],
             'rosetta' => [
-                'popup_posts_url' => dcCore::app()->admin->url->get('admin.posts.popup', [
+                'popup_posts_url' => dcCore::app()->adminurl->get('admin.posts.popup', [
                     'popup'     => 1,
                     'plugin_id' => 'rosetta',
                     'type'      => '',
                 ], '&'),
-                'plugin_url' => dcCore::app()->admin->url->get('admin.plugin.' . My::id(), [
+                'plugin_url' => dcCore::app()->adminurl->get('admin.plugin.' . My::id(), [
                     'popup_new' => 1,
                     'popup'     => 1,
                 ], '&'),
@@ -140,9 +140,9 @@ class BackendBehaviors
             }
 
             if ($post_type == 'post') {
-                $url = dcCore::app()->admin->url->get('admin.post', ['id' => $post->post_id]);
+                $url = dcCore::app()->adminurl->get('admin.post', ['id' => $post->post_id]);
             } else {
-                $url = dcCore::app()->admin->url->get('admin.plugin.pages', ['act' => 'page', 'id' => $post->post_id]);
+                $url = dcCore::app()->adminurl->get('admin.plugin.pages', ['act' => 'page', 'id' => $post->post_id]);
             }
 
             $html_lines = '';

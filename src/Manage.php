@@ -60,7 +60,7 @@ class Manage extends Process
                 $settings->put('accept_language', empty($_POST['accept_language']) ? false : true, dcNamespace::NS_BOOL);
 
                 Notices::addSuccessNotice(__('Configuration successfully updated.'));
-                dcCore::app()->admin->url->redirect('admin.plugin.' . My::id(), [
+                dcCore::app()->adminurl->redirect('admin.plugin.' . My::id(), [
                     'tab' => $tab,
                 ], '#' . $tab);
             } catch (Exception $e) {
