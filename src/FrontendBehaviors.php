@@ -177,7 +177,7 @@ class FrontendBehaviors
         if ($settings->active && in_array(dcCore::app()->url->type, $urlTypes) && in_array(dcCore::app()->ctx->posts->post_type, $postTypes)) {
             // Find translations and add meta in header
             $list = FrontendHelper::EntryListHelper(
-                dcCore::app()->ctx->posts->post_id,
+                (int) dcCore::app()->ctx->posts->post_id,
                 dcCore::app()->ctx->posts->post_lang,
                 dcCore::app()->ctx->posts->post_type,
                 'none',

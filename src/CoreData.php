@@ -54,14 +54,14 @@ class CoreData
     /**
      * Add a new translation for a post/page (only if it does not already exists)
      *
-     * @param inte    $src_id   original post/page id
-     * @param mixed   $src_lang original lang
-     * @param int     $dst_id   new post/page translation id
-     * @param mixed   $dst_lang new post/page translation lang
+     * @param int           $src_id   original post/page id
+     * @param null|string   $src_lang original lang
+     * @param int           $dst_id   new post/page translation id
+     * @param null|string   $dst_lang new post/page translation lang
      *
      * @return bool true if translation have been successfully added, else false
      */
-    public static function addTranslation($src_id, $src_lang, $dst_id, $dst_lang): bool
+    public static function addTranslation(int $src_id, ?string $src_lang, int $dst_id, ?string $dst_lang): bool
     {
         // Check args
         if ($src_lang == '' || !$src_lang) {
@@ -81,7 +81,7 @@ class CoreData
         }
 
         // Get all existing translations -> [lang => id]
-        $list = self::findAllTranslations((string) $src_id, $src_lang, true);
+        $list = self::findAllTranslations($src_id, $src_lang, true);
 
         // Add the new translation attachment for all existing translations
         try {
@@ -122,14 +122,14 @@ class CoreData
     /**
      * Remove an existing translation for a post/page
      *
-     * @param integer $src_id   original post/page id
-     * @param mixed   $src_lang original lang
-     * @param integer $dst_id   post/page translation id to be removed
-     * @param mixed   $dst_lang new post/page translation lang to be removed
+     * @param int           $src_id   original post/page id
+     * @param null|string   $src_lang original lang
+     * @param int           $dst_id   post/page translation id to be removed
+     * @param null|string   $dst_lang new post/page translation lang to be removed
      *
      * @return bool  true if translation have been successfully removed, else false
      */
-    public static function removeTranslation($src_id, $src_lang, $dst_id, $dst_lang): bool
+    public static function removeTranslation(int $src_id, ?string $src_lang, int $dst_id, ?string $dst_lang): bool
     {
         // Check args
         if ($src_lang == '' || !$src_lang) {
@@ -170,13 +170,13 @@ class CoreData
     /**
      * Find direct posts/pages associated with a post/page id and lang
      *
-     * @param  int     $id   original post/page id
-     * @param  mixed   $lang original lang
-     * @param  bool    $full result should include original post/page+lang
+     * @param  int          $id   original post/page id
+     * @param  null|string  $lang original lang
+     * @param  bool         $full result should include original post/page+lang
      *
-     * @return mixed         associative array (lang => id), false if nothing found
+     * @return bool|array<string, int>         associative array (lang => id), false if nothing found
      */
-    private static function findDirectTranslations($id, $lang, $full = false)
+    private static function findDirectTranslations(int $id, ?string $lang, bool $full = false)
     {
         if ($lang == '' || !$lang) {
             // Use blog language if language not specified for original post
@@ -194,11 +194,11 @@ class CoreData
             while ($rs->fetch()) {
                 // Add src couple if requested
                 if (($full) || ($rs->src_id != $id || $rs->src_lang != $lang)) {
-                    $list[$rs->src_lang] = $rs->src_id;
+                    $list[$rs->src_lang] = (int) $rs->src_id;
                 }
                 // Add dst couple if requested
                 if (($full) || ($rs->dst_id != $id || $rs->dst_lang != $lang)) {
-                    $list[$rs->dst_lang] = $rs->dst_id;
+                    $list[$rs->dst_lang] = (int) $rs->dst_id;
                 }
             }
 
@@ -212,13 +212,13 @@ class CoreData
     /**
      * Find all posts/pages associated with a post/page id and lang
      *
-     * @param  string       $id           original post/page id
+     * @param  int          $id           original post/page id
      * @param  null|string  $lang         original lang
      * @param  bool         $full         result should include original post/page+lang
      *
      * @return array<string, int>|bool    associative array (lang => id), false if nothing found
      */
-    public static function findAllTranslations(string $id, ?string $lang, bool $full = false)
+    public static function findAllTranslations(int $id, ?string $lang, bool $full = false)
     {
         if ($lang == '' || !$lang) {
             // Use blog language if language not specified for original post
@@ -226,7 +226,7 @@ class CoreData
         }
 
         // Get direct associations
-        $list = self::findDirectTranslations((int) $id, $lang, true);
+        $list = self::findDirectTranslations($id, $lang, true);
         if (is_array($list)) {
             // Get indirect associations
             $ids = [];
@@ -247,7 +247,7 @@ class CoreData
                     }
                 }
             }
-            if (!$full && $key = array_search((int) $id, $list, true)) {
+            if (!$full && $key = array_search($id, $list, true)) {
                 // Remove original from list
                 unset($list[$key]);
             }
@@ -262,14 +262,14 @@ class CoreData
     /**
      * Find a post/page id with the requested lang
      *
-     * @param  int     $src_id   original post/page id
-     * @param  mixed   $src_lang original lang
-     * @param  string  $dst_lang requested lang
-     * @param  bool    $indirect look also for indirect associations
+     * @param  int          $src_id   original post/page id
+     * @param  null|string  $src_lang original lang
+     * @param  string       $dst_lang requested lang
+     * @param  bool         $indirect look also for indirect associations
      *
-     * @return integer           first found id, -1 if none
+     * @return int           first found id, -1 if none
      */
-    public static function findTranslation($src_id, $src_lang, $dst_lang, $indirect = true)
+    public static function findTranslation(int $src_id, ?string $src_lang, string $dst_lang, bool $indirect = true): int
     {
         if ($src_lang == '' || !$src_lang) {
             // Use blog language if language not specified for original post
@@ -294,7 +294,7 @@ class CoreData
 
         if ($indirect) {
             // Looks for an indirect post/page association, ie a -> b and b-> c in table, src = b, looking for c
-            $list = self::findAllTranslations((string) $src_id, $src_lang, false);
+            $list = self::findAllTranslations($src_id, $src_lang, false);
             if (is_array($list) && array_key_exists($dst_lang, $list)) {
                 return $list[$dst_lang];
             }

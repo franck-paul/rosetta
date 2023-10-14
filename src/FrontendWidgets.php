@@ -43,7 +43,7 @@ class FrontendWidgets
         // Get list of available translations for current entry
         $post_type = (dcCore::app()->url->type == 'post' ? 'post' : 'page');
         $current   = '';
-        $table     = FrontendHelper::EntryListHelper(dcCore::app()->ctx->posts->post_id, dcCore::app()->ctx->posts->post_lang, $post_type, $w->current, $current);
+        $table     = FrontendHelper::EntryListHelper((int) dcCore::app()->ctx->posts->post_id, dcCore::app()->ctx->posts->post_lang, $post_type, $w->current, $current);
         if (!$table) {
             return '';
         }

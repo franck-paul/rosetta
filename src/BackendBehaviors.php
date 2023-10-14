@@ -96,7 +96,7 @@ class BackendBehaviors
      * Get a full row for one translation
      *
      * @param  string $src_lang  source language (from currently edited post or page)
-     * @param  string $id        source id (post or page)
+     * @param  int    $id        source id (post or page)
      * @param  string $lang      translation language code
      * @param  string $name      translation language name
      * @param  string $title     title of translated post or page
@@ -105,7 +105,7 @@ class BackendBehaviors
      *
      * @return string            row (<tr>…</tr>)
      */
-    public static function translationRow(string $src_lang, string $id, string $lang, string $name, string $title, string $post_link, string $url_page): string
+    public static function translationRow(string $src_lang, int $id, string $lang, string $name, string $title, string $post_link, string $url_page): string
     {
         $html_line = '<tr class="line wide">' . "\n" .
         '<td class="minimal nowrap">%s</td>' . "\n" . // language
@@ -119,7 +119,7 @@ class BackendBehaviors
         return sprintf(
             $html_line,
             $lang . ' - ' . $name,
-            sprintf($post_link, $id, __('Edit this entry'), Html::escapeHTML($title)),
+            sprintf($post_link, (string) $id, __('Edit this entry'), Html::escapeHTML($title)),
             sprintf($action_remove, $url_page . sprintf(self::$args_rosetta, $src_lang, '', 'remove', $id, $lang))
         );
     }
@@ -147,7 +147,7 @@ class BackendBehaviors
 
             $html_lines = '';
 
-            $list = CoreData::findAllTranslations($post->post_id, $post->post_lang, false);
+            $list = CoreData::findAllTranslations((int) $post->post_id, $post->post_lang, false);
             if (is_array($list) && count($list)) {
                 dcUtils::lexicalKeySort($list, dcUtils::ADMIN_LOCALE);
 
@@ -165,7 +165,7 @@ class BackendBehaviors
                         $rs->fetch();
                         $html_lines .= self::translationRow(
                             $post->post_lang,
-                            strval($id),
+                            $id,
                             $lang,
                             $name,
                             $rs->post_title,
@@ -350,7 +350,7 @@ class BackendBehaviors
         $settings = My::settings();
         if ($settings->active) {
             $translations = '';
-            $list         = CoreData::findAllTranslations($rs->post_id, $rs->post_lang, false);
+            $list         = CoreData::findAllTranslations((int) $rs->post_id, $rs->post_lang, false);
             if (is_array($list) && count($list)) {
                 dcUtils::lexicalKeySort($list, dcUtils::ADMIN_LOCALE);
                 $langs = L10n::getLanguagesName();
