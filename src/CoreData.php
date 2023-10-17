@@ -85,7 +85,7 @@ class CoreData
 
         // Add the new translation attachment for all existing translations
         try {
-            if (!$list) {
+            if (!is_array($list)) {
                 // No translation yet, add direct one
                 dcCore::app()->con->writeLock(dcCore::app()->prefix . self::ROSETTA_TABLE_NAME);
                 $cur           = dcCore::app()->con->openCursor(dcCore::app()->prefix . self::ROSETTA_TABLE_NAME);
@@ -154,8 +154,8 @@ class CoreData
             // Remove the translations
             $strReq = 'DELETE FROM ' . dcCore::app()->prefix . self::ROSETTA_TABLE_NAME . ' ' .
             'WHERE ' .
-            "(src_id = '" . dcCore::app()->con->escape((string) $dst_id) . "' AND src_lang = '" . dcCore::app()->con->escape($dst_lang) . "') OR " .
-            "(dst_id = '" . dcCore::app()->con->escape((string) $dst_id) . "' AND dst_lang = '" . dcCore::app()->con->escape($dst_lang) . "') ";
+            "(src_id = '" . dcCore::app()->con->escapeStr((string) $dst_id) . "' AND src_lang = '" . dcCore::app()->con->escapeStr($dst_lang) . "') OR " .
+            "(dst_id = '" . dcCore::app()->con->escapeStr((string) $dst_id) . "' AND dst_lang = '" . dcCore::app()->con->escapeStr($dst_lang) . "') ";
             dcCore::app()->con->execute($strReq);
             dcCore::app()->con->unlock();
         } catch (Exception $e) {
@@ -174,7 +174,7 @@ class CoreData
      * @param  null|string  $lang original lang
      * @param  bool         $full result should include original post/page+lang
      *
-     * @return bool|array<string, int>         associative array (lang => id), false if nothing found
+     * @return false|array<string, int>         associative array (lang => id), false if nothing found
      */
     private static function findDirectTranslations(int $id, ?string $lang, bool $full = false)
     {
@@ -185,20 +185,23 @@ class CoreData
 
         $strReq = 'SELECT * FROM ' . dcCore::app()->prefix . self::ROSETTA_TABLE_NAME . ' R ' .
         'WHERE ' .
-        "(R.src_id = '" . dcCore::app()->con->escape((string) $id) . "' AND R.src_lang = '" . dcCore::app()->con->escape($lang) . "') OR " .
-        "(R.dst_id = '" . dcCore::app()->con->escape((string) $id) . "' AND R.dst_lang = '" . dcCore::app()->con->escape($lang) . "') ";
+        "(R.src_id = '" . dcCore::app()->con->escapeStr((string) $id) . "' AND R.src_lang = '" . dcCore::app()->con->escapeStr($lang) . "') OR " .
+        "(R.dst_id = '" . dcCore::app()->con->escapeStr((string) $id) . "' AND R.dst_lang = '" . dcCore::app()->con->escapeStr($lang) . "') ";
 
         $rs = new MetaRecord(dcCore::app()->con->select($strReq));
         if ($rs->count()) {
+            /**
+             * @var array<string, int>
+             */
             $list = [];
             while ($rs->fetch()) {
                 // Add src couple if requested
                 if (($full) || ($rs->src_id != $id || $rs->src_lang != $lang)) {
-                    $list[$rs->src_lang] = (int) $rs->src_id;
+                    $list[(string) $rs->src_lang] = (int) $rs->src_id;
                 }
                 // Add dst couple if requested
                 if (($full) || ($rs->dst_id != $id || $rs->dst_lang != $lang)) {
-                    $list[$rs->dst_lang] = (int) $rs->dst_id;
+                    $list[(string) $rs->dst_lang] = (int) $rs->dst_id;
                 }
             }
 
@@ -279,8 +282,8 @@ class CoreData
         // Looks for a post/page with an association with the corresponding lang
         $strReq = 'SELECT * FROM ' . dcCore::app()->prefix . self::ROSETTA_TABLE_NAME . ' R ' .
         'WHERE ' .
-        "(R.src_id = '" . dcCore::app()->con->escape((string) $src_id) . "' AND R.dst_lang = '" . dcCore::app()->con->escape($dst_lang) . "') OR " .
-        "(R.dst_id = '" . dcCore::app()->con->escape((string) $src_id) . "' AND R.src_lang = '" . dcCore::app()->con->escape($dst_lang) . "') " .
+        "(R.src_id = '" . dcCore::app()->con->escapeStr((string) $src_id) . "' AND R.dst_lang = '" . dcCore::app()->con->escapeStr($dst_lang) . "') OR " .
+        "(R.dst_id = '" . dcCore::app()->con->escapeStr((string) $src_id) . "' AND R.src_lang = '" . dcCore::app()->con->escapeStr($dst_lang) . "') " .
             'ORDER BY R.dst_id DESC';
 
         $rs = new MetaRecord(dcCore::app()->con->select($strReq));
@@ -289,7 +292,7 @@ class CoreData
             $rs->fetch();
 
             // Return found ID
-            return ($rs->src_id == $src_id ? $rs->dst_id : $rs->src_id);
+            return $rs->src_id == $src_id ? $rs->dst_id : $rs->src_id;
         }
 
         if ($indirect) {

@@ -54,7 +54,6 @@ class ManagePopup extends Process
         }
 
         $id   = !empty($_GET['id']) ? $_GET['id'] : '';
-        $type = !empty($_GET['type']) ? $_GET['type'] : '';
         $lang = !empty($_GET['lang']) ? $_GET['lang'] : '';
 
         $title = '';

@@ -44,7 +44,7 @@ class FrontendWidgets
         $post_type = (dcCore::app()->url->type == 'post' ? 'post' : 'page');
         $current   = '';
         $table     = FrontendHelper::EntryListHelper((int) dcCore::app()->ctx->posts->post_id, dcCore::app()->ctx->posts->post_lang, $post_type, $w->current, $current);
-        if (!$table) {
+        if (!is_array($table)) {
             return '';
         }
 

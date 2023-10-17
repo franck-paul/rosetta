@@ -37,11 +37,11 @@ class BackendBehaviors
     public static function adminDashboardFavorites(Favorites $favs): string
     {
         $favs->register('rosetta', [
-            'title'      => __('Rosetta'),
-            'url'        => My::manageUrl(),
-            'small-icon' => My::icons(),
-            'large-icon' => My::icons(),
-            My::checkContext(My::MENU),
+            'title'       => __('Rosetta'),
+            'url'         => My::manageUrl(),
+            'small-icon'  => My::icons(),
+            'large-icon'  => My::icons(),
+            'permissions' => My::checkContext(My::MENU),
         ]);
 
         return '';
