@@ -17,6 +17,7 @@ namespace Dotclear\Plugin\rosetta;
 use ArrayObject;
 use dcCore;
 use dcUtils;
+use Dotclear\App;
 use Dotclear\Helper\Html\Html;
 use Dotclear\Helper\L10n;
 
@@ -46,7 +47,7 @@ class FrontendHelper
         $langs   = L10n::getLanguagesName();
         $current = '';
         foreach ($ids as $lang => $id) {
-            $name = $langs[$lang] ?? $langs[dcCore::app()->blog->settings->system->lang];
+            $name = $langs[$lang] ?? $langs[App::blog()->settings()->system->lang];
             if ($post_id == $id) {
                 $current = ($code_only ? $lang : $name);
             }
@@ -59,10 +60,10 @@ class FrontendHelper
                     'post_type'  => $post_type,
                     'no_content' => true, ]);
                 dcCore::app()->callBehavior('publicPostBeforeGetPosts', $params, null);
-                $rs = dcCore::app()->blog->getPosts($params);
+                $rs = App::blog()->getPosts($params);
                 if ($rs->count()) {
                     $rs->fetch();
-                    $url      = dcCore::app()->blog->url . dcCore::app()->getPostPublicURL($post_type, Html::sanitizeURL($rs->post_url));
+                    $url      = App::blog()->url() . dcCore::app()->getPostPublicURL($post_type, Html::sanitizeURL($rs->post_url));
                     $settings = My::settings();
                     if ($settings->accept_language) {
                         // Add lang parameter to the URL to prevent accept-language auto redirect

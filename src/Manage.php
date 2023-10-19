@@ -17,6 +17,7 @@ namespace Dotclear\Plugin\rosetta;
 use dcAuth;
 use dcCore;
 use dcNamespace;
+use Dotclear\App;
 use Dotclear\Core\Backend\Notices;
 use Dotclear\Core\Backend\Page;
 use Dotclear\Core\Process;
@@ -99,8 +100,8 @@ class Manage extends Process
 
         echo Page::breadcrumb(
             [
-                Html::escapeHTML(dcCore::app()->blog->name) => '',
-                __('Rosetta')                               => '',
+                Html::escapeHTML(App::blog()->name()) => '',
+                __('Rosetta')                         => '',
             ]
         );
         echo Notices::getNotices();
@@ -146,7 +147,7 @@ class Manage extends Process
 
         if (dcCore::app()->auth->check(dcCore::app()->auth->makePermissions([
             dcAuth::PERMISSION_ADMIN,
-        ]), dcCore::app()->blog->id)) {
+        ]), App::blog()->id())) {
             // 3. Plugin settings
             echo
             '<div id="settings" class="multi-part" title="' . __('Settings') . '">' .

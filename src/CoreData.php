@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Dotclear\Plugin\rosetta;
 
 use dcCore;
+use Dotclear\App;
 use Dotclear\Database\MetaRecord;
 use Exception;
 
@@ -66,11 +67,11 @@ class CoreData
         // Check args
         if ($src_lang == '' || !$src_lang) {
             // Use blog language if language not specified for original post
-            $src_lang = dcCore::app()->blog->settings->system->lang;
+            $src_lang = App::blog()->settings()->system->lang;
         }
         if ($dst_lang == '' || !$dst_lang) {
             // Use blog language if language not specified for original post
-            $dst_lang = dcCore::app()->blog->settings->system->lang;
+            $dst_lang = App::blog()->settings()->system->lang;
         }
         if ($src_lang == $dst_lang) {
             return false;
@@ -134,11 +135,11 @@ class CoreData
         // Check args
         if ($src_lang == '' || !$src_lang) {
             // Use blog language if language not specified for original post
-            $src_lang = dcCore::app()->blog->settings->system->lang;
+            $src_lang = App::blog()->settings()->system->lang;
         }
         if ($dst_lang == '' || !$dst_lang) {
             // Use blog language if language not specified for original post
-            $dst_lang = dcCore::app()->blog->settings->system->lang;
+            $dst_lang = App::blog()->settings()->system->lang;
         }
         if ($src_lang == $dst_lang) {
             return false;
@@ -180,7 +181,7 @@ class CoreData
     {
         if ($lang == '' || !$lang) {
             // Use blog language if language not specified for original post
-            $lang = dcCore::app()->blog->settings->system->lang;
+            $lang = App::blog()->settings()->system->lang;
         }
 
         $strReq = 'SELECT * FROM ' . dcCore::app()->prefix . self::ROSETTA_TABLE_NAME . ' R ' .
@@ -225,7 +226,7 @@ class CoreData
     {
         if ($lang == '' || !$lang) {
             // Use blog language if language not specified for original post
-            $lang = dcCore::app()->blog->settings->system->lang;
+            $lang = App::blog()->settings()->system->lang;
         }
 
         // Get direct associations
@@ -276,7 +277,7 @@ class CoreData
     {
         if ($src_lang == '' || !$src_lang) {
             // Use blog language if language not specified for original post
-            $src_lang = dcCore::app()->blog->settings->system->lang;
+            $src_lang = App::blog()->settings()->system->lang;
         }
 
         // Looks for a post/page with an association with the corresponding lang

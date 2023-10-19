@@ -17,6 +17,7 @@ namespace Dotclear\Plugin\rosetta;
 use ArrayObject;
 use dcCore;
 use dcUrlHandlers;
+use Dotclear\App;
 use Dotclear\Database\MetaRecord;
 use Dotclear\Helper\Network\Http;
 
@@ -49,7 +50,7 @@ class FrontendBehaviors
                     'archive', ];
                 if (in_array(dcCore::app()->url->type, $url_types)) {
                     // Set language according to blog default language setting
-                    $params['post_lang'] = dcCore::app()->blog->settings->system->lang;
+                    $params['post_lang'] = App::blog()->settings()->system->lang;
                     // Filtering posts state
                     static::$state = self::ROSETTA_FILTER;
                 }
@@ -73,7 +74,7 @@ class FrontendBehaviors
             'post_id'    => $id,
             'post_type'  => $type,
             'no_content' => true, ]);
-        $rs = dcCore::app()->blog->getPosts($params);
+        $rs = App::blog()->getPosts($params);
         if ($rs->count()) {
             $rs->fetch();
 
@@ -81,7 +82,7 @@ class FrontendBehaviors
         }
 
         // Return blog default lang
-        return dcCore::app()->blog->settings->system->lang;
+        return App::blog()->settings()->system->lang;
     }
 
     /**
@@ -127,7 +128,7 @@ class FrontendBehaviors
                                         'post_type'   => $rs->post_type,
                                         'post_status' => $rs->post_status,
                                         'no_content'  => false, ]);
-                                    $rst = dcCore::app()->blog->getPosts($params);
+                                    $rst = App::blog()->getPosts($params);
                                     if ($rst->count()) {
                                         // Load first record
                                         $rst->fetch();
@@ -150,7 +151,7 @@ class FrontendBehaviors
                             // Get new list of posts as we have at least one exchange done
                             $params = new ArrayObject([
                                 'post_id' => $ids, ]);
-                            $alt['rs'] = dcCore::app()->blog->getPosts($params);
+                            $alt['rs'] = App::blog()->getPosts($params);
                         }
                     }
                 }
@@ -217,7 +218,7 @@ class FrontendBehaviors
             'no_content' => true, ]);
 
         dcCore::app()->callBehavior('publicPostBeforeGetPosts', $paramsSrc, $handler->args);
-        $rsSrc = dcCore::app()->blog->getPosts($paramsSrc);
+        $rsSrc = App::blog()->getPosts($paramsSrc);
 
         // Check if post/page id exists in rosetta table
         if ($rsSrc->count()) {
@@ -239,7 +240,7 @@ class FrontendBehaviors
                     'no_content' => true, ]);
 
                 dcCore::app()->callBehavior('publicPostBeforeGetPosts', $paramsDst, $handler->args);
-                $rsDst = dcCore::app()->blog->getPosts($paramsDst);
+                $rsDst = App::blog()->getPosts($paramsDst);
 
                 if ($rsDst->count()) {
                     // Load first record

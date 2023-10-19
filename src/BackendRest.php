@@ -17,6 +17,7 @@ namespace Dotclear\Plugin\rosetta;
 use ArrayObject;
 use dcBlog;
 use dcCore;
+use Dotclear\App;
 use Dotclear\Helper\L10n;
 use Exception;
 
@@ -47,7 +48,7 @@ class BackendRest
                 $content = '<p>...</p>';
 
                 // Get currently edited post format
-                $rs = dcCore::app()->blog->getPosts(['post_id' => $id]);
+                $rs = App::blog()->getPosts(['post_id' => $id]);
                 if (!$rs->isEmpty()) {
                     $rs->fetch();
                     $format = $rs->post_format;
@@ -67,13 +68,13 @@ class BackendRest
                 $cur->post_content      = $content;
                 $cur->post_format       = $format;
                 $cur->post_status       = dcBlog::POST_PENDING; // forced to pending
-                $cur->post_open_comment = (int) dcCore::app()->blog->settings->system->allow_comments;
-                $cur->post_open_tb      = (int) dcCore::app()->blog->settings->system->allow_trackbacks;
+                $cur->post_open_comment = (int) App::blog()->settings()->system->allow_comments;
+                $cur->post_open_tb      = (int) App::blog()->settings()->system->allow_trackbacks;
 
                 # --BEHAVIOR-- adminBeforePostCreate
                 dcCore::app()->callBehavior('adminBeforePostCreate', $cur);
 
-                $rosetta_id = dcCore::app()->blog->addPost($cur);
+                $rosetta_id = App::blog()->addPost($cur);
 
                 # --BEHAVIOR-- adminAfterPostCreate
                 dcCore::app()->callBehavior('adminAfterPostCreate', $cur, $rosetta_id);
@@ -119,7 +120,7 @@ class BackendRest
                     'post_type'  => ['post', 'page'],
                     'no_content' => true, ]);
 
-                $rs = dcCore::app()->blog->getPosts($params);
+                $rs = App::blog()->getPosts($params);
                 if ($rs->count()) {
                     // Load first record
                     $rs->fetch();
@@ -185,7 +186,7 @@ class BackendRest
                 'post_id'    => $id,
                 'post_type'  => ['post', 'page'],
                 'no_content' => true, ]);
-            $rs = dcCore::app()->blog->getPosts($params);
+            $rs = App::blog()->getPosts($params);
             if ($rs->count()) {
                 $rs->fetch();
                 $url_page = dcCore::app()->getPostAdminURL($rs->post_type, $rs->post_id);
@@ -194,12 +195,12 @@ class BackendRest
                     'post_id'    => $rosetta_id,
                     'post_type'  => ['post', 'page'],
                     'no_content' => true, ]);
-                $rs = dcCore::app()->blog->getPosts($params);
+                $rs = App::blog()->getPosts($params);
                 if ($rs->count()) {
                     $rs->fetch();
                     $post_link = '<a id="r-%s" href="' . dcCore::app()->getPostAdminURL($rs->post_type, $rs->post_id) . '" title="%s">%s</a>';
                     $langs     = L10n::getLanguagesName();
-                    $name      = $langs[$rs->post_lang] ?? $langs[dcCore::app()->blog->settings->system->lang];
+                    $name      = $langs[$rs->post_lang] ?? $langs[App::blog()->settings()->system->lang];
                     // Get the translation row
                     $row = BackendBehaviors::translationRow(
                         $lang,

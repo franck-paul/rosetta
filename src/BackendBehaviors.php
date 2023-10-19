@@ -17,6 +17,7 @@ namespace Dotclear\Plugin\rosetta;
 use ArrayObject;
 use dcCore;
 use dcUtils;
+use Dotclear\App;
 use Dotclear\Core\Backend\Favorites;
 use Dotclear\Core\Backend\Page;
 use Dotclear\Database\MetaRecord;
@@ -154,13 +155,13 @@ class BackendBehaviors
                 $langs = L10n::getLanguagesName();
                 foreach ($list as $lang => $id) {
                     // Display existing translations
-                    $name = $langs[$lang] ?? $langs[dcCore::app()->blog->settings->system->lang];
+                    $name = $langs[$lang] ?? $langs[App::blog()->settings()->system->lang];
                     // Get post/page id
                     $params = new ArrayObject([
                         'post_id'    => $id,
                         'post_type'  => $post_type,
                         'no_content' => true, ]);
-                    $rs = dcCore::app()->blog->getPosts($params);
+                    $rs = App::blog()->getPosts($params);
                     if ($rs->count()) {
                         $rs->fetch();
                         $html_lines .= self::translationRow(
@@ -207,7 +208,7 @@ class BackendBehaviors
             sprintf($action_add, $url .
                 sprintf(
                     self::$args_rosetta,
-                    ($post->post_lang == '' || !$post->post_lang ? dcCore::app()->blog->settings->system->lang : $post->post_lang),
+                    ($post->post_lang == '' || !$post->post_lang ? App::blog()->settings()->system->lang : $post->post_lang),
                     $post_type,
                     'add',
                     0,
@@ -226,7 +227,7 @@ class BackendBehaviors
             sprintf($action_new, $url .
                 sprintf(
                     self::$args_rosetta,
-                    ($post->post_lang == '' || !$post->post_lang ? dcCore::app()->blog->settings->system->lang : $post->post_lang),
+                    ($post->post_lang == '' || !$post->post_lang ? App::blog()->settings()->system->lang : $post->post_lang),
                     $post_type,
                     'new',
                     0,
@@ -237,7 +238,7 @@ class BackendBehaviors
             sprintf($action_new_edit, $url .
                 sprintf(
                     self::$args_rosetta,
-                    ($post->post_lang == '' || !$post->post_lang ? dcCore::app()->blog->settings->system->lang : $post->post_lang),
+                    ($post->post_lang == '' || !$post->post_lang ? App::blog()->settings()->system->lang : $post->post_lang),
                     $post_type,
                     'new_edit',
                     0,
@@ -356,13 +357,13 @@ class BackendBehaviors
                 $langs = L10n::getLanguagesName();
                 foreach ($list as $lang => $id) {
                     // Display existing translations
-                    $name = $langs[$lang] ?? $langs[dcCore::app()->blog->settings->system->lang];
+                    $name = $langs[$lang] ?? $langs[App::blog()->settings()->system->lang];
                     // Get post/page id
                     $params = new ArrayObject([
                         'post_id'    => $id,
                         'post_type'  => $rs->post_type,
                         'no_content' => true, ]);
-                    $rst = dcCore::app()->blog->getPosts($params);
+                    $rst = App::blog()->getPosts($params);
                     if ($rst->count()) {
                         $rst->fetch();
                         $translation = sprintf(

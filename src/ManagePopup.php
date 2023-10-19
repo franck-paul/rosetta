@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 namespace Dotclear\Plugin\rosetta;
 
-use dcCore;
+use Dotclear\App;
 use Dotclear\Core\Backend\Combos;
 use Dotclear\Core\Backend\Notices;
 use Dotclear\Core\Backend\Page;
@@ -59,7 +59,7 @@ class ManagePopup extends Process
         $title = '';
 
         // Languages combo
-        $rs         = dcCore::app()->blog->getLangs(['order' => 'asc']);
+        $rs         = App::blog()->getLangs(['order' => 'asc']);
         $lang_combo = Combos::getLangsCombo($rs, true);
         // Remove empty select
         unset($lang_combo['']);
@@ -86,8 +86,8 @@ class ManagePopup extends Process
 
         echo Page::breadcrumb(
             [
-                Html::escapeHTML(dcCore::app()->blog->name) => '',
-                __('Rosetta')                               => '',
+                Html::escapeHTML(App::blog()->name()) => '',
+                __('Rosetta')                         => '',
             ]
         );
         echo Notices::getNotices();
