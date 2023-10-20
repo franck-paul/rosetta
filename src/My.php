@@ -18,15 +18,4 @@ use Dotclear\Module\MyPlugin;
 
 class My extends MyPlugin
 {
-    /**
-     * Check permission depending on given context
-     *
-     * @param      int   $context  The context
-     *
-     * @return     null|bool  null if not relevant, true if allowed, else false
-     */
-    protected static function checkCustomContext(int $context): ?bool
-    {
-        return null;
-    }
 }

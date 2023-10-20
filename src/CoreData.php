@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace Dotclear\Plugin\rosetta;
 
-use dcCore;
 use Dotclear\App;
 use Dotclear\Database\MetaRecord;
 use Exception;
@@ -22,9 +21,9 @@ use Exception;
 /**
  * Rosetta table schema:
  *
- * src_id         post/page ID
+ * src_id       post/page ID
  * src_lang     post/page lang
- * dst_id         translated post/page ID
+ * dst_id       translated post/page ID
  * dst_lang     translated post/page lang
  *
  * Principe :
@@ -88,31 +87,31 @@ class CoreData
         try {
             if (!is_array($list)) {
                 // No translation yet, add direct one
-                dcCore::app()->con->writeLock(dcCore::app()->prefix . self::ROSETTA_TABLE_NAME);
-                $cur           = dcCore::app()->con->openCursor(dcCore::app()->prefix . self::ROSETTA_TABLE_NAME);
+                App::con()->writeLock(App::con()->prefix() . self::ROSETTA_TABLE_NAME);
+                $cur           = App::con()->openCursor(App::con()->prefix() . self::ROSETTA_TABLE_NAME);
                 $cur->src_id   = $src_id;
                 $cur->src_lang = $src_lang;
                 $cur->dst_id   = $dst_id;
                 $cur->dst_lang = $dst_lang;
                 $cur->insert();
-                dcCore::app()->con->unlock();
+                App::con()->unlock();
             } else {
                 foreach ($list as $lang => $id) {
                     if (self::findTranslation($id, $lang, $dst_lang, false) == -1) {
                         // Add the new translation
-                        dcCore::app()->con->writeLock(dcCore::app()->prefix . self::ROSETTA_TABLE_NAME);
-                        $cur           = dcCore::app()->con->openCursor(dcCore::app()->prefix . self::ROSETTA_TABLE_NAME);
+                        App::con()->writeLock(App::con()->prefix() . self::ROSETTA_TABLE_NAME);
+                        $cur           = App::con()->openCursor(App::con()->prefix() . self::ROSETTA_TABLE_NAME);
                         $cur->src_id   = $id;
                         $cur->src_lang = $lang;
                         $cur->dst_id   = $dst_id;
                         $cur->dst_lang = $dst_lang;
                         $cur->insert();
-                        dcCore::app()->con->unlock();
+                        App::con()->unlock();
                     }
                 }
             }
         } catch (Exception $e) {
-            dcCore::app()->con->unlock();
+            App::con()->unlock();
 
             throw $e;
         }
@@ -149,18 +148,18 @@ class CoreData
             return false;
         }
 
-        dcCore::app()->con->writeLock(dcCore::app()->prefix . self::ROSETTA_TABLE_NAME);
+        App::con()->writeLock(App::con()->prefix() . self::ROSETTA_TABLE_NAME);
 
         try {
             // Remove the translations
-            $strReq = 'DELETE FROM ' . dcCore::app()->prefix . self::ROSETTA_TABLE_NAME . ' ' .
+            $strReq = 'DELETE FROM ' . App::con()->prefix() . self::ROSETTA_TABLE_NAME . ' ' .
             'WHERE ' .
-            "(src_id = '" . dcCore::app()->con->escapeStr((string) $dst_id) . "' AND src_lang = '" . dcCore::app()->con->escapeStr($dst_lang) . "') OR " .
-            "(dst_id = '" . dcCore::app()->con->escapeStr((string) $dst_id) . "' AND dst_lang = '" . dcCore::app()->con->escapeStr($dst_lang) . "') ";
-            dcCore::app()->con->execute($strReq);
-            dcCore::app()->con->unlock();
+            "(src_id = '" . App::con()->escapeStr((string) $dst_id) . "' AND src_lang = '" . App::con()->escapeStr($dst_lang) . "') OR " .
+            "(dst_id = '" . App::con()->escapeStr((string) $dst_id) . "' AND dst_lang = '" . App::con()->escapeStr($dst_lang) . "') ";
+            App::con()->execute($strReq);
+            App::con()->unlock();
         } catch (Exception $e) {
-            dcCore::app()->con->unlock();
+            App::con()->unlock();
 
             throw $e;
         }
@@ -184,12 +183,12 @@ class CoreData
             $lang = App::blog()->settings()->system->lang;
         }
 
-        $strReq = 'SELECT * FROM ' . dcCore::app()->prefix . self::ROSETTA_TABLE_NAME . ' R ' .
+        $strReq = 'SELECT * FROM ' . App::con()->prefix() . self::ROSETTA_TABLE_NAME . ' R ' .
         'WHERE ' .
-        "(R.src_id = '" . dcCore::app()->con->escapeStr((string) $id) . "' AND R.src_lang = '" . dcCore::app()->con->escapeStr($lang) . "') OR " .
-        "(R.dst_id = '" . dcCore::app()->con->escapeStr((string) $id) . "' AND R.dst_lang = '" . dcCore::app()->con->escapeStr($lang) . "') ";
+        "(R.src_id = '" . App::con()->escapeStr((string) $id) . "' AND R.src_lang = '" . App::con()->escapeStr($lang) . "') OR " .
+        "(R.dst_id = '" . App::con()->escapeStr((string) $id) . "' AND R.dst_lang = '" . App::con()->escapeStr($lang) . "') ";
 
-        $rs = new MetaRecord(dcCore::app()->con->select($strReq));
+        $rs = new MetaRecord(App::con()->select($strReq));
         if ($rs->count()) {
             /**
              * @var array<string, int>
@@ -281,13 +280,13 @@ class CoreData
         }
 
         // Looks for a post/page with an association with the corresponding lang
-        $strReq = 'SELECT * FROM ' . dcCore::app()->prefix . self::ROSETTA_TABLE_NAME . ' R ' .
+        $strReq = 'SELECT * FROM ' . App::con()->prefix() . self::ROSETTA_TABLE_NAME . ' R ' .
         'WHERE ' .
-        "(R.src_id = '" . dcCore::app()->con->escapeStr((string) $src_id) . "' AND R.dst_lang = '" . dcCore::app()->con->escapeStr($dst_lang) . "') OR " .
-        "(R.dst_id = '" . dcCore::app()->con->escapeStr((string) $src_id) . "' AND R.src_lang = '" . dcCore::app()->con->escapeStr($dst_lang) . "') " .
+        "(R.src_id = '" . App::con()->escapeStr((string) $src_id) . "' AND R.dst_lang = '" . App::con()->escapeStr($dst_lang) . "') OR " .
+        "(R.dst_id = '" . App::con()->escapeStr((string) $src_id) . "' AND R.src_lang = '" . App::con()->escapeStr($dst_lang) . "') " .
             'ORDER BY R.dst_id DESC';
 
-        $rs = new MetaRecord(dcCore::app()->con->select($strReq));
+        $rs = new MetaRecord(App::con()->select($strReq));
         if ($rs->count()) {
             // Load first record
             $rs->fetch();

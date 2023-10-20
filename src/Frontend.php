@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 namespace Dotclear\Plugin\rosetta;
 
-use dcCore;
+use Dotclear\App;
 use Dotclear\Core\Process;
 
 class Frontend extends Process
@@ -37,7 +37,7 @@ class Frontend extends Process
         }
 
         // Public behaviours
-        dcCore::app()->addBehaviors([
+        App::behavior()->addBehaviors([
             'urlHandlerGetArgsDocument' => FrontendBehaviors::urlHandlerGetArgsDocument(...),
             'publicHeadContent'         => FrontendBehaviors::publicHeadContent(...),
             'coreBlogBeforeGetPosts'    => FrontendBehaviors::coreBlogBeforeGetPosts(...),
@@ -47,7 +47,7 @@ class Frontend extends Process
         ]);
 
         // Public template tags
-        dcCore::app()->tpl->addValue('RosettaEntryList', FrontendTemplate::rosettaEntryList(...));
+        App::frontend()->template()->addValue('RosettaEntryList', FrontendTemplate::rosettaEntryList(...));
 
         return true;
     }

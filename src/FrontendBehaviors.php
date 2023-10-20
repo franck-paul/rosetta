@@ -15,9 +15,8 @@ declare(strict_types=1);
 namespace Dotclear\Plugin\rosetta;
 
 use ArrayObject;
-use dcCore;
-use dcUrlHandlers;
 use Dotclear\App;
+use Dotclear\Core\Frontend\Url;
 use Dotclear\Database\MetaRecord;
 use Dotclear\Helper\Network\Http;
 
@@ -48,7 +47,7 @@ class FrontendBehaviors
                     'tag',
                     'search',
                     'archive', ];
-                if (in_array(dcCore::app()->url->type, $url_types)) {
+                if (in_array(App::url()->type, $url_types)) {
                     // Set language according to blog default language setting
                     $params['post_lang'] = App::blog()->settings()->system->lang;
                     // Filtering posts state
@@ -169,18 +168,18 @@ class FrontendBehaviors
         $current   = null;
         $urlTypes  = ['post'];
         $postTypes = ['post'];
-        if (dcCore::app()->plugins->moduleExists('pages')) {
+        if (App::plugins()->moduleExists('pages')) {
             $urlTypes[]  = 'page';
             $postTypes[] = 'page';
         }
 
         $settings = My::settings();
-        if ($settings->active && in_array(dcCore::app()->url->type, $urlTypes) && in_array(dcCore::app()->ctx->posts->post_type, $postTypes)) {
+        if ($settings->active && in_array(App::url()->type, $urlTypes) && in_array(App::frontend()->context()->posts->post_type, $postTypes)) {
             // Find translations and add meta in header
             $list = FrontendHelper::EntryListHelper(
-                (int) dcCore::app()->ctx->posts->post_id,
-                dcCore::app()->ctx->posts->post_lang,
-                dcCore::app()->ctx->posts->post_type,
+                (int) App::frontend()->context()->posts->post_id,
+                App::frontend()->context()->posts->post_lang,
+                App::frontend()->context()->posts->post_type,
                 'none',
                 $current,
                 true
@@ -199,15 +198,15 @@ class FrontendBehaviors
     /**
      * Finds a translated entry.
      *
-     * @param      dcUrlHandlers  $handler  The handler
-     * @param      string         $lang     The language
+     * @param      Url      $handler  The handler
+     * @param      string   $lang     The language
      *
      * @return     bool
      */
-    private static function findTranslatedEntry(dcUrlHandlers $handler, string $lang)
+    private static function findTranslatedEntry(Url $handler, string $lang)
     {
         $postTypes = ['post'];
-        if (dcCore::app()->plugins->moduleExists('pages')) {
+        if (App::plugins()->moduleExists('pages')) {
             $postTypes[] = 'page';
         }
 
@@ -217,7 +216,7 @@ class FrontendBehaviors
             'post_type'  => $postTypes,
             'no_content' => true, ]);
 
-        dcCore::app()->callBehavior('publicPostBeforeGetPosts', $paramsSrc, $handler->args);
+        App::behavior()->callBehavior('publicPostBeforeGetPosts', $paramsSrc, $handler->args);
         $rsSrc = App::blog()->getPosts($paramsSrc);
 
         // Check if post/page id exists in rosetta table
@@ -239,7 +238,7 @@ class FrontendBehaviors
                     'post_type'  => $postTypes,
                     'no_content' => true, ]);
 
-                dcCore::app()->callBehavior('publicPostBeforeGetPosts', $paramsDst, $handler->args);
+                App::behavior()->callBehavior('publicPostBeforeGetPosts', $paramsDst, $handler->args);
                 $rsDst = App::blog()->getPosts($paramsDst);
 
                 if ($rsDst->count()) {
@@ -261,7 +260,7 @@ class FrontendBehaviors
         return false;
     }
 
-    public static function urlHandlerGetArgsDocument(dcUrlHandlers $handler): string
+    public static function urlHandlerGetArgsDocument(Url $handler): string
     {
         $settings = My::settings();
         if (!$settings->active) {

@@ -15,8 +15,6 @@ declare(strict_types=1);
 namespace Dotclear\Plugin\rosetta;
 
 use ArrayObject;
-use dcCore;
-use dcUtils;
 use Dotclear\App;
 use Dotclear\Core\Backend\Favorites;
 use Dotclear\Core\Backend\Page;
@@ -24,6 +22,7 @@ use Dotclear\Database\MetaRecord;
 use Dotclear\Helper\Html\Form\Hidden;
 use Dotclear\Helper\Html\Html;
 use Dotclear\Helper\L10n;
+use Dotclear\Interface\Core\LexicalInterface;
 use Dotclear\Plugin\importExport\FlatBackupItem;
 use Dotclear\Plugin\importExport\FlatExport;
 use Dotclear\Plugin\importExport\FlatImportV2;
@@ -54,12 +53,12 @@ class BackendBehaviors
         Page::jsJson('rosetta_entry', [
             'msg'     => ['confirm_remove_rosetta' => __('Are you sure to remove this translation?')],
             'rosetta' => [
-                'popup_posts_url' => dcCore::app()->adminurl->get('admin.posts.popup', [
+                'popup_posts_url' => App::backend()->url()->get('admin.posts.popup', [
                     'popup'     => 1,
                     'plugin_id' => 'rosetta',
                     'type'      => '',
                 ], '&'),
-                'plugin_url' => dcCore::app()->adminurl->get('admin.plugin.' . My::id(), [
+                'plugin_url' => App::backend()->url()->get('admin.plugin.' . My::id(), [
                     'popup_new' => 1,
                     'popup'     => 1,
                 ], '&'),
@@ -141,16 +140,16 @@ class BackendBehaviors
             }
 
             if ($post_type == 'post') {
-                $url = dcCore::app()->adminurl->get('admin.post', ['id' => $post->post_id]);
+                $url = App::backend()->url()->get('admin.post', ['id' => $post->post_id]);
             } else {
-                $url = dcCore::app()->adminurl->get('admin.plugin.pages', ['act' => 'page', 'id' => $post->post_id]);
+                $url = App::backend()->url()->get('admin.plugin.pages', ['act' => 'page', 'id' => $post->post_id]);
             }
 
             $html_lines = '';
 
             $list = CoreData::findAllTranslations((int) $post->post_id, $post->post_lang, false);
             if (is_array($list) && count($list)) {
-                dcUtils::lexicalKeySort($list, dcUtils::ADMIN_LOCALE);
+                App::lexical()->lexicalKeySort($list, LexicalInterface::ADMIN_LOCALE);
 
                 $langs = L10n::getLanguagesName();
                 foreach ($list as $lang => $id) {
@@ -170,7 +169,7 @@ class BackendBehaviors
                             $lang,
                             $name,
                             $rs->post_title,
-                            dcCore::app()->admin->post_link,    // see plugins/pages/page.php and admin/post.php
+                            App::backend()->post_link,    // see plugins/pages/page.php and admin/post.php
                             $url
                         );
                     }
@@ -353,7 +352,7 @@ class BackendBehaviors
             $translations = '';
             $list         = CoreData::findAllTranslations((int) $rs->post_id, $rs->post_lang, false);
             if (is_array($list) && count($list)) {
-                dcUtils::lexicalKeySort($list, dcUtils::ADMIN_LOCALE);
+                App::lexical()->lexicalKeySort($list, LexicalInterface::ADMIN_LOCALE);
                 $langs = L10n::getLanguagesName();
                 foreach ($list as $lang => $id) {
                     // Display existing translations
@@ -368,7 +367,7 @@ class BackendBehaviors
                         $rst->fetch();
                         $translation = sprintf(
                             '<a href="%s" title="%s">%s</a>',
-                            dcCore::app()->getPostAdminURL($rst->post_type, $rst->post_id),
+                            App::postTypes()->get($rs->post_type)->adminUrl($rs->post_id),
                             $rst->post_title,
                             $name
                         );
@@ -454,7 +453,7 @@ class BackendBehaviors
         $exp->export(
             'rosetta',
             'SELECT R.* ' .
-            'FROM ' . dcCore::app()->prefix . 'rosetta R, ' . dcCore::app()->prefix . 'post P ' .
+            'FROM ' . App::con()->prefix() . 'rosetta R, ' . App::con()->prefix() . 'post P ' .
             'WHERE P.post_id = R.src_id ' .
             "AND P.blog_id = '" . $blog_id . "'"
         );
@@ -471,7 +470,7 @@ class BackendBehaviors
 
     public static function importInit(FlatImportV2 $fi): string
     {
-        $fi->setExtraCursor('rosetta', dcCore::app()->con->openCursor(dcCore::app()->prefix . 'rosetta'));
+        $fi->setExtraCursor('rosetta', App::con()->openCursor(App::con()->prefix() . 'rosetta'));
 
         return '';
     }

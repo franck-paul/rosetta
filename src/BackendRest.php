@@ -15,10 +15,9 @@ declare(strict_types=1);
 namespace Dotclear\Plugin\rosetta;
 
 use ArrayObject;
-use dcBlog;
-use dcCore;
 use Dotclear\App;
 use Dotclear\Helper\L10n;
+use Dotclear\Interface\Core\BlogInterface;
 use Exception;
 
 class BackendRest
@@ -58,26 +57,26 @@ class BackendRest
                 }
 
                 // Create a new entry with given title and lang
-                $cur = dcCore::app()->con->openCursor(dcCore::app()->prefix . dcBlog::POST_TABLE_NAME);
+                $cur = App::con()->openCursor(App::con()->prefix() . BlogInterface::POST_TABLE_NAME);
 
                 $cur->post_title = $rosetta_title;
                 $cur->post_type  = $type;
                 $cur->post_lang  = $rosetta_lang;
 
-                $cur->user_id           = dcCore::app()->auth->userID();
+                $cur->user_id           = App::auth()->userID();
                 $cur->post_content      = $content;
                 $cur->post_format       = $format;
-                $cur->post_status       = dcBlog::POST_PENDING; // forced to pending
+                $cur->post_status       = BlogInterface::POST_PENDING; // forced to pending
                 $cur->post_open_comment = (int) App::blog()->settings()->system->allow_comments;
                 $cur->post_open_tb      = (int) App::blog()->settings()->system->allow_trackbacks;
 
                 # --BEHAVIOR-- adminBeforePostCreate
-                dcCore::app()->callBehavior('adminBeforePostCreate', $cur);
+                App::behavior()->callBehavior('adminBeforePostCreate', $cur);
 
                 $rosetta_id = App::blog()->addPost($cur);
 
                 # --BEHAVIOR-- adminAfterPostCreate
-                dcCore::app()->callBehavior('adminAfterPostCreate', $cur, $rosetta_id);
+                App::behavior()->callBehavior('adminAfterPostCreate', $cur, $rosetta_id);
 
                 // add the translation link
                 $ret = CoreData::addTranslation($id, $lang, $rosetta_id, $rosetta_lang);
@@ -92,7 +91,7 @@ class BackendRest
                 __('Error during new translation creation.') :
                 __('Error during newly created translation attachment.'))),
             'id'   => $rosetta_id,
-            'edit' => DC_ADMIN_URL . dcCore::app()->getPostAdminURL($type, $rosetta_id),
+            'edit' => DC_ADMIN_URL . App::postTypes()->get($type)->adminUrl($rosetta_id),
         ];
     }
 
@@ -189,7 +188,7 @@ class BackendRest
             $rs = App::blog()->getPosts($params);
             if ($rs->count()) {
                 $rs->fetch();
-                $url_page = dcCore::app()->getPostAdminURL($rs->post_type, $rs->post_id);
+                $url_page = App::postTypes()->get($rs->post_type)->adminUrl($rs->post_id);
                 // Get missing info for translated entry (post/page)
                 $params = new ArrayObject([
                     'post_id'    => $rosetta_id,
@@ -198,7 +197,7 @@ class BackendRest
                 $rs = App::blog()->getPosts($params);
                 if ($rs->count()) {
                     $rs->fetch();
-                    $post_link = '<a id="r-%s" href="' . dcCore::app()->getPostAdminURL($rs->post_type, $rs->post_id) . '" title="%s">%s</a>';
+                    $post_link = '<a id="r-%s" href="' . App::postTypes()->get($rs->post_type)->adminUrl($rs->post_id) . '" title="%s">%s</a>';
                     $langs     = L10n::getLanguagesName();
                     $name      = $langs[$rs->post_lang] ?? $langs[App::blog()->settings()->system->lang];
                     // Get the translation row

@@ -42,7 +42,7 @@ class FrontendTemplate
 
         $res = <<<EOT
                   \$rosetta_table = $class::EntryListHelper(
-                    dcCore::app()->ctx->posts->post_id,dcCore::app()->ctx->posts->post_lang,dcCore::app()->ctx->posts->post_type,
+                    App::frontend()->context()->posts->post_id,App::frontend()->context()->posts->post_lang,App::frontend()->context()->posts->post_type,
                     '$option',\$rosetta_current);
                   if (is_array(\$rosetta_table) && count(\$rosetta_table)) {
                     echo '<ul class="rosetta-entries-list">'."\n";

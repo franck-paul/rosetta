@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 namespace Dotclear\Plugin\rosetta;
 
-use dcCore;
+use Dotclear\App;
 use Dotclear\Core\Backend\Menus;
 use Dotclear\Core\Process;
 
@@ -36,7 +36,7 @@ class Backend extends Process
 
         My::addBackendMenuItem(Menus::MENU_BLOG);
 
-        dcCore::app()->addBehaviors([
+        App::behavior()->addBehaviors([
             // Register favorite
             'adminDashboardFavoritesV2' => BackendBehaviors::adminDashboardFavorites(...),
 
@@ -70,13 +70,13 @@ class Backend extends Process
         ]);
 
         // Register REST methods
-        dcCore::app()->rest->addFunction('newTranslation', BackendRest::newTranslation(...));
-        dcCore::app()->rest->addFunction('addTranslation', BackendRest::addTranslation(...));
-        dcCore::app()->rest->addFunction('removeTranslation', BackendRest::removeTranslation(...));
-        dcCore::app()->rest->addFunction('getTranslationRow', BackendRest::getTranslationRow(...));
+        App::rest()->addFunction('newTranslation', BackendRest::newTranslation(...));
+        App::rest()->addFunction('addTranslation', BackendRest::addTranslation(...));
+        App::rest()->addFunction('removeTranslation', BackendRest::removeTranslation(...));
+        App::rest()->addFunction('getTranslationRow', BackendRest::getTranslationRow(...));
 
         if (My::checkContext(My::WIDGETS)) {
-            dcCore::app()->addBehaviors([
+            App::behavior()->addBehaviors([
                 'initWidgets' => Widgets::initWidgets(...),
             ]);
         }

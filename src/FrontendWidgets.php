@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 namespace Dotclear\Plugin\rosetta;
 
-use dcCore;
+use Dotclear\App;
 use Dotclear\Helper\Html\Html;
 use Dotclear\Plugin\widgets\WidgetsElement;
 
@@ -32,18 +32,18 @@ class FrontendWidgets
         }
 
         $urlTypes = ['post'];
-        if (dcCore::app()->plugins->moduleExists('pages')) {
+        if (App::plugins()->moduleExists('pages')) {
             $urlTypes[] = 'pages';
         }
 
-        if (!in_array(dcCore::app()->url->type, $urlTypes)) {
+        if (!in_array(App::url()->type, $urlTypes)) {
             return '';
         }
 
         // Get list of available translations for current entry
-        $post_type = (dcCore::app()->url->type == 'post' ? 'post' : 'page');
+        $post_type = (App::url()->type == 'post' ? 'post' : 'page');
         $current   = '';
-        $table     = FrontendHelper::EntryListHelper((int) dcCore::app()->ctx->posts->post_id, dcCore::app()->ctx->posts->post_lang, $post_type, $w->current, $current);
+        $table     = FrontendHelper::EntryListHelper((int) App::frontend()->context()->posts->post_id, App::frontend()->context()->posts->post_lang, $post_type, $w->current, $current);
         if (!is_array($table)) {
             return '';
         }

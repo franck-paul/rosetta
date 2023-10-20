@@ -14,9 +14,6 @@ declare(strict_types=1);
 
 namespace Dotclear\Plugin\rosetta;
 
-use dcAuth;
-use dcCore;
-use dcNamespace;
 use Dotclear\App;
 use Dotclear\Core\Backend\Notices;
 use Dotclear\Core\Backend\Page;
@@ -57,15 +54,15 @@ class Manage extends Process
 
             try {
                 $settings = My::settings();
-                $settings->put('active', empty($_POST['active']) ? false : true, dcNamespace::NS_BOOL);
-                $settings->put('accept_language', empty($_POST['accept_language']) ? false : true, dcNamespace::NS_BOOL);
+                $settings->put('active', empty($_POST['active']) ? false : true, App::blogWorkspace()::NS_BOOL);
+                $settings->put('accept_language', empty($_POST['accept_language']) ? false : true, App::blogWorkspace()::NS_BOOL);
 
                 Notices::addSuccessNotice(__('Configuration successfully updated.'));
-                dcCore::app()->adminurl->redirect('admin.plugin.' . My::id(), [
+                My::redirect([
                     'tab' => $tab,
                 ], '#' . $tab);
             } catch (Exception $e) {
-                dcCore::app()->error->add($e->getMessage());
+                App::error()->add($e->getMessage());
             }
         }
 
@@ -113,7 +110,7 @@ class Manage extends Process
         echo
         '<div id="posts" class="multi-part" title="' . __('Posts tranlations') . '">' .
         '<h3>' . __('Posts tranlations') . '</h3>' .
-            '<form action="' . dcCore::app()->admin->getPageURL() . '" method="post">';
+            '<form action="' . App::backend()->getPageURL() . '" method="post">';
 
         // TODO
 
@@ -127,11 +124,11 @@ class Manage extends Process
         '</div>';
 
         // 2. Pages translations
-        if (dcCore::app()->plugins->moduleExists('pages')) {
+        if (App::plugins()->moduleExists('pages')) {
             echo
             '<div id="pages" class="multi-part" title="' . __('Pages tranlations') . '">' .
             '<h3>' . __('Pages tranlations') . '</h3>' .
-                '<form action="' . dcCore::app()->admin->getPageURL() . '" method="post">';
+                '<form action="' . App::backend()->getPageURL() . '" method="post">';
 
             // TODO
 
@@ -145,14 +142,14 @@ class Manage extends Process
             '</div>';
         }
 
-        if (dcCore::app()->auth->check(dcCore::app()->auth->makePermissions([
-            dcAuth::PERMISSION_ADMIN,
+        if (App::auth()->check(App::auth()->makePermissions([
+            App::auth()::PERMISSION_ADMIN,
         ]), App::blog()->id())) {
             // 3. Plugin settings
             echo
             '<div id="settings" class="multi-part" title="' . __('Settings') . '">' .
             '<h3>' . __('Settings') . '</h3>' .
-            '<form action="' . dcCore::app()->admin->getPageURL() . '" method="post">' .
+            '<form action="' . App::backend()->getPageURL() . '" method="post">' .
 
             '<h4 class="pretty-title">' . __('Activation') . '</h4>' .
             '<p>' . form::checkbox('active', 1, $rosetta_active) .

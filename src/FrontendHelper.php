@@ -15,11 +15,10 @@ declare(strict_types=1);
 namespace Dotclear\Plugin\rosetta;
 
 use ArrayObject;
-use dcCore;
-use dcUtils;
 use Dotclear\App;
 use Dotclear\Helper\Html\Html;
 use Dotclear\Helper\L10n;
+use Dotclear\Interface\Core\LexicalInterface;
 
 class FrontendHelper
 {
@@ -59,11 +58,12 @@ class FrontendHelper
                     'post_id'    => $id,
                     'post_type'  => $post_type,
                     'no_content' => true, ]);
-                dcCore::app()->callBehavior('publicPostBeforeGetPosts', $params, null);
+                App::behavior()->callBehavior('publicPostBeforeGetPosts', $params, null);
                 $rs = App::blog()->getPosts($params);
                 if ($rs->count()) {
                     $rs->fetch();
-                    $url      = App::blog()->url() . dcCore::app()->getPostPublicURL($post_type, Html::sanitizeURL($rs->post_url));
+                    $url = App::blog()->url() . App::postTypes()->get($post_type)->publicUrl(Html::sanitizeURL($rs->post_url));
+
                     $settings = My::settings();
                     if ($settings->accept_language) {
                         // Add lang parameter to the URL to prevent accept-language auto redirect
@@ -76,7 +76,7 @@ class FrontendHelper
         if (!count($table)) {
             return false;
         }
-        dcUtils::lexicalKeySort($table, dcUtils::PUBLIC_LOCALE);
+        App::lexical()->lexicalKeySort($table, LexicalInterface::PUBLIC_LOCALE);
 
         return $table;
     }

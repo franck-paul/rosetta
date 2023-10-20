@@ -14,11 +14,10 @@ declare(strict_types=1);
 
 namespace Dotclear\Plugin\rosetta;
 
-use dcBlog;
-use dcCore;
-use dcNamespace;
+use Dotclear\App;
 use Dotclear\Core\Process;
 use Dotclear\Database\Structure;
+use Dotclear\Interface\Core\BlogInterface;
 use Exception;
 
 class Install extends Process
@@ -36,7 +35,7 @@ class Install extends Process
 
         try {
             // Database schema
-            $new_structure = new Structure(dcCore::app()->con, dcCore::app()->prefix);
+            $new_structure = new Structure(App::con(), App::con()->prefix());
 
             $new_structure->rosetta
                 ->src_id('bigint', 0, false)
@@ -58,19 +57,19 @@ class Install extends Process
             $new_structure->rosetta->index('idx_rosetta_src_id_src_lang', 'btree', 'src_id', 'src_lang');
             $new_structure->rosetta->index('idx_rosetta_dst_id_dst_lang', 'btree', 'dst_id', 'dst_lang');
 
-            $new_structure->rosetta->reference('fk_rosetta_src', 'src_id', dcBlog::POST_TABLE_NAME, 'post_id', 'cascade', 'cascade');
-            $new_structure->rosetta->reference('fk_rosetta_dst', 'dst_id', dcBlog::POST_TABLE_NAME, 'post_id', 'cascade', 'cascade');
+            $new_structure->rosetta->reference('fk_rosetta_src', 'src_id', BlogInterface::POST_TABLE_NAME, 'post_id', 'cascade', 'cascade');
+            $new_structure->rosetta->reference('fk_rosetta_dst', 'dst_id', BlogInterface::POST_TABLE_NAME, 'post_id', 'cascade', 'cascade');
 
             // Schema installation
-            $current_structure = new Structure(dcCore::app()->con, dcCore::app()->prefix);
+            $current_structure = new Structure(App::con(), App::con()->prefix());
             $current_structure->synchronize($new_structure);
 
             // Default state is inactive
             $settings = My::settings();
-            $settings->put('active', false, dcNamespace::NS_BOOL, 'Active', false, true);
-            $settings->put('accept_language', false, dcNamespace::NS_BOOL, 'Take care of browser accept-language', false, true);
+            $settings->put('active', false, App::blogWorkspace()::NS_BOOL, 'Active', false, true);
+            $settings->put('accept_language', false, App::blogWorkspace()::NS_BOOL, 'Take care of browser accept-language', false, true);
         } catch (Exception $e) {
-            dcCore::app()->error->add($e->getMessage());
+            App::error()->add($e->getMessage());
         }
 
         return true;
