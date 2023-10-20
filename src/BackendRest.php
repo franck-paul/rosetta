@@ -91,7 +91,7 @@ class BackendRest
                 __('Error during new translation creation.') :
                 __('Error during newly created translation attachment.'))),
             'id'   => $rosetta_id,
-            'edit' => DC_ADMIN_URL . App::postTypes()->get($type)->adminUrl($rosetta_id),
+            'edit' => App::config()->adminUrl() . App::postTypes()->get($type)->adminUrl($rosetta_id),
         ];
     }
 
