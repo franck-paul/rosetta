@@ -38,10 +38,10 @@ class Install extends Process
             $new_structure = new Structure(App::con(), App::con()->prefix());
 
             $new_structure->rosetta
-                ->src_id('bigint', 0, false)
-                ->src_lang('varchar', 5, true, null)
-                ->dst_id('bigint', 0, false)
-                ->dst_lang('varchar', 5, true, null)
+                ->field('src_id', 'bigint', 0, false)
+                ->field('src_lang', 'varchar', 5, true, null)
+                ->field('dst_id', 'bigint', 0, false)
+                ->field('dst_lang', 'varchar', 5, true, null)
 
                 ->primary('pk_rosetta', 'src_id', 'dst_id')
             ;
