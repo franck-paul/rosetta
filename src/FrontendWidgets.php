@@ -43,7 +43,7 @@ class FrontendWidgets
         // Get list of available translations for current entry
         $post_type = (App::url()->type == 'post' ? 'post' : 'page');
         $current   = '';
-        $table     = FrontendHelper::EntryListHelper((int) App::frontend()->context()->posts->post_id, App::frontend()->context()->posts->post_lang, $post_type, $w->current, $current);
+        $table     = FrontendHelper::EntryListHelper((int) App::frontend()->context()->posts->post_id, App::frontend()->context()->posts->post_lang, $post_type, $w->get('current'), $current);
         if (!is_array($table)) {
             return '';
         }
@@ -54,7 +54,7 @@ class FrontendWidgets
         // Render widget list of translations
         $list = '';
         foreach ($table as $name => $url) {
-            $link  = ($name != $current || $w->current == 'link');
+            $link  = ($name != $current || $w->get('current') == 'link');
             $class = ($name == $current ? ' class="current"' : '');
 
             $list .= '<li' . $class . '>' .
