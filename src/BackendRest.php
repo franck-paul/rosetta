@@ -17,7 +17,6 @@ namespace Dotclear\Plugin\rosetta;
 use ArrayObject;
 use Dotclear\App;
 use Dotclear\Helper\L10n;
-use Dotclear\Interface\Core\BlogInterface;
 use Exception;
 
 class BackendRest
@@ -57,7 +56,7 @@ class BackendRest
                 }
 
                 // Create a new entry with given title and lang
-                $cur = App::con()->openCursor(App::con()->prefix() . BlogInterface::POST_TABLE_NAME);
+                $cur = App::con()->openCursor(App::con()->prefix() . App::blog()::POST_TABLE_NAME);
 
                 $cur->post_title = $rosetta_title;
                 $cur->post_type  = $type;
@@ -66,7 +65,7 @@ class BackendRest
                 $cur->user_id           = App::auth()->userID();
                 $cur->post_content      = $content;
                 $cur->post_format       = $format;
-                $cur->post_status       = BlogInterface::POST_PENDING; // forced to pending
+                $cur->post_status       = App::blog()::POST_PENDING; // forced to pending
                 $cur->post_open_comment = (int) App::blog()->settings()->system->allow_comments;
                 $cur->post_open_tb      = (int) App::blog()->settings()->system->allow_trackbacks;
 

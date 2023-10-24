@@ -18,7 +18,6 @@ use ArrayObject;
 use Dotclear\App;
 use Dotclear\Helper\Html\Html;
 use Dotclear\Helper\L10n;
-use Dotclear\Interface\Core\LexicalInterface;
 
 class FrontendHelper
 {
@@ -76,7 +75,7 @@ class FrontendHelper
         if (!count($table)) {
             return false;
         }
-        App::lexical()->lexicalKeySort($table, LexicalInterface::PUBLIC_LOCALE);
+        App::lexical()->lexicalKeySort($table, App::lexical()::PUBLIC_LOCALE);
 
         return $table;
     }
