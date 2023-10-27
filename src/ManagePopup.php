@@ -37,11 +37,7 @@ class ManagePopup extends Process
      */
     public static function process(): bool
     {
-        if (!self::status()) {
-            return false;
-        }
-
-        return true;
+        return (bool) self::status();
     }
 
     /**
@@ -53,8 +49,8 @@ class ManagePopup extends Process
             return;
         }
 
-        $id   = !empty($_GET['id']) ? $_GET['id'] : '';
-        $lang = !empty($_GET['lang']) ? $_GET['lang'] : '';
+        $id   = empty($_GET['id']) ? '' : $_GET['id'];
+        $lang = empty($_GET['lang']) ? '' : $_GET['lang'];
 
         $title = '';
 
@@ -73,7 +69,8 @@ class ManagePopup extends Process
                             unset($lang_combo[$lc][$name]);
                         }
                     }
-                    if (!(is_countable($lang_combo[$lc]) ? count($lang_combo[$lc]) : 0)) {
+
+                    if ((is_countable($lang_combo[$lc]) ? count($lang_combo[$lc]) : 0) === 0) {
                         unset($lang_combo[$lc]);
                     }
                 }
@@ -93,9 +90,7 @@ class ManagePopup extends Process
         echo Notices::getNotices();
 
         echo
-        '<form id="link-insert-form" action="#" method="get">' .
-
-        '<p><label for="title">' . __('Entry title:') . '</label> ' .
+        '<form id="link-insert-form" action="#" method="get"><p><label for="title">' . __('Entry title:') . '</label> ' .
         form::field('title', 35, 512, Html::escapeHTML($title)) . '</p>' .
 
         '<p><label for="lang">' . __('Entry language:') . '</label> ' .

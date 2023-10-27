@@ -175,8 +175,7 @@ class BackendBehaviors
                 }
             }
 
-            $html_block = '<div class="table-outer">' .
-            '<table id="rosetta-list" summary="' . __('Attached Translations') . '" class="clear maximal">' .
+            $html_block = '<div class="table-outer"><table id="rosetta-list" summary="' . __('Attached Translations') . '" class="clear maximal">' .
             '<thead>' .
             '<tr>' .
             '<th class="nowrap">' . __('Language') . '</th>' .
@@ -249,8 +248,7 @@ class BackendBehaviors
             '</p>';
 
             echo
-            '</details>' .
-            '</div>' . "\n";
+            '</details></div>' . "\n";
         }
 
         return '';
@@ -278,7 +276,7 @@ class BackendBehaviors
 
     public static function adminPopupPosts(string $editor = ''): string
     {
-        if (empty($editor) || $editor != My::id()) {
+        if ($editor === '' || $editor != My::id()) {
             return '';
         }
 
@@ -370,7 +368,7 @@ class BackendBehaviors
                             $rst->post_title,
                             $name
                         );
-                        $translations .= ($translations ? ' / ' : '') . $translation;
+                        $translations .= ($translations !== '' && $translations !== '0' ? ' / ' : '') . $translation;
                     }
                 }
             }
@@ -451,8 +449,7 @@ class BackendBehaviors
     {
         $exp->export(
             'rosetta',
-            'SELECT R.* ' .
-            'FROM ' . App::con()->prefix() . 'rosetta R, ' . App::con()->prefix() . 'post P ' .
+            'SELECT R.* FROM ' . App::con()->prefix() . 'rosetta R, ' . App::con()->prefix() . 'post P ' .
             'WHERE P.post_id = R.src_id ' .
             "AND P.blog_id = '" . $blog_id . "'"
         );

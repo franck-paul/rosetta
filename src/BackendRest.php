@@ -31,11 +31,11 @@ class BackendRest
      */
     public static function newTranslation(array $get, array $post): array
     {
-        $id            = !empty($post['id']) ? (int) $post['id'] : -1;
-        $lang          = !empty($post['lang']) ? $post['lang'] : '';
-        $type          = !empty($post['type']) ? $post['type'] : 'post';
-        $rosetta_title = !empty($post['rosetta_title']) ? $post['rosetta_title'] : '';
-        $rosetta_lang  = !empty($post['rosetta_lang']) ? $post['rosetta_lang'] : '';
+        $id            = empty($post['id']) ? -1 : (int) $post['id'];
+        $lang          = empty($post['lang']) ? '' : $post['lang'];
+        $type          = empty($post['type']) ? 'post' : $post['type'];
+        $rosetta_title = empty($post['rosetta_title']) ? '' : $post['rosetta_title'];
+        $rosetta_lang  = empty($post['rosetta_lang']) ? '' : $post['rosetta_lang'];
 
         $ret        = false;
         $rosetta_id = -1;
@@ -79,7 +79,7 @@ class BackendRest
 
                 // add the translation link
                 $ret = CoreData::addTranslation($id, $lang, $rosetta_id, $rosetta_lang);
-            } catch (Exception $e) {
+            } catch (Exception) {
                 $rosetta_id = -1;
             }
         }
@@ -104,10 +104,10 @@ class BackendRest
      */
     public static function addTranslation(array $get, array $post): array
     {
-        $id           = !empty($post['id']) ? (int) $post['id'] : -1;
-        $lang         = !empty($post['lang']) ? $post['lang'] : '';
-        $rosetta_id   = !empty($post['rosetta_id']) ? (int) $post['rosetta_id'] : -1;
-        $rosetta_lang = !empty($post['rosetta_lang']) ? $post['rosetta_lang'] : '';
+        $id           = empty($post['id']) ? -1 : (int) $post['id'];
+        $lang         = empty($post['lang']) ? '' : $post['lang'];
+        $rosetta_id   = empty($post['rosetta_id']) ? -1 : (int) $post['rosetta_id'];
+        $rosetta_lang = empty($post['rosetta_lang']) ? '' : $post['rosetta_lang'];
 
         $ret = false;
         if ($id !== -1 && $rosetta_id !== -1) {
@@ -125,6 +125,7 @@ class BackendRest
                     $rosetta_lang = $rs->post_lang;
                 }
             }
+
             // add the translation link
             $ret = CoreData::addTranslation($id, $lang, $rosetta_id, $rosetta_lang);
         }
@@ -145,10 +146,10 @@ class BackendRest
      */
     public static function removeTranslation(array $get, array $post): array
     {
-        $id           = !empty($post['id']) ? (int) $post['id'] : -1;
-        $lang         = !empty($post['lang']) ? $post['lang'] : '';
-        $rosetta_id   = !empty($post['rosetta_id']) ? (int) $post['rosetta_id'] : -1;
-        $rosetta_lang = !empty($post['rosetta_lang']) ? $post['rosetta_lang'] : '';
+        $id           = empty($post['id']) ? -1 : (int) $post['id'];
+        $lang         = empty($post['lang']) ? '' : $post['lang'];
+        $rosetta_id   = empty($post['rosetta_id']) ? -1 : (int) $post['rosetta_id'];
+        $rosetta_lang = empty($post['rosetta_lang']) ? '' : $post['rosetta_lang'];
 
         $ret = false;
         if ($id !== -1 && $rosetta_id !== -1) {
@@ -172,9 +173,9 @@ class BackendRest
      */
     public static function getTranslationRow(array $get, array $post): array
     {
-        $id         = !empty($post['id']) ? (int) $post['id'] : -1;
-        $lang       = !empty($post['lang']) ? $post['lang'] : '';
-        $rosetta_id = !empty($post['rosetta_id']) ? (int) $post['rosetta_id'] : -1;
+        $id         = empty($post['id']) ? -1 : (int) $post['id'];
+        $lang       = empty($post['lang']) ? '' : $post['lang'];
+        $rosetta_id = empty($post['rosetta_id']) ? -1 : (int) $post['rosetta_id'];
 
         $ret = false;
         $row = '';

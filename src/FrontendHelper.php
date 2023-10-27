@@ -38,6 +38,7 @@ class FrontendHelper
         if (!is_array($ids)) {
             return false;
         }
+
         // source = $ids : array ('lang' => 'entry-id')
         // destination = $table : array ('language' (or 'lang' if $code=true) => 'entry-url')
         // $current = current language
@@ -49,6 +50,7 @@ class FrontendHelper
             if ($post_id == $id) {
                 $current = ($code_only ? $lang : $name);
             }
+
             if ($post_id == $id && $include != 'link') {
                 $table[($code_only ? $lang : $name)] = '';
             } else {
@@ -68,13 +70,16 @@ class FrontendHelper
                         // Add lang parameter to the URL to prevent accept-language auto redirect
                         $url .= (str_contains($url, '?') ? '&' : '?') . 'lang=' . $lang;
                     }
+
                     $table[($code_only ? $lang : $name)] = $url;
                 }
             }
         }
-        if (!count($table)) {
+
+        if ($table === []) {
             return false;
         }
+
         App::lexical()->lexicalKeySort($table, App::lexical()::PUBLIC_LOCALE);
 
         return $table;

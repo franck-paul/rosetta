@@ -36,12 +36,12 @@ class FrontendWidgets
             $urlTypes[] = 'pages';
         }
 
-        if (!in_array(App::url()->type, $urlTypes)) {
+        if (!in_array(App::url()->getType(), $urlTypes)) {
             return '';
         }
 
         // Get list of available translations for current entry
-        $post_type = (App::url()->type == 'post' ? 'post' : 'page');
+        $post_type = (App::url()->getType() == 'post' ? 'post' : 'page');
         $current   = '';
         $table     = FrontendHelper::EntryListHelper((int) App::frontend()->context()->posts->post_id, App::frontend()->context()->posts->post_lang, $post_type, $w->get('current'), $current);
         if (!is_array($table)) {
@@ -59,13 +59,15 @@ class FrontendWidgets
 
             $list .= '<li' . $class . '>' .
             ($link ? '<a href="' . $url . '">' : '') .
-            ($class ? '<strong>' : '') . Html::escapeHTML($name) . ($class ? '</strong>' : '') .
+            ($class !== '' && $class !== '0' ? '<strong>' : '') . Html::escapeHTML($name) . ($class !== '' && $class !== '0' ? '</strong>' : '') .
                 ($link ? '</a>' : '') .
                 '</li>' . "\n";
         }
+
         if ($list == '') {
             return '';
         }
+
         $res .= '<ul>' . $list . '</ul>' . "\n";
 
         // Render full content

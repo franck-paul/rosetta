@@ -23,7 +23,9 @@ use Dotclear\Helper\Network\Http;
 class FrontendBehaviors
 {
     public const ROSETTA_NONE   = 0;
+
     public const ROSETTA_FILTER = 1;
+
     public const ROSETTA_SWITCH = 2;
 
     public static int $state = self::ROSETTA_NONE;
@@ -47,7 +49,7 @@ class FrontendBehaviors
                     'tag',
                     'search',
                     'archive', ];
-                if (in_array(App::url()->type, $url_types)) {
+                if (in_array(App::url()->getType(), $url_types)) {
                     // Set language according to blog default language setting
                     $params['post_lang'] = App::blog()->settings()->system->lang;
                     // Filtering posts state
@@ -93,71 +95,67 @@ class FrontendBehaviors
     public static function coreBlogAfterGetPosts(MetaRecord $rs, ArrayObject $alt): string
     {
         $settings = My::settings();
-        if ($settings->active && $settings->accept_language && $rs->count()) {
-            // Start replacing posts only if in Filtering posts state
-            if (static::$state === self::ROSETTA_FILTER) {
-                $cols = $rs->columns();
-                if (count($cols) > 1 || strpos($cols[0], 'count(') != 0) {
-                    // Only operate when not counting (aka getPosts() called with $count_only = true)
-                    static::$state = self::ROSETTA_SWITCH;
-                    // replace translated posts if any may be using core->getPosts()
-                    $langs = Http::getAcceptLanguages();
-                    if (count($langs)) {
-                        $ids = [];
-                        $nbx = 0;
-                        while ($rs->fetch()) {
-                            $exchanged = false;
-                            if (!$rs->exists('post_lang')) {
-                                // Find post lang
-                                $post_lang = self::getPostLang($rs->post_id, $rs->post_type);
-                            } else {
-                                $post_lang = $rs->post_lang;
+        // Start replacing posts only if in Filtering posts state
+        if ($settings->active && $settings->accept_language && $rs->count() && static::$state === self::ROSETTA_FILTER) {
+            $cols = $rs->columns();
+            if (count($cols) > 1 || !str_starts_with($cols[0], 'count(')) {
+                // Only operate when not counting (aka getPosts() called with $count_only = true)
+                static::$state = self::ROSETTA_SWITCH;
+                // replace translated posts if any may be using core->getPosts()
+                $langs = Http::getAcceptLanguages();
+                if (count($langs) > 0) {
+                    $ids = [];
+                    $nbx = 0;
+                    while ($rs->fetch()) {
+                        $exchanged = false;
+                        $post_lang = $rs->exists('post_lang') ? $rs->post_lang : self::getPostLang($rs->post_id, $rs->post_type);
+                        foreach ($langs as $lang) {
+                            if ($post_lang == $lang) {
+                                // Already in an accepted language, do nothing
+                                break;
                             }
-                            foreach ($langs as $lang) {
-                                if ($post_lang == $lang) {
-                                    // Already in an accepted language, do nothing
+
+                            // Try to find an associated post corresponding to the requested lang
+                            $id = CoreData::findTranslation($rs->post_id, $post_lang, $lang);
+                            if (($id >= 0) && ($id != $rs->post_id)) {
+                                // Get post/page data
+                                $params = new ArrayObject([
+                                    'post_id'     => $id,
+                                    'post_type'   => $rs->post_type,
+                                    'post_status' => $rs->post_status,
+                                    'no_content'  => false, ]);
+                                $rst = App::blog()->getPosts($params);
+                                if ($rst->count()) {
+                                    // Load first record
+                                    $rst->fetch();
+                                    // Replace source id with its translation id
+                                    $ids[] = $id;
+                                    ++$nbx;
+                                    $exchanged = true;
+
+                                    // Switch done
                                     break;
                                 }
-                                // Try to find an associated post corresponding to the requested lang
-                                $id = CoreData::findTranslation($rs->post_id, $post_lang, $lang);
-                                if (($id >= 0) && ($id != $rs->post_id)) {
-                                    // Get post/page data
-                                    $params = new ArrayObject([
-                                        'post_id'     => $id,
-                                        'post_type'   => $rs->post_type,
-                                        'post_status' => $rs->post_status,
-                                        'no_content'  => false, ]);
-                                    $rst = App::blog()->getPosts($params);
-                                    if ($rst->count()) {
-                                        // Load first record
-                                        $rst->fetch();
-                                        // Replace source id with its translation id
-                                        $ids[] = $id;
-                                        $nbx++;
-                                        $exchanged = true;
-
-                                        // Switch done
-                                        break;
-                                    }
-                                }
-                            }
-                            if (!$exchanged) {
-                                // Nothing found, keep source id
-                                $ids[] = $rs->post_id;
                             }
                         }
-                        if (count($ids) && $nbx) {
-                            // Get new list of posts as we have at least one exchange done
-                            $params = new ArrayObject([
-                                'post_id' => $ids, ]);
-                            $alt['rs'] = App::blog()->getPosts($params);
+
+                        if (!$exchanged) {
+                            // Nothing found, keep source id
+                            $ids[] = $rs->post_id;
                         }
                     }
-                }
 
-                // Back to normal operation
-                static::$state = self::ROSETTA_NONE;
+                    if (count($ids) && $nbx) {
+                        // Get new list of posts as we have at least one exchange done
+                        $params = new ArrayObject([
+                            'post_id' => $ids, ]);
+                        $alt['rs'] = App::blog()->getPosts($params);
+                    }
+                }
             }
+
+            // Back to normal operation
+            static::$state = self::ROSETTA_NONE;
         }
 
         return '';
@@ -174,7 +172,7 @@ class FrontendBehaviors
         }
 
         $settings = My::settings();
-        if ($settings->active && in_array(App::url()->type, $urlTypes) && in_array(App::frontend()->context()->posts->post_type, $postTypes)) {
+        if ($settings->active && in_array(App::url()->getType(), $urlTypes) && in_array(App::frontend()->context()->posts->post_type, $postTypes)) {
             // Find translations and add meta in header
             $list = FrontendHelper::EntryListHelper(
                 (int) App::frontend()->context()->posts->post_id,
@@ -251,6 +249,7 @@ class FrontendBehaviors
                         // Prepend scheme if not present
                         $url = (isset($_SERVER['HTTPS']) ? 'https:' : 'http:') . $url;
                     }
+
                     Http::redirect($url);
                     exit;
                 }
@@ -284,7 +283,7 @@ class FrontendBehaviors
             }
         }
 
-        if (count($langs)) {
+        if (count($langs) > 0) {
             foreach ($langs as $lang) {
                 // Try to find an according translation (will http-redirect if any)
                 if (self::findTranslatedEntry($handler, $lang)) {

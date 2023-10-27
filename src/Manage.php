@@ -30,7 +30,7 @@ class Manage extends Process
     public static function init(): bool
     {
         if (My::checkContext(My::MANAGE)) {
-            return self::status(!empty($_REQUEST['popup_new']) ? ManagePopup::init() : true);
+            return self::status(empty($_REQUEST['popup_new']) ? true : ManagePopup::init());
         }
 
         return self::status(My::checkContext(My::MANAGE));
@@ -54,8 +54,8 @@ class Manage extends Process
 
             try {
                 $settings = My::settings();
-                $settings->put('active', empty($_POST['active']) ? false : true, App::blogWorkspace()::NS_BOOL);
-                $settings->put('accept_language', empty($_POST['accept_language']) ? false : true, App::blogWorkspace()::NS_BOOL);
+                $settings->put('active', !empty($_POST['active']), App::blogWorkspace()::NS_BOOL);
+                $settings->put('accept_language', !empty($_POST['accept_language']), App::blogWorkspace()::NS_BOOL);
 
                 Notices::addSuccessNotice(__('Configuration successfully updated.'));
                 My::redirect([

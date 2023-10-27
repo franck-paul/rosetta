@@ -31,7 +31,7 @@ class FrontendTemplate
             return '';
         }
 
-        $option = !empty($attr['include_current']) ? (string) $attr['include_current'] : 'std';
+        $option = empty($attr['include_current']) ? 'std' : (string) $attr['include_current'];
 
         if (!preg_match('#^(std|link|none)$#', $option)) {
             $option = 'std';
@@ -41,17 +41,17 @@ class FrontendTemplate
         $class = FrontendHelper::class;
 
         $res = <<<EOT
-                  \$rosetta_table = $class::EntryListHelper(
+                  \$rosetta_table = {$class}::EntryListHelper(
                     App::frontend()->context()->posts->post_id,App::frontend()->context()->posts->post_lang,App::frontend()->context()->posts->post_type,
-                    '$option',\$rosetta_current);
+                    '{$option}',\$rosetta_current);
                   if (is_array(\$rosetta_table) && count(\$rosetta_table)) {
                     echo '<ul class="rosetta-entries-list">'."\n";
                     foreach (\$rosetta_table as \$rosetta_name => \$rosetta_url) {
-                      \$rosetta_link = (\$rosetta_name != \$rosetta_current || '$option' == 'link');
+                      \$rosetta_link = (\$rosetta_name != \$rosetta_current || '{$option}' == 'link');
                       \$rosetta_class = (\$rosetta_name == \$rosetta_current ? 'class="current"' : '');
                       echo '<li'.\$rosetta_class.'>'.
                         (\$rosetta_link ? '<a href="'.\$rosetta_url.'">' : '').
-                        (\$rosetta_class ? '<strong>' : '').$html::escapeHTML(\$rosetta_name).(\$rosetta_class ? '</strong>' : '').
+                        (\$rosetta_class ? '<strong>' : '').{$html}::escapeHTML(\$rosetta_name).(\$rosetta_class ? '</strong>' : '').
                         (\$rosetta_link ? '</a>' : '').
                         '</li>'."\n";
                     }

@@ -68,13 +68,16 @@ class CoreData
             // Use blog language if language not specified for original post
             $src_lang = App::blog()->settings()->system->lang;
         }
+
         if ($dst_lang == '' || !$dst_lang) {
             // Use blog language if language not specified for original post
             $dst_lang = App::blog()->settings()->system->lang;
         }
+
         if ($src_lang == $dst_lang) {
             return false;
         }
+
         if (self::findTranslation($src_id, $src_lang, $dst_lang) != -1) {
             // translation already attached
             return false;
@@ -110,10 +113,10 @@ class CoreData
                     }
                 }
             }
-        } catch (Exception $e) {
+        } catch (Exception $exception) {
             App::con()->unlock();
 
-            throw $e;
+            throw $exception;
         }
 
         return true;
@@ -136,13 +139,16 @@ class CoreData
             // Use blog language if language not specified for original post
             $src_lang = App::blog()->settings()->system->lang;
         }
+
         if ($dst_lang == '' || !$dst_lang) {
             // Use blog language if language not specified for original post
             $dst_lang = App::blog()->settings()->system->lang;
         }
+
         if ($src_lang == $dst_lang) {
             return false;
         }
+
         if (self::findTranslation($src_id, $src_lang, $dst_lang) == -1) {
             // Translation attachment not found
             return false;
@@ -158,10 +164,10 @@ class CoreData
             "(dst_id = '" . App::con()->escapeStr((string) $dst_id) . "' AND dst_lang = '" . App::con()->escapeStr($dst_lang) . "') ";
             App::con()->execute($strReq);
             App::con()->unlock();
-        } catch (Exception $e) {
+        } catch (Exception $exception) {
             App::con()->unlock();
 
-            throw $e;
+            throw $exception;
         }
 
         return true;
@@ -199,6 +205,7 @@ class CoreData
                 if (($full) || ($rs->src_id != $id || $rs->src_lang != $lang)) {
                     $list[(string) $rs->src_lang] = (int) $rs->src_id;
                 }
+
                 // Add dst couple if requested
                 if (($full) || ($rs->dst_id != $id || $rs->dst_lang != $lang)) {
                     $list[(string) $rs->dst_lang] = (int) $rs->dst_id;
@@ -236,6 +243,7 @@ class CoreData
             foreach ($list as $l => $i) {
                 $ids[] = [$l => $i];
             }
+
             while (count($ids)) {
                 $pair = array_shift($ids);
                 foreach ($pair as $l => $i) {
@@ -250,6 +258,7 @@ class CoreData
                     }
                 }
             }
+
             if (!$full && $key = array_search($id, $list, true)) {
                 // Remove original from list
                 unset($list[$key]);
