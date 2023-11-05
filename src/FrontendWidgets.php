@@ -58,8 +58,8 @@ class FrontendWidgets
             $class = ($name == $current ? ' class="current"' : '');
 
             $list .= '<li' . $class . '>' .
-            ($link ? '<a href="' . $url . '">' : '') .
-            ($class !== '' && $class !== '0' ? '<strong>' : '') . Html::escapeHTML($name) . ($class !== '' && $class !== '0' ? '</strong>' : '') .
+                ($link ? '<a href="' . $url . '">' : '') .
+                ($class !== '' ? '<strong>' : '') . Html::escapeHTML($name) . ($class !== '' ? '</strong>' : '') .
                 ($link ? '</a>' : '') .
                 '</li>' . "\n";
         }
