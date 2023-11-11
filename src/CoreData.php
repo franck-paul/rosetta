@@ -15,7 +15,8 @@ declare(strict_types=1);
 namespace Dotclear\Plugin\rosetta;
 
 use Dotclear\App;
-use Dotclear\Database\MetaRecord;
+use Dotclear\Database\Statement\DeleteStatement;
+use Dotclear\Database\Statement\SelectStatement;
 use Exception;
 
 /**
@@ -158,11 +159,21 @@ class CoreData
 
         try {
             // Remove the translations
-            $strReq = 'DELETE FROM ' . App::con()->prefix() . self::ROSETTA_TABLE_NAME . ' ' .
-            'WHERE ' .
-            "(src_id = '" . App::con()->escapeStr((string) $dst_id) . "' AND src_lang = '" . App::con()->escapeStr($dst_lang) . "') OR " .
-            "(dst_id = '" . App::con()->escapeStr((string) $dst_id) . "' AND dst_lang = '" . App::con()->escapeStr($dst_lang) . "') ";
-            App::con()->execute($strReq);
+            $sql = new DeleteStatement();
+            $sql
+                ->from(App::con()->prefix() . self::ROSETTA_TABLE_NAME)
+                ->where($sql->orGroup([
+                    $sql->andGroup([
+                        'src_id = ' . $sql->quote((string) $dst_id),
+                        'src_lang = ' . $sql->quote($dst_lang),
+                    ]),
+                    $sql->andGroup([
+                        'dst_id = ' . $sql->quote((string) $dst_id),
+                        'dst_lang = ' . $sql->quote($dst_lang),
+                    ]),
+                ]))
+            ;
+            $sql->delete();
             App::con()->unlock();
         } catch (Exception $exception) {
             App::con()->unlock();
@@ -189,13 +200,24 @@ class CoreData
             $lang = App::blog()->settings()->system->lang;
         }
 
-        $strReq = 'SELECT * FROM ' . App::con()->prefix() . self::ROSETTA_TABLE_NAME . ' R ' .
-        'WHERE ' .
-        "(R.src_id = '" . App::con()->escapeStr((string) $id) . "' AND R.src_lang = '" . App::con()->escapeStr($lang) . "') OR " .
-        "(R.dst_id = '" . App::con()->escapeStr((string) $id) . "' AND R.dst_lang = '" . App::con()->escapeStr($lang) . "') ";
+        $sql = new SelectStatement();
+        $sql
+            ->from(App::con()->prefix() . self::ROSETTA_TABLE_NAME)
+            ->where($sql->orGroup([
+                $sql->andGroup([
+                    'src_id = ' . $sql->quote((string) $id),
+                    'src_lang = ' . $sql->quote($lang),
+                ]),
+                $sql->andGroup([
+                    'dst_id = ' . $sql->quote((string) $id),
+                    'dst_lang = ' . $sql->quote($lang),
+                ]),
+            ]))
+            ->order('dst_id DESC')
+        ;
 
-        $rs = new MetaRecord(App::con()->select($strReq));
-        if ($rs->count()) {
+        $rs = $sql->select();
+        if ($rs && $rs->count()) {
             /**
              * @var array<string, int>
              */
@@ -289,14 +311,25 @@ class CoreData
         }
 
         // Looks for a post/page with an association with the corresponding lang
-        $strReq = 'SELECT * FROM ' . App::con()->prefix() . self::ROSETTA_TABLE_NAME . ' R ' .
-        'WHERE ' .
-        "(R.src_id = '" . App::con()->escapeStr((string) $src_id) . "' AND R.dst_lang = '" . App::con()->escapeStr($dst_lang) . "') OR " .
-        "(R.dst_id = '" . App::con()->escapeStr((string) $src_id) . "' AND R.src_lang = '" . App::con()->escapeStr($dst_lang) . "') " .
-            'ORDER BY R.dst_id DESC';
+        $sql = new SelectStatement();
+        $sql
+            ->from(App::con()->prefix() . self::ROSETTA_TABLE_NAME)
+            ->where($sql->orGroup([
+                $sql->andGroup([
+                    'src_id = ' . $sql->quote((string) $src_id),
+                    'dst_lang = ' . $sql->quote($dst_lang),
+                ]),
+                $sql->andGroup([
+                    'dst_id = ' . $sql->quote((string) $src_id),
+                    'src_lang = ' . $sql->quote($dst_lang),
+                ]),
+            ]))
+            ->order('dst_id DESC')
+        ;
 
-        $rs = new MetaRecord(App::con()->select($strReq));
-        if ($rs->count()) {
+        $rs = $sql->select();
+
+        if ($rs && $rs->count()) {
             // Load first record
             $rs->fetch();
 

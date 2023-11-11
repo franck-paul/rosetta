@@ -19,6 +19,7 @@ use Dotclear\App;
 use Dotclear\Core\Backend\Favorites;
 use Dotclear\Core\Backend\Page;
 use Dotclear\Database\MetaRecord;
+use Dotclear\Database\Statement\SelectStatement;
 use Dotclear\Helper\Html\Form\Hidden;
 use Dotclear\Helper\Html\Html;
 use Dotclear\Helper\L10n;
@@ -54,7 +55,7 @@ class BackendBehaviors
             'rosetta' => [
                 'popup_posts_url' => App::backend()->url()->get('admin.posts.popup', [
                     'popup'     => 1,
-                    'plugin_id' => 'rosetta',
+                    'plugin_id' => My::id(),
                     'type'      => '',
                 ], '&'),
                 'plugin_url' => App::backend()->url()->get('admin.plugin.' . My::id(), [
@@ -447,11 +448,20 @@ class BackendBehaviors
 
     public static function exportSingle(FlatExport $exp, string $blog_id): string
     {
+        $sql = new SelectStatement();
+        $sql
+            ->column('R.*')
+            ->from([
+                $sql->as(App::con()->prefix() . CoreData::ROSETTA_TABLE_NAME, 'R'),
+                $sql->as(App::con()->prefix() . App::blog()::POST_TABLE_NAME, 'P'),
+            ])
+            ->where('P.post_id = R.src_id')
+            ->and('P.blog_id = ' . $sql->quote($blog_id))
+        ;
+
         $exp->export(
-            'rosetta',
-            'SELECT R.* FROM ' . App::con()->prefix() . 'rosetta R, ' . App::con()->prefix() . 'post P ' .
-            'WHERE P.post_id = R.src_id ' .
-            "AND P.blog_id = '" . $blog_id . "'"
+            CoreData::ROSETTA_TABLE_NAME,
+            $sql->statement()
         );
 
         return '';
@@ -459,21 +469,21 @@ class BackendBehaviors
 
     public static function exportFull(FlatExport $exp): string
     {
-        $exp->exportTable('rosetta');
+        $exp->exportTable(CoreData::ROSETTA_TABLE_NAME);
 
         return '';
     }
 
     public static function importInit(FlatImportV2 $fi): string
     {
-        $fi->setExtraCursor('rosetta', App::con()->openCursor(App::con()->prefix() . 'rosetta'));
+        $fi->setExtraCursor(CoreData::ROSETTA_TABLE_NAME, App::con()->openCursor(App::con()->prefix() . CoreData::ROSETTA_TABLE_NAME));
 
         return '';
     }
 
     private static function insertRosettaLine(FlatBackupItem $line, FlatImportV2 $fi): void
     {
-        $cur = $fi->getExtraCursor('rosetta');
+        $cur = $fi->getExtraCursor(CoreData::ROSETTA_TABLE_NAME);
         if (!is_null($cur)) {
             $cur->clean();
 
@@ -488,7 +498,7 @@ class BackendBehaviors
 
     public static function importSingle(FlatBackupItem $line, FlatImportV2 $fi): string
     {
-        if ($line->__name == 'rosetta') {
+        if ($line->__name == CoreData::ROSETTA_TABLE_NAME) {
             if (isset($fi->old_ids['post'][(int) $line->src_id]) && isset($fi->old_ids['post'][(int) $line->dst_id])) { // @phpstan-ignore-line
                 $line->src_id = $fi->old_ids['post'][(int) $line->src_id];  // @phpstan-ignore-line
                 $line->dst_id = $fi->old_ids['post'][(int) $line->dst_id];  // @phpstan-ignore-line
@@ -498,7 +508,7 @@ class BackendBehaviors
                     __('ID of "%3$s" does not match on record "%1$s" at line %2$s of backup file.'),
                     Html::escapeHTML($line->__name),
                     Html::escapeHTML((string) $line->__line),
-                    Html::escapeHTML('rosetta')
+                    Html::escapeHTML(CoreData::ROSETTA_TABLE_NAME)
                 ));
             }
         }
@@ -508,7 +518,7 @@ class BackendBehaviors
 
     public static function importFull(FlatBackupItem $line, FlatImportV2 $fi): string
     {
-        if ($line->__name == 'rosetta') {
+        if ($line->__name == CoreData::ROSETTA_TABLE_NAME) {
             self::insertRosettaLine($line, $fi);
         }
 
