@@ -22,7 +22,7 @@ use Dotclear\Helper\Network\Http;
 
 class FrontendBehaviors
 {
-    public const ROSETTA_NONE   = 0;
+    public const ROSETTA_NONE = 0;
 
     public const ROSETTA_FILTER = 1;
 
@@ -185,7 +185,7 @@ class FrontendBehaviors
             if (is_array($list) && count($list)) {
                 echo '<!-- Rosetta: translated version of this entry -->' . "\n";
                 foreach ($list as $lang => $url) {
-                    echo '<link rel="alternate" href="' . $url . '" hreflang="' . $lang . '" />' . "\n";
+                    echo '<link rel="alternate" href="' . $url . '" hreflang="' . $lang . '">' . "\n";
                 }
             }
         }

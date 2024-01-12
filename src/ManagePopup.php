@@ -60,7 +60,7 @@ class ManagePopup extends Process
         // Remove empty select
         unset($lang_combo['']);
         // Remove already existed translation's languages from combo
-        $ids = CoreData::findAllTranslations($id, $lang, true);
+        $ids = CoreData::findAllTranslations((int) $id, $lang, true);
         if (is_array($ids)) {
             foreach ($lang_combo as $lc => $lv) {
                 if (is_array($lv)) {

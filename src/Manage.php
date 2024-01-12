@@ -115,7 +115,7 @@ class Manage extends Process
         // TODO
 
         echo
-        '<p class="field"><input type="submit" value="' . __('Save') . '" /> ' .
+        '<p class="field"><input type="submit" value="' . __('Save') . '"> ' .
         My::parsedHiddenFields([
             'tab' => 'posts',
         ]) .
@@ -133,7 +133,7 @@ class Manage extends Process
             // TODO
 
             echo
-            '<p class="field"><input type="submit" value="' . __('Save') . '" /> ' .
+            '<p class="field"><input type="submit" value="' . __('Save') . '"> ' .
             My::parsedHiddenFields([
                 'tab' => 'pages',
             ]) .
@@ -160,7 +160,7 @@ class Manage extends Process
             '<label class="classic" for="accept_language">' . __('Automatic posts/pages redirect on browser\'s language for this blog') . '</label></p>';
 
             echo
-            '<p class="field wide"><input type="submit" value="' . __('Save') . '" /> ' .
+            '<p class="field wide"><input type="submit" value="' . __('Save') . '"> ' .
             My::parsedHiddenFields([
                 'tab'           => 'settings',
                 'save_settings' => '1',

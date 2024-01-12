@@ -114,7 +114,7 @@ class BackendBehaviors
         '</tr>' . "\n";
         $action_remove = '<a href="%s" class="rosetta-remove" title="' . __('Remove this translation\'s link') . '" name="delete">' .
         '<img src="' . urldecode(Page::getPF(My::id() . '/img/unlink.png')) .
-        '" alt="' . __('Remove this translation\'s link') . '" /></a>';
+        '" alt="' . __('Remove this translation\'s link') . '"></a>';
 
         return sprintf(
             $html_line,
