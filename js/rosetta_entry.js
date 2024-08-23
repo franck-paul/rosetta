@@ -15,7 +15,7 @@ $(() => {
 
   function getURLParameter(url, name) {
     // Extract param value from URL
-    const results = new RegExp(`[\?&]${name}=([^&#]*)`).exec(url);
+    const results = new RegExp(`[?&]${name}=([^&#]*)`).exec(url);
     return results === null ? null : results[1] || 0;
   }
 

@@ -43,7 +43,7 @@ class BackendRest
             try {
                 // Default format and content
                 $format  = 'xhtml';
-                $content = '<p>...</p>';
+                $content = '<p>…</p>';
 
                 // Get currently edited post format
                 $rs = App::blog()->getPosts(['post_id' => $id]);
@@ -51,7 +51,7 @@ class BackendRest
                     $rs->fetch();
                     $format = $rs->post_format;
                     if ($format != 'xhtml') {
-                        $content = '...';
+                        $content = '…';
                     }
                 }
 
