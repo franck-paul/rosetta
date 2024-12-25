@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @brief rosetta, a plugin for Dotclear 2
  *
@@ -98,7 +99,7 @@ class FrontendBehaviors
         // Start replacing posts only if in Filtering posts state
         if ($settings->active && $settings->accept_language && $rs->count() && static::$state === self::ROSETTA_FILTER) {
             $cols = $rs->columns();
-            if (count($cols) > 1 || !str_starts_with($cols[0], 'count(')) {
+            if (count($cols) > 1 || !str_starts_with((string) $cols[0], 'count(')) {
                 // Only operate when not counting (aka getPosts() called with $count_only = true)
                 static::$state = self::ROSETTA_SWITCH;
                 // replace translated posts if any may be using core->getPosts()
@@ -245,7 +246,7 @@ class FrontendBehaviors
 
                     // Redirect to translated post
                     $url = $rsDst->getURL();
-                    if (!preg_match('%^https?://%', $url)) {
+                    if (!preg_match('%^https?://%', (string) $url)) {
                         // Prepend scheme if not present
                         $url = (isset($_SERVER['HTTPS']) ? 'https:' : 'http:') . $url;
                     }
@@ -269,7 +270,7 @@ class FrontendBehaviors
         $langs = [];
         if (!empty($_GET['lang'])) {
             // Check lang scheme
-            if (preg_match('/^[a-z]{2}(-[a-z]{2})?$/', rawurldecode($_GET['lang']), $matches)) {
+            if (preg_match('/^[a-z]{2}(-[a-z]{2})?$/', rawurldecode((string) $_GET['lang']), $matches)) {
                 // Assume that the URL scheme is for post/page
                 $langs[] = $matches[0];
             }
