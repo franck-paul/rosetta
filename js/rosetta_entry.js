@@ -4,13 +4,11 @@
 dotclear.mergeDeep(dotclear, dotclear.getData('rosetta_entry'));
 dotclear.mergeDeep(dotclear, dotclear.getData('rosetta_type'));
 
-$(() => {
-  $('#edit-entry').on('onetabload', () => {
-    // Add toggle capability on Rosetta area
-    $('#rosetta-details').toggleWithDetails({
-      user_pref: 'dcx_post_rosetta',
-      hide: $('#rosetta-list tbody').children().length === 0 ? false : true,
-    });
+dotclear.ready(() => {
+  // Add toggle capability on Rosetta area
+  $('#rosetta-details').toggleWithDetails({
+    user_pref: 'dcx_post_rosetta',
+    hide: $('#rosetta-list tbody').children().length === 0 ? false : true,
   });
 
   function getURLParameter(url, name) {

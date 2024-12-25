@@ -1,7 +1,7 @@
 /*global $ */
 'use strict';
 
-$(() => {
+dotclear.ready(() => {
   $('#link-insert-cancel').on('click', () => {
     window.close();
   });

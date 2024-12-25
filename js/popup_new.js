@@ -1,7 +1,7 @@
 /*global $ */
 'use strict';
 
-$(() => {
+dotclear.ready(() => {
   $('#rosetta-new-cancel').on('click', () => {
     window.close();
   });
