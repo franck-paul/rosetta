@@ -133,7 +133,7 @@ class BackendBehaviors
     {
         $settings = My::settings();
         if ($settings->active) {
-            if (!$post || !$post->post_id) {
+            if (!$post instanceof MetaRecord || !$post->post_id) {
                 // Manage translation only on already created posts/pages
                 return '';
             }
