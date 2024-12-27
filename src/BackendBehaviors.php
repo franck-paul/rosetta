@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @brief rosetta, a plugin for Dotclear 2
  *
@@ -127,8 +128,6 @@ class BackendBehaviors
     /**
      * @param      MetaRecord|null  $post       The post
      * @param      string           $post_type  The post type
-     *
-     * @return     string
      */
     private static function adminEntryForm(?MetaRecord $post, string $post_type = 'post'): string
     {
@@ -139,7 +138,7 @@ class BackendBehaviors
                 return '';
             }
 
-            if ($post_type == 'post') {
+            if ($post_type === 'post') {
                 $url = App::backend()->url()->get('admin.post', ['id' => $post->post_id]);
             } else {
                 $url = App::backend()->url()->get('admin.plugin.pages', ['act' => 'page', 'id' => $post->post_id]);
@@ -180,7 +179,7 @@ class BackendBehaviors
             '<thead>' .
             '<tr>' .
             '<th class="nowrap">' . __('Language') . '</th>' .
-            '<th>' . ($post_type == 'post' ? __('Entry') : __('Page')) . '</th>' .
+            '<th>' . ($post_type === 'post' ? __('Entry') : __('Page')) . '</th>' .
             '<th class="nowrap">' . '</th>' .
             '</tr>' .
             '</thead>' .
@@ -192,7 +191,7 @@ class BackendBehaviors
             '<div id="rosetta-area" class="area">' . "\n" .
             '<details id="rosetta-details"' . ($html_lines !== '' ? ' open ' : '') . '>' .
             '<summary>' .
-            ($post_type == 'post' ? __('Post\'s translations:') : __('Page\'s translations:')) .
+            ($post_type === 'post' ? __('Post\'s translations:') : __('Page\'s translations:')) .
             '</summary>' . "\n";
 
             // Display table
@@ -257,8 +256,6 @@ class BackendBehaviors
 
     /**
      * @param      MetaRecord|null  $post   The post
-     *
-     * @return     string
      */
     public static function adminPostForm(?MetaRecord $post): string
     {
@@ -267,8 +264,6 @@ class BackendBehaviors
 
     /**
      * @param      MetaRecord|null  $post   The post
-     *
-     * @return     string
      */
     public static function adminPageForm(?MetaRecord $post): string
     {
@@ -286,8 +281,6 @@ class BackendBehaviors
 
     /**
      * @param      ArrayObject<string, mixed>  $cols   The cols
-     *
-     * @return     string
      */
     public static function adminColumnsLists(ArrayObject $cols): string
     {
@@ -301,8 +294,6 @@ class BackendBehaviors
 
     /**
      * @param      ArrayObject<string, string>    $cols   The cols
-     *
-     * @return     string
      */
     private static function adminEntryListHeader(ArrayObject $cols): string
     {
@@ -318,8 +309,6 @@ class BackendBehaviors
     /**
      * @param      MetaRecord                     $rs     The recordset
      * @param      ArrayObject<string, string>    $cols   The cols
-     *
-     * @return     string
      */
     public static function adminPostListHeader(MetaRecord $rs, ArrayObject $cols): string
     {
@@ -329,8 +318,6 @@ class BackendBehaviors
     /**
      * @param      MetaRecord                     $rs     The recordset
      * @param      ArrayObject<string, string>    $cols   The cols
-     *
-     * @return     string
      */
     public static function adminPagesListHeader(MetaRecord $rs, ArrayObject $cols): string
     {
@@ -340,8 +327,6 @@ class BackendBehaviors
     /**
      * @param      MetaRecord                     $rs     The recordset
      * @param      ArrayObject<string, string>    $cols   The cols
-     *
-     * @return     string
      */
     private static function adminEntryListValue(MetaRecord $rs, ArrayObject $cols): string
     {
@@ -384,8 +369,6 @@ class BackendBehaviors
     /**
      * @param      MetaRecord                     $rs     The recordset
      * @param      ArrayObject<string, string>    $cols   The cols
-     *
-     * @return     string
      */
     public static function adminPostListValue(MetaRecord $rs, ArrayObject $cols): string
     {
@@ -395,8 +378,6 @@ class BackendBehaviors
     /**
      * @param      MetaRecord                     $rs     The recordset
      * @param      ArrayObject<string, string>    $cols   The cols
-     *
-     * @return     string
      */
     public static function adminPagesListValue(MetaRecord $rs, ArrayObject $cols): string
     {
@@ -406,8 +387,6 @@ class BackendBehaviors
     /**
      * @param      MetaRecord                     $rs     The recordset
      * @param      ArrayObject<string, string>    $cols   The cols
-     *
-     * @return     string
      */
     public static function adminPostMiniListHeader(MetaRecord $rs, ArrayObject $cols): string
     {
@@ -422,8 +401,6 @@ class BackendBehaviors
     /**
      * @param      MetaRecord                     $rs     The recordset
      * @param      ArrayObject<string, string>    $cols   The cols
-     *
-     * @return     string
      */
     public static function adminPostMiniListValue(MetaRecord $rs, ArrayObject $cols): string
     {
@@ -437,8 +414,6 @@ class BackendBehaviors
 
     /**
      * @param      ArrayObject<string, mixed>  $sorts  The sorts
-     *
-     * @return     string
      */
     public static function adminFiltersLists(ArrayObject $sorts): string
     {

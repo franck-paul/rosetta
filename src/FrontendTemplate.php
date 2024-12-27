@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @brief rosetta, a plugin for Dotclear 2
  *
@@ -21,8 +22,6 @@ class FrontendTemplate
 {
     /**
      * @param      array<string, mixed>|\ArrayObject<string, mixed>  $attr      The attribute
-     *
-     * @return     string
      */
     public static function rosettaEntryList(array|ArrayObject $attr): string
     {
@@ -41,6 +40,7 @@ class FrontendTemplate
         $class = FrontendHelper::class;
 
         $res = <<<EOT
+                  \$rosetta_current = '';
                   \$rosetta_table = {$class}::EntryListHelper(
                     App::frontend()->context()->posts->post_id,App::frontend()->context()->posts->post_lang,App::frontend()->context()->posts->post_type,
                     '{$option}',\$rosetta_current);

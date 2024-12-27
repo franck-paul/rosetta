@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @brief rosetta, a plugin for Dotclear 2
  *
@@ -191,9 +192,9 @@ class CoreData
      * @param  null|string  $lang original lang
      * @param  bool         $full result should include original post/page+lang
      *
-     * @return false|array<string, int>         associative array (lang => id), false if nothing found
+     * @return bool|array<string, int>         associative array (lang => id), false if nothing found
      */
-    private static function findDirectTranslations(int $id, ?string $lang, bool $full = false)
+    private static function findDirectTranslations(int $id, ?string $lang, bool $full = false): array|bool
     {
         if ($lang == '' || !$lang) {
             // Use blog language if language not specified for original post
@@ -250,7 +251,7 @@ class CoreData
      *
      * @return array<string, int>|bool    associative array (lang => id), false if nothing found
      */
-    public static function findAllTranslations(int $id, ?string $lang, bool $full = false)
+    public static function findAllTranslations(int $id, ?string $lang, bool $full = false): array|bool
     {
         if ($lang == '' || !$lang) {
             // Use blog language if language not specified for original post

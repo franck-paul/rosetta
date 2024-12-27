@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @brief rosetta, a plugin for Dotclear 2
  *
@@ -26,15 +27,15 @@ class FrontendHelper
      * @param      null|string  $post_lang  The post language
      * @param      string       $post_type  The post type
      * @param      string       $include    The include
-     * @param      string|null  $current    The current
+     * @param      string       $current    The current language
      * @param      bool         $code_only  The code only
      *
      * @return     array<string, string>|bool
      */
-    public static function EntryListHelper(int $post_id, ?string $post_lang, string $post_type, string $include, ?string &$current, bool $code_only = false): array|bool
+    public static function EntryListHelper(int $post_id, ?string $post_lang, string $post_type, string $include, string &$current, bool $code_only = false): array|bool
     {
         // Get associated entries
-        $ids = CoreData::findAllTranslations($post_id, $post_lang, ($include != 'none'));
+        $ids = CoreData::findAllTranslations($post_id, $post_lang, ($include !== 'none'));
         if (!is_array($ids)) {
             return false;
         }
@@ -42,16 +43,15 @@ class FrontendHelper
         // source = $ids : array ('lang' => 'entry-id')
         // destination = $table : array ('language' (or 'lang' if $code=true) => 'entry-url')
         // $current = current language
-        $table   = [];
-        $langs   = L10n::getLanguagesName();
-        $current = '';
+        $table = [];
+        $langs = L10n::getLanguagesName();
         foreach ($ids as $lang => $id) {
             $name = $langs[$lang] ?? $langs[App::blog()->settings()->system->lang];
             if ($post_id == $id) {
-                $current = ($code_only ? $lang : $name);
+                $current = $code_only ? $lang : $name;
             }
 
-            if ($post_id == $id && $include != 'link') {
+            if ($post_id == $id && $include !== 'link') {
                 $table[($code_only ? $lang : $name)] = '';
             } else {
                 // Get post/page URL

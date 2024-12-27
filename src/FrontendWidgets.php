@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @brief rosetta, a plugin for Dotclear 2
  *
@@ -64,7 +65,7 @@ class FrontendWidgets
                 '</li>' . "\n";
         }
 
-        if ($list == '') {
+        if ($list === '') {
             return '';
         }
 

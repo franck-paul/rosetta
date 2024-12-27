@@ -164,7 +164,7 @@ class FrontendBehaviors
 
     public static function publicHeadContent(): string
     {
-        $current   = null;
+        $current   = '';
         $urlTypes  = ['post'];
         $postTypes = ['post'];
         if (App::plugins()->moduleExists('pages')) {
@@ -199,10 +199,8 @@ class FrontendBehaviors
      *
      * @param      Url      $handler  The handler
      * @param      string   $lang     The language
-     *
-     * @return     bool
      */
-    private static function findTranslatedEntry(Url $handler, string $lang)
+    private static function findTranslatedEntry(Url $handler, string $lang): bool
     {
         $postTypes = ['post'];
         if (App::plugins()->moduleExists('pages')) {

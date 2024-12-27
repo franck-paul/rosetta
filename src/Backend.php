@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @brief rosetta, a plugin for Dotclear 2
  *
@@ -22,7 +23,8 @@ class Backend extends Process
     public static function init(): bool
     {
         // dead but useful code, in order to have translations
-        __('Rosetta') . __('Manage post/page translations');
+        __('Rosetta');
+        __('Manage post/page translations');
 
         return self::status(My::checkContext(My::BACKEND));
     }
