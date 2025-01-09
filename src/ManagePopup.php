@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @brief rosetta, a plugin for Dotclear 2
  *
@@ -22,6 +23,9 @@ use Dotclear\Core\Process;
 use Dotclear\Helper\Html\Html;
 use form;
 
+/**
+ * @todo switch Helper/Html/Form/...
+ */
 class ManagePopup extends Process
 {
     /**
@@ -55,7 +59,10 @@ class ManagePopup extends Process
         $title = '';
 
         // Languages combo
-        $rs         = App::blog()->getLangs(['order' => 'asc']);
+        $rs = App::blog()->getLangs([
+            'order_by' => 'nb_post',
+            'order'    => 'desc',
+        ]);
         $lang_combo = Combos::getLangsCombo($rs, true);
         // Remove empty select
         unset($lang_combo['']);

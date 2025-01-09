@@ -31,6 +31,9 @@ use Exception;
 
 // Admin behaviours
 
+/**
+ * @todo switch Helper/Html/Form/...
+ */
 class BackendBehaviors
 {
     public static string $args_rosetta = '&amp;lang=%s&amp;type=%s&amp;rosetta=%s&amp;rosetta_id=%s&amp;rosetta_lang=%s';

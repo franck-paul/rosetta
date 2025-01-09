@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @brief rosetta, a plugin for Dotclear 2
  *
@@ -22,6 +23,9 @@ use Dotclear\Helper\Html\Html;
 use Exception;
 use form;
 
+/**
+ * @todo switch Helper/Html/Form/...
+ */
 class Manage extends Process
 {
     /**

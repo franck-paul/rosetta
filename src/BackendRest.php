@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @brief rosetta, a plugin for Dotclear 2
  *
@@ -65,7 +66,7 @@ class BackendRest
                 $cur->user_id           = App::auth()->userID();
                 $cur->post_content      = $content;
                 $cur->post_format       = $format;
-                $cur->post_status       = App::blog()::POST_PENDING; // forced to pending
+                $cur->post_status       = App::status()->post()::PENDING; // forced to pending
                 $cur->post_open_comment = (int) App::blog()->settings()->system->allow_comments;
                 $cur->post_open_tb      = (int) App::blog()->settings()->system->allow_trackbacks;
 
