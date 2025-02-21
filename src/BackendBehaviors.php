@@ -21,6 +21,7 @@ use Dotclear\Core\Backend\Favorites;
 use Dotclear\Core\Backend\Page;
 use Dotclear\Database\MetaRecord;
 use Dotclear\Database\Statement\SelectStatement;
+use Dotclear\Helper\Html\Form\Caption;
 use Dotclear\Helper\Html\Form\Details;
 use Dotclear\Helper\Html\Form\Div;
 use Dotclear\Helper\Html\Form\Hidden;
@@ -209,7 +210,7 @@ class BackendBehaviors
                                 ->items([
                                     (new Table('rosetta-list'))
                                         ->class(['clear', 'maximal'])
-                                        ->extra('summary="' . __('Attached Translations') . '"')
+                                        ->caption(new Caption(__('Attached Translations')))
                                         ->thead((new Thead())
                                             ->rows([
                                                 (new Tr())
