@@ -21,7 +21,19 @@ use Dotclear\Core\Backend\Favorites;
 use Dotclear\Core\Backend\Page;
 use Dotclear\Database\MetaRecord;
 use Dotclear\Database\Statement\SelectStatement;
+use Dotclear\Helper\Html\Form\Details;
+use Dotclear\Helper\Html\Form\Div;
 use Dotclear\Helper\Html\Form\Hidden;
+use Dotclear\Helper\Html\Form\Img;
+use Dotclear\Helper\Html\Form\Link;
+use Dotclear\Helper\Html\Form\Para;
+use Dotclear\Helper\Html\Form\Summary;
+use Dotclear\Helper\Html\Form\Table;
+use Dotclear\Helper\Html\Form\Tbody;
+use Dotclear\Helper\Html\Form\Td;
+use Dotclear\Helper\Html\Form\Th;
+use Dotclear\Helper\Html\Form\Thead;
+use Dotclear\Helper\Html\Form\Tr;
 use Dotclear\Helper\Html\Html;
 use Dotclear\Helper\L10n;
 use Dotclear\Plugin\importExport\FlatBackupItem;
@@ -31,9 +43,6 @@ use Exception;
 
 // Admin behaviours
 
-/**
- * @todo switch Helper/Html/Form/...
- */
 class BackendBehaviors
 {
     public static string $args_rosetta = '&amp;lang=%s&amp;type=%s&amp;rosetta=%s&amp;rosetta_id=%s&amp;rosetta_lang=%s';
@@ -106,26 +115,32 @@ class BackendBehaviors
      * @param  string $title     title of translated post or page
      * @param  string $post_link sprintf format for post/page edition (post-id, label, post-title)
      * @param  string $url_page  current admin page URL
-     *
-     * @return string            row (<tr>…</tr>)
      */
-    public static function translationRow(string $src_lang, int $id, string $lang, string $name, string $title, string $post_link, string $url_page): string
+    public static function translationRow(string $src_lang, int $id, string $lang, string $name, string $title, string $post_link, string $url_page): Tr
     {
-        $html_line = '<tr class="line wide">' . "\n" .
-        '<td class="minimal nowrap">%s</td>' . "\n" . // language
-        '<td class="maximal">%s</td>' . "\n" .        // Entry link
-        '<td class="minimal nowrap">%s</td>' . "\n" . // Action
-        '</tr>' . "\n";
-        $action_remove = '<a href="%s" class="rosetta-remove" title="' . __('Remove this translation\'s link') . '" name="delete">' .
-        '<img src="' . urldecode(Page::getPF(My::id() . '/img/unlink.png')) .
-        '" alt="' . __('Remove this translation\'s link') . '"></a>';
-
-        return sprintf(
-            $html_line,
-            $lang . ' - ' . $name,
-            sprintf($post_link, (string) $id, __('Edit this entry'), Html::escapeHTML($title)),
-            sprintf($action_remove, $url_page . sprintf(self::$args_rosetta, $src_lang, '', 'remove', $id, $lang))
-        );
+        return (new Tr())
+            ->class(['line', 'wide'])
+            ->cols([
+                (new Td())
+                    ->class(['minimal', 'nowrap'])
+                    ->text($lang . ' - ' . $name),
+                (new Td())
+                    ->class('maximal')
+                    // $post_link looks like <a href="index.php?process=Post&amp;id=%s" class="%s" title="%s">%s</a>
+                    ->text(sprintf($post_link, (string) $id, __('Edit this entry'), '', Html::escapeHTML($title))),
+                (new Td())
+                    ->class(['minimal', 'nowrap'])
+                    ->items([
+                        (new Link(['delete']))
+                            ->href($url_page . sprintf(self::$args_rosetta, $src_lang, '', 'remove', $id, $lang))
+                            ->class('rosetta-remove')
+                            ->title(__('Remove this translation\'s link'))
+                            ->items([
+                                (new Img(urldecode(Page::getPF(My::id() . '/img/unlink.png'))))
+                                    ->alt(__('Remove this translation\'s link')),
+                            ]),
+                    ]),
+            ]);
     }
 
     /**
@@ -147,7 +162,8 @@ class BackendBehaviors
                 $url = App::backend()->url()->get('admin.plugin.pages', ['act' => 'page', 'id' => $post->post_id]);
             }
 
-            $html_lines = '';
+            $html_lines   = '';
+            $translations = [];
 
             $list = CoreData::findAllTranslations((int) $post->post_id, $post->post_lang, false);
             if (is_array($list) && count($list)) {
@@ -161,97 +177,104 @@ class BackendBehaviors
                     $params = new ArrayObject([
                         'post_id'    => $id,
                         'post_type'  => $post_type,
-                        'no_content' => true, ]);
+                        'no_content' => true,
+                    ]);
                     $rs = App::blog()->getPosts($params);
                     if ($rs->count()) {
                         $rs->fetch();
-                        $html_lines .= self::translationRow(
+                        $translation = self::translationRow(
                             $post->post_lang,
                             $id,
                             $lang,
                             $name,
                             $rs->post_title,
-                            App::backend()->post_link,    // see plugins/pages/page.php and admin/post.php
+                            App::backend()->post_link,
                             $url
                         );
+                        $translations[] = $translation;
+                        $html_lines .= $translation->render();
                     }
                 }
             }
 
-            $html_block = '<div class="table-outer"><table id="rosetta-list" summary="' . __('Attached Translations') . '" class="clear maximal">' .
-            '<thead>' .
-            '<tr>' .
-            '<th class="nowrap">' . __('Language') . '</th>' .
-            '<th>' . ($post_type === 'post' ? __('Entry') : __('Page')) . '</th>' .
-            '<th class="nowrap">' . '</th>' .
-            '</tr>' .
-            '</thead>' .
-            '<tbody>%s</tbody>' .
-            '</table>' .
-            '</div>';
-
-            echo
-            '<div id="rosetta-area" class="area">' . "\n" .
-            '<details id="rosetta-details"' . ($html_lines !== '' ? ' open ' : '') . '>' .
-            '<summary>' .
-            ($post_type === 'post' ? __('Post\'s translations:') : __('Page\'s translations:')) .
-            '</summary>' . "\n";
-
-            // Display table
-            echo sprintf($html_block, $html_lines);
-
-            // Add a button for adding a new translation
-            $action_add = '<a href="%s" class="button rosetta-add">' . __('Attach a translation') . '</a>';
-
-            echo '<p>' .
-            // Button
-            sprintf($action_add, $url .
-                sprintf(
-                    self::$args_rosetta,
-                    ($post->post_lang == '' || !$post->post_lang ? App::blog()->settings()->system->lang : $post->post_lang),
-                    $post_type,
-                    'add',
-                    0,
-                    ''
-                )) .
-            // Hidden field for selected post/page URL
-            (new Hidden('rosetta_url', ''))->render() .
-            '</p>';
-
-            // Add a field (title), a combo (lang) and a button to create a new translation
-            $action_new      = '<a href="%s" class="button add rosetta-new">' . __('Create a new translation') . '</a>';
-            $action_new_edit = '<a href="%s" class="button add rosetta-new">' . __('Create and edit a new translation') . '</a>';
-
-            echo
-            '<p class="top-add">' .
-            sprintf($action_new, $url .
-                sprintf(
-                    self::$args_rosetta,
-                    ($post->post_lang == '' || !$post->post_lang ? App::blog()->settings()->system->lang : $post->post_lang),
-                    $post_type,
-                    'new',
-                    0,
-                    ''
-                ) .
-                '&amp;edit=0') .
-            ' ' .
-            sprintf($action_new_edit, $url .
-                sprintf(
-                    self::$args_rosetta,
-                    ($post->post_lang == '' || !$post->post_lang ? App::blog()->settings()->system->lang : $post->post_lang),
-                    $post_type,
-                    'new_edit',
-                    0,
-                    ''
-                ) .
-                '&amp;edit=1') .
-            // Hidden fields for new entry title and lang
-            (new Hidden('rosetta_title', ''))->render() .
-            (new Hidden('rosetta_lang', ''))->render() .
-            '</p>';
-
-            echo
-            '</details></div>' . "\n";
+            echo (new Div('rosetta-area'))
+                ->class('area')
+                ->items([
+                    (new Details('rosetta-details'))
+                        ->open($translations !== [])
+                        ->summary(new Summary($post_type === 'post' ? __('Post\'s translations:') : __('Page\'s translations:')))
+                        ->items([
+                            (new Div())
+                                ->class('table-outer')
+                                ->items([
+                                    (new Table('rosetta-list'))
+                                        ->class(['clear', 'maximal'])
+                                        ->extra('summary="' . __('Attached Translations') . '"')
+                                        ->thead((new Thead())
+                                            ->rows([
+                                                (new Tr())
+                                                    ->cols([
+                                                        (new Th())
+                                                            ->class('nowrap')
+                                                            ->text(__('Language')),
+                                                        (new Th())
+                                                            ->text($post_type === 'post' ? __('Entry') : __('Page')),
+                                                        (new Th())
+                                                            ->class('nowrap'),
+                                                    ]),
+                                            ]))
+                                        ->tbody((new Tbody())
+                                            ->rows($translations)),
+                                ]),
+                            // Add a button for adding a new translation
+                            (new Para())
+                                ->class('form-buttons')
+                                ->items([
+                                    (new Link())
+                                        ->href($url . sprintf(
+                                            self::$args_rosetta,
+                                            ($post->post_lang == '' || !$post->post_lang ? App::blog()->settings()->system->lang : $post->post_lang),
+                                            $post_type,
+                                            'add',
+                                            0,
+                                            ''
+                                        ))
+                                        ->class(['button', 'rosetta-add'])
+                                        ->text(__('Attach a translation')),
+                                    (new Hidden('rosetta_url', '')),
+                                ]),
+                            // Add buttons to create (and edit) a new translation
+                            (new Para())
+                                ->class(['form-buttons', 'top-add'])
+                                ->items([
+                                    (new Link())
+                                        ->href($url . sprintf(
+                                            self::$args_rosetta,
+                                            ($post->post_lang == '' || !$post->post_lang ? App::blog()->settings()->system->lang : $post->post_lang),
+                                            $post_type,
+                                            'new',
+                                            0,
+                                            ''
+                                        ) . '&amp;edit=0')
+                                        ->class(['button', 'add', 'rosetta-new'])
+                                        ->text(__('Create a new translation')),
+                                    (new Link())
+                                        ->href($url . sprintf(
+                                            self::$args_rosetta,
+                                            ($post->post_lang == '' || !$post->post_lang ? App::blog()->settings()->system->lang : $post->post_lang),
+                                            $post_type,
+                                            'new_edit',
+                                            0,
+                                            ''
+                                        ) . '&amp;edit=1')
+                                        ->class(['button', 'add', 'rosetta-new'])
+                                        ->text(__('Create and edit a new translation')),
+                                    (new Hidden('rosetta_title', '')),
+                                    (new Hidden('rosetta_lang', '')),
+                                ]),
+                        ]),
+                ])
+            ->render();
         }
 
         return '';
@@ -302,8 +325,16 @@ class BackendBehaviors
     {
         $settings = My::settings();
         if ($settings->active) {
-            $cols['language']     = '<th scope="col">' . __('Language') . '</th>';
-            $cols['translations'] = '<th scope="col">' . __('Translations') . '</th>';
+            $cols['language'] = (new Th())
+                ->scope('col')
+                ->class('nowrap')
+                ->text(__('Language'))
+            ->render();
+            $cols['translations'] = (new Th())
+                ->scope('col')
+                ->class('nowrap')
+                ->text(__('Translations'))
+            ->render();
         }
 
         return '';
@@ -335,7 +366,7 @@ class BackendBehaviors
     {
         $settings = My::settings();
         if ($settings->active) {
-            $translations = '';
+            $translations = [];
             $list         = CoreData::findAllTranslations((int) $rs->post_id, $rs->post_lang, false);
             if (is_array($list) && count($list)) {
                 App::lexical()->lexicalKeySort($list, App::lexical()::ADMIN_LOCALE);
@@ -351,19 +382,23 @@ class BackendBehaviors
                     $rst = App::blog()->getPosts($params);
                     if ($rst->count()) {
                         $rst->fetch();
-                        $translation = sprintf(
-                            '<a href="%s" title="%s">%s</a>',
-                            App::postTypes()->get($rs->post_type)->adminUrl($rs->post_id),
-                            $rst->post_title,
-                            $name
-                        );
-                        $translations .= ($translations !== '' && $translations !== '0' ? ' / ' : '') . $translation;
+                        $translations[] = (new Link())
+                            ->href(App::postTypes()->get($rs->post_type)->adminUrl($rs->post_id))
+                            ->title($rst->post_title)
+                            ->text($name);
                     }
                 }
             }
 
-            $cols['language']     = '<td class="nowrap">' . $rs->post_lang . '</td>';
-            $cols['translations'] = '<td class="nowrap">' . $translations . '</td>';
+            $cols['language'] = (new Td())
+                ->class('nowrap')
+                ->text($rs->post_lang)
+            ->render();
+            $cols['translations'] = (new Td())
+                ->class('nowrap')
+                ->separator(' / ')
+                ->items($translations)
+            ->render();
         }
 
         return '';
@@ -395,7 +430,11 @@ class BackendBehaviors
     {
         $settings = My::settings();
         if ($settings->active) {
-            $cols['language'] = '<th scope="col">' . __('Language') . '</th>';
+            $cols['language'] = (new Th())
+                ->scope('col')
+                ->class('nowrap')
+                ->text(__('Language'))
+            ->render();
         }
 
         return '';
@@ -409,7 +448,10 @@ class BackendBehaviors
     {
         $settings = My::settings();
         if ($settings->active) {
-            $cols['language'] = '<td class="nowrap">' . $rs->post_lang . '</td>';
+            $cols['language'] = (new Td())
+                ->class('nowrap')
+                ->text($rs->post_lang)
+            ->render();
         }
 
         return '';

@@ -210,7 +210,7 @@ class BackendRest
                         $rs->post_title,
                         $post_link,
                         $url_page
-                    );
+                    )->render();
                     $ret = true;
                 }
             }

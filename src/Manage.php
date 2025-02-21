@@ -19,13 +19,17 @@ use Dotclear\App;
 use Dotclear\Core\Backend\Notices;
 use Dotclear\Core\Backend\Page;
 use Dotclear\Core\Process;
+use Dotclear\Helper\Html\Form\Checkbox;
+use Dotclear\Helper\Html\Form\Div;
+use Dotclear\Helper\Html\Form\Fieldset;
+use Dotclear\Helper\Html\Form\Form;
+use Dotclear\Helper\Html\Form\Label;
+use Dotclear\Helper\Html\Form\Legend;
+use Dotclear\Helper\Html\Form\Para;
+use Dotclear\Helper\Html\Form\Submit;
 use Dotclear\Helper\Html\Html;
 use Exception;
-use form;
 
-/**
- * @todo switch Helper/Html/Form/...
- */
 class Manage extends Process
 {
     /**
@@ -111,67 +115,91 @@ class Manage extends Process
 
         // Display tabs
         // 1. Posts translations
-        echo
-        '<div id="posts" class="multi-part" title="' . __('Posts tranlations') . '">' .
-        '<h3>' . __('Posts tranlations') . '</h3>' .
-            '<form action="' . App::backend()->getPageURL() . '" method="post">';
-
-        // TODO
-
-        echo
-        '<p class="field"><input type="submit" value="' . __('Save') . '"> ' .
-        My::parsedHiddenFields([
-            'tab' => 'posts',
-        ]) .
-        '</p>' .
-        '</form>' .
-        '</div>';
+        echo (new Div('posts'))
+            ->class('multi-part')
+            ->title(__('Posts tranlations'))
+            ->items([
+                (new Form('form_posts'))
+                    ->method('post')
+                    ->action(App::backend()->getPageURL())
+                    ->fields([
+                        // TODO …
+                        (new Para())
+                            ->class('form-buttons')
+                            ->items([
+                                ... My::hiddenFields(['tab' => 'posts']),
+                                (new Submit('form_posts_submit', __('Save'))),
+                            ]),
+                    ]),
+            ])
+        ->render();
 
         // 2. Pages translations
         if (App::plugins()->moduleExists('pages')) {
-            echo
-            '<div id="pages" class="multi-part" title="' . __('Pages tranlations') . '">' .
-            '<h3>' . __('Pages tranlations') . '</h3>' .
-                '<form action="' . App::backend()->getPageURL() . '" method="post">';
-
-            // TODO
-
-            echo
-            '<p class="field"><input type="submit" value="' . __('Save') . '"> ' .
-            My::parsedHiddenFields([
-                'tab' => 'pages',
-            ]) .
-            '</p>' .
-            '</form>' .
-            '</div>';
+            echo (new Div('pages'))
+                ->class('multi-part')
+                ->title(__('Pages tranlations'))
+                ->items([
+                    (new Form('form_pages'))
+                        ->method('post')
+                        ->action(App::backend()->getPageURL())
+                        ->fields([
+                            // TODO …
+                            (new Para())
+                                ->class('form-buttons')
+                                ->items([
+                                    ... My::hiddenFields(['tab' => 'pages']),
+                                    (new Submit('form_pages_submit', __('Save'))),
+                                ]),
+                        ]),
+                ])
+            ->render();
         }
 
         if (App::auth()->check(App::auth()->makePermissions([
             App::auth()::PERMISSION_ADMIN,
         ]), App::blog()->id())) {
             // 3. Plugin settings
-            echo
-            '<div id="settings" class="multi-part" title="' . __('Settings') . '">' .
-            '<h3>' . __('Settings') . '</h3>' .
-            '<form action="' . App::backend()->getPageURL() . '" method="post">' .
-
-            '<h4 class="pretty-title">' . __('Activation') . '</h4>' .
-            '<p>' . form::checkbox('active', 1, $rosetta_active) .
-            '<label class="classic" for="active">' . __('Enable posts/pages translations for this blog') . '</label></p>' .
-
-            '<h4 class="pretty-title">' . __('Options') . '</h4>' .
-            '<p>' . form::checkbox('accept_language', 1, $rosetta_accept_language) .
-            '<label class="classic" for="accept_language">' . __('Automatic posts/pages redirect on browser\'s language for this blog') . '</label></p>';
-
-            echo
-            '<p class="field wide"><input type="submit" value="' . __('Save') . '"> ' .
-            My::parsedHiddenFields([
-                'tab'           => 'settings',
-                'save_settings' => '1',
-            ]) .
-            '</p>' .
-            '</form>' .
-            '</div>';
+            echo (new Div('settings'))
+                ->class('multi-part')
+                ->title(__('Settings'))
+                ->items([
+                    (new Form('form_posts'))
+                        ->method('post')
+                        ->action(App::backend()->getPageURL())
+                        ->fields([
+                            (new Fieldset())
+                                ->legend(new Legend(__('Activation')))
+                                ->fields([
+                                    (new Para())
+                                        ->items([
+                                            (new Checkbox('active', $rosetta_active))
+                                                ->value(1)
+                                                ->label(new Label(__('Enable posts/pages translations for this blog'), Label::IL_FT)),
+                                        ]),
+                                ]),
+                            (new Fieldset())
+                                ->legend(new Legend(__('Options')))
+                                ->fields([
+                                    (new Para())
+                                        ->items([
+                                            (new Checkbox('accept_language', $rosetta_accept_language))
+                                                ->value(1)
+                                                ->label(new Label(__('Automatic posts/pages redirect on browser\'s language for this blog'), Label::IL_FT)),
+                                        ]),
+                                ]),
+                            (new Para())
+                                ->class('form-buttons')
+                                ->items([
+                                    ... My::hiddenFields([
+                                        'tab'           => 'settings',
+                                        'save_settings' => '1',
+                                    ]),
+                                    (new Submit('form_settings_submit', __('Save'))),
+                                ]),
+                        ]),
+                ])
+            ->render();
         }
 
         Page::closeModule();

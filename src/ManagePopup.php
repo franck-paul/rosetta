@@ -20,12 +20,15 @@ use Dotclear\Core\Backend\Combos;
 use Dotclear\Core\Backend\Notices;
 use Dotclear\Core\Backend\Page;
 use Dotclear\Core\Process;
+use Dotclear\Helper\Html\Form\Btn;
+use Dotclear\Helper\Html\Form\Form;
+use Dotclear\Helper\Html\Form\Input;
+use Dotclear\Helper\Html\Form\Label;
+use Dotclear\Helper\Html\Form\Para;
+use Dotclear\Helper\Html\Form\Select;
+use Dotclear\Helper\Html\Form\Set;
 use Dotclear\Helper\Html\Html;
-use form;
 
-/**
- * @todo switch Helper/Html/Form/...
- */
 class ManagePopup extends Process
 {
     /**
@@ -96,17 +99,38 @@ class ManagePopup extends Process
         );
         echo Notices::getNotices();
 
-        echo
-        '<form id="link-insert-form" action="#" method="get"><p><label for="title">' . __('Entry title:') . '</label> ' .
-        form::field('title', 35, 512, Html::escapeHTML($title)) . '</p>' .
-
-        '<p><label for="lang">' . __('Entry language:') . '</label> ' .
-        form::combo('lang', $lang_combo, $lang) . '</p>' .
-
-        '</form>' .
-
-        '<p><button class="reset" id="rosetta-new-cancel">' . __('Cancel') . '</button> - ' .
-        '<button id="rosetta-new-ok"><strong>' . __('Create') . '</strong></button></p>' . "\n";
+        echo (new Set())
+            ->items([
+                (new Form('link-insert-form'))
+                    ->method('get')
+                    ->action('#')
+                    ->fields([
+                        (new Para())
+                            ->items([
+                                (new Input('title'))
+                                    ->size(35)
+                                    ->maxlength(512)
+                                    ->default(Html::escapeHTML($title))
+                                    ->label(new Label(__('Entry title:'), Label::OL_TF)),
+                            ]),
+                        (new Para())
+                            ->items([
+                                (new Select('lang'))
+                                    ->items($lang_combo)
+                                    ->default($lang)
+                                    ->label(new Label(__('Entry language:'), Label::OL_TF)),
+                            ]),
+                    ]),
+                (new Para())
+                    ->class(['form-buttons', 'vertical-separator'])
+                    ->items([
+                        (new Btn('rosetta-new-cancel', __('Cancel')))
+                            ->class('reset'),
+                        (new Btn('rosetta-new-ok', __('Create')))
+                            ->class('submit'),
+                    ]),
+            ])
+        ->render();
 
         Page::closeModule();
     }
