@@ -32,6 +32,7 @@ use Dotclear\Helper\Html\Form\Summary;
 use Dotclear\Helper\Html\Form\Table;
 use Dotclear\Helper\Html\Form\Tbody;
 use Dotclear\Helper\Html\Form\Td;
+use Dotclear\Helper\Html\Form\Text;
 use Dotclear\Helper\Html\Form\Th;
 use Dotclear\Helper\Html\Form\Thead;
 use Dotclear\Helper\Html\Form\Tr;
@@ -397,8 +398,9 @@ class BackendBehaviors
             ->render();
             $cols['translations'] = (new Td())
                 ->class('nowrap')
-                ->separator(' / ')
-                ->items($translations)
+                ->items([
+                    (new Text('span', implode(', ', array_map(fn ($translation) => $translation->render(), $translations)))),
+                ])
             ->render();
         }
 
