@@ -395,6 +395,7 @@ class BackendBehaviors
             $cols['language'] = (new Td())
                 ->class('nowrap')
                 ->text($rs->post_lang)
+                ->translate(false)
             ->render();
             $cols['translations'] = (new Td())
                 ->class('nowrap')
@@ -454,6 +455,7 @@ class BackendBehaviors
             $cols['language'] = (new Td())
                 ->class('nowrap')
                 ->text($rs->post_lang)
+                ->translate(false)
             ->render();
         }
 
