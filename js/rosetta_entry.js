@@ -8,7 +8,7 @@ dotclear.ready(() => {
   // Add toggle capability on Rosetta area
   $('#rosetta-details').toggleWithDetails({
     user_pref: 'dcx_post_rosetta',
-    hide: $('#rosetta-list tbody').children().length === 0 ? false : true,
+    hide: $('#rosetta-list tbody').children().length !== 0,
   });
 
   function getURLParameter(url, name) {

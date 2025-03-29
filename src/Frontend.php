@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @brief rosetta, a plugin for Dotclear 2
  *
