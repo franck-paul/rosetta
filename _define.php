@@ -15,9 +15,9 @@ $this->registerModule(
     'Rosetta',
     'Manage post/page translations',
     'Franck Paul',
-    '5.3',
+    '6.0',
     [
-        'date'     => '2025-02-25T10:03:19+0100',
+        'date'     => '2025-03-29T10:47:20+0100',
         'requires' => [
             ['core', '2.34'],
             ['TemplateHelper'],
