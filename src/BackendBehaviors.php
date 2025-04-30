@@ -125,10 +125,12 @@ class BackendBehaviors
             ->cols([
                 (new Td())
                     ->class(['minimal', 'nowrap'])
+                    ->translate(false)
                     ->text($lang . ' - ' . $name),
                 (new Td())
                     ->class('maximal')
                     // $post_link looks like <a href="index.php?process=Post&amp;id=%s" class="%s" title="%s">%s</a>
+                    ->translate(false)
                     ->text(sprintf($post_link, (string) $id, __('Edit this entry'), '', Html::escapeHTML($title))),
                 (new Td())
                     ->class(['minimal', 'nowrap'])
@@ -218,6 +220,7 @@ class BackendBehaviors
                                                     ->cols([
                                                         (new Th())
                                                             ->class('nowrap')
+                                                            ->translate(false)
                                                             ->text(__('Language')),
                                                         (new Th())
                                                             ->text($post_type === 'post' ? __('Entry') : __('Page')),
@@ -330,11 +333,13 @@ class BackendBehaviors
             $cols['language'] = (new Th())
                 ->scope('col')
                 ->class('nowrap')
+                ->translate(false)
                 ->text(__('Language'))
             ->render();
             $cols['translations'] = (new Th())
                 ->scope('col')
                 ->class('nowrap')
+                ->translate(false)
                 ->text(__('Translations'))
             ->render();
         }
@@ -387,6 +392,7 @@ class BackendBehaviors
                         $translations[] = (new Link())
                             ->href(App::postTypes()->get($rs->post_type)->adminUrl($rs->post_id))
                             ->title($rst->post_title)
+                            ->translate(false)
                             ->text($name);
                     }
                 }
@@ -399,6 +405,7 @@ class BackendBehaviors
             ->render();
             $cols['translations'] = (new Td())
                 ->class('nowrap')
+                ->translate(false)
                 ->items([
                     (new Text('span', implode(', ', array_map(fn ($translation) => $translation->render(), $translations)))),
                 ])
@@ -438,6 +445,7 @@ class BackendBehaviors
                 ->scope('col')
                 ->class('nowrap')
                 ->text(__('Language'))
+                ->translate(false)
             ->render();
         }
 
