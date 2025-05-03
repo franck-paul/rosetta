@@ -41,7 +41,7 @@ class Uninstall extends Process
         // $var   = My::id(); // Var sub-folder
 
         // Database table name
-        $table = App::con()->prefix() . 'rosetta';
+        $table = CoreData::ROSETTA_TABLE_NAME;
 
         $user_actions = [
 
