@@ -28,11 +28,11 @@ use Dotclear\Helper\Html\Form\Hidden;
 use Dotclear\Helper\Html\Form\Img;
 use Dotclear\Helper\Html\Form\Link;
 use Dotclear\Helper\Html\Form\Para;
+use Dotclear\Helper\Html\Form\Span;
 use Dotclear\Helper\Html\Form\Summary;
 use Dotclear\Helper\Html\Form\Table;
 use Dotclear\Helper\Html\Form\Tbody;
 use Dotclear\Helper\Html\Form\Td;
-use Dotclear\Helper\Html\Form\Text;
 use Dotclear\Helper\Html\Form\Th;
 use Dotclear\Helper\Html\Form\Thead;
 use Dotclear\Helper\Html\Form\Tr;
@@ -407,7 +407,7 @@ class BackendBehaviors
                 ->class('nowrap')
                 ->translate(false)
                 ->items([
-                    (new Text('span', implode(', ', array_map(fn ($translation) => $translation->render(), $translations)))),
+                    (new Span(implode(', ', array_map(fn ($translation) => $translation->render(), $translations)))),
                 ])
             ->render();
         }
