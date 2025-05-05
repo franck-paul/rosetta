@@ -42,10 +42,9 @@ class FrontendTemplateCode
             $rosetta_list = [];
             foreach ($rosetta_table as $rosetta_name => $rosetta_url) {
                 $rosetta_is_current = $rosetta_name === $rosetta_current;
-                $rosetta_text       = (new \Dotclear\Helper\Html\Form\Text(
-                    $rosetta_is_current ? 'strong' : null,
-                    \Dotclear\Helper\Html\Html::escapeHTML($rosetta_name)
-                ));
+                $rosetta_text       = $rosetta_is_current ?
+                    (new \Dotclear\Helper\Html\Form\Strong(\Dotclear\Helper\Html\Html::escapeHTML($rosetta_name))) :
+                    (new \Dotclear\Helper\Html\Form\Text(\Dotclear\Helper\Html\Html::escapeHTML($rosetta_name)));
                 if (!$rosetta_is_current || $_option_ === 'link') {
                     $rosetta_item = (new \Dotclear\Helper\Html\Form\Link())
                         ->href($rosetta_url)
