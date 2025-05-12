@@ -46,7 +46,7 @@ dotclear.ready(() => {
   }
 
   function removeTranslation(link) {
-    if (!window.confirm(dotclear.msg.confirm_remove_rosetta)) {
+    if (!dotclear.confirm(dotclear.msg.confirm_remove_rosetta)) {
       return false;
     }
 
