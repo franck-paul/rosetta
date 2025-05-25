@@ -151,7 +151,7 @@ class CoreData
             return false;
         }
 
-        if (self::findTranslation($src_id, $src_lang, $dst_lang) == -1) {
+        if (self::findTranslation($src_id, $src_lang, $dst_lang) === -1) {
             // Translation attachment not found
             return false;
         }
@@ -165,11 +165,11 @@ class CoreData
                 ->from(App::con()->prefix() . self::ROSETTA_TABLE_NAME)
                 ->where($sql->orGroup([
                     $sql->andGroup([
-                        'src_id = ' . $sql->quote((string) $dst_id),
+                        'src_id = ' . $dst_id,
                         'src_lang = ' . $sql->quote($dst_lang),
                     ]),
                     $sql->andGroup([
-                        'dst_id = ' . $sql->quote((string) $dst_id),
+                        'dst_id = ' . $dst_id,
                         'dst_lang = ' . $sql->quote($dst_lang),
                     ]),
                 ]))
@@ -206,11 +206,11 @@ class CoreData
             ->from(App::con()->prefix() . self::ROSETTA_TABLE_NAME)
             ->where($sql->orGroup([
                 $sql->andGroup([
-                    'src_id = ' . $sql->quote((string) $id),
+                    'src_id = ' . $id,
                     'src_lang = ' . $sql->quote($lang),
                 ]),
                 $sql->andGroup([
-                    'dst_id = ' . $sql->quote((string) $id),
+                    'dst_id = ' . $id,
                     'dst_lang = ' . $sql->quote($lang),
                 ]),
             ]))
@@ -317,11 +317,11 @@ class CoreData
             ->from(App::con()->prefix() . self::ROSETTA_TABLE_NAME)
             ->where($sql->orGroup([
                 $sql->andGroup([
-                    'src_id = ' . $sql->quote((string) $src_id),
+                    'src_id = ' . $src_id,
                     'dst_lang = ' . $sql->quote($dst_lang),
                 ]),
                 $sql->andGroup([
-                    'dst_id = ' . $sql->quote((string) $src_id),
+                    'dst_id = ' . $src_id,
                     'src_lang = ' . $sql->quote($dst_lang),
                 ]),
             ]))
