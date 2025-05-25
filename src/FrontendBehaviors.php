@@ -109,7 +109,7 @@ class FrontendBehaviors
                     $nbx = 0;
                     while ($rs->fetch()) {
                         $exchanged = false;
-                        $post_lang = $rs->exists('post_lang') ? $rs->post_lang : self::getPostLang($rs->post_id, $rs->post_type);
+                        $post_lang = $rs->exists('post_lang') ? $rs->post_lang : self::getPostLang((int) $rs->post_id, $rs->post_type);
                         foreach ($langs as $lang) {
                             if ($post_lang == $lang) {
                                 // Already in an accepted language, do nothing
