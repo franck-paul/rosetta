@@ -117,7 +117,7 @@ class FrontendBehaviors
                             }
 
                             // Try to find an associated post corresponding to the requested lang
-                            $id = CoreData::findTranslation($rs->post_id, $post_lang, $lang);
+                            $id = CoreData::findTranslation((int) $rs->post_id, $post_lang, $lang);
                             if (($id >= 0) && ($id != $rs->post_id)) {
                                 // Get post/page data
                                 $params = new ArrayObject([
@@ -227,7 +227,7 @@ class FrontendBehaviors
             }
 
             // Try to find an associated post corresponding to the requested lang
-            $id = CoreData::findTranslation($rsSrc->post_id, $rsSrc->post_lang, $lang);
+            $id = CoreData::findTranslation((int) $rsSrc->post_id, $rsSrc->post_lang, $lang);
             if (($id >= 0) && ($id != $rsSrc->post_id)) {
                 // Get post/page URL
                 $paramsDst = new ArrayObject([
