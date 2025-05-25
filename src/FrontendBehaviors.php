@@ -66,16 +66,18 @@ class FrontendBehaviors
      * Gets the post language.
      *
      * @param      int          $id     The identifier
-     * @param      string       $type   The type
+     * @param      null|string  $type   The type
      *
      * @return     null|string  The post language.
      */
-    private static function getPostLang(int $id, string $type): ?string
+    private static function getPostLang(int $id, ?string $type): ?string
     {
         $params = new ArrayObject([
             'post_id'    => $id,
-            'post_type'  => $type,
             'no_content' => true, ]);
+        if (!is_null($type)) {
+            $params['type'] = $type;
+        }
         $rs = App::blog()->getPosts($params);
         if ($rs->count()) {
             $rs->fetch();
