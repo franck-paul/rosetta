@@ -288,15 +288,12 @@ class FrontendBehaviors
             if (in_array($urlType, ['post', 'pages'])) {
                 // It is a post or page: Try to find a translation according to the browser settings
                 $langs = Http::getAcceptLanguages();
-            } else {
-                // May be a static home with an entry?
-                if ($urlType === 'home') {
-                    // Check if it's an entry or a static HTML
-                    if (App::blog()->settings()->system->static_home_url) {
-                        // It is a single entry: Try to find a translation according to the browser settings
-                        $langs = Http::getAcceptLanguages();
-                        $home  = true;
-                    }
+            } elseif ($urlType === 'home') {
+                // May be a static home with an entry? Check if it's a single entry or not
+                if (App::blog()->settings()->system->static_home_url) {
+                    // It is a single entry: Try to find a translation according to the browser settings
+                    $langs = Http::getAcceptLanguages();
+                    $home  = true;
                 }
             }
         }
