@@ -17,6 +17,7 @@ namespace Dotclear\Plugin\rosetta;
 
 use Dotclear\App;
 use Dotclear\Helper\Html\Html;
+use Dotclear\Helper\L10n;
 use Dotclear\Plugin\widgets\WidgetsElement;
 
 class FrontendWidgets
@@ -32,19 +33,29 @@ class FrontendWidgets
             return '';
         }
 
-        $urlTypes = ['post'];
-        if (App::plugins()->moduleExists('pages')) {
-            $urlTypes[] = 'pages';
-        }
+        $urlTypes = array_keys(App::postTypes()->dump());
+        $static   = false;
 
-        if (!in_array(App::url()->getType(), $urlTypes)) {
+        if (App::url()->getType() === 'static' && App::blog()->settings()->system->static_home_url) {
+            $rs = App::blog()->getPosts(['post_url' => App::blog()->settings()->system->static_home_url, 'post_type' => '']);
+            if ($rs->isEmpty()) {
+                return '';
+            }
+            $post_id   = (int) $rs->post_id;
+            $post_lang = $rs->post_lang;
+            $post_type = $rs->post_type;
+            $static    = true;
+        } elseif (in_array(App::url()->getType(), $urlTypes)) {
+            $post_id   = (int) App::frontend()->context()->posts->post_id;
+            $post_lang = App::frontend()->context()->posts->post_lang;
+            $post_type = App::frontend()->context()->posts->post_type;
+        } else {
             return '';
         }
 
         // Get list of available translations for current entry
-        $post_type = (App::url()->getType() == 'post' ? 'post' : 'page');
-        $current   = '';
-        $table     = FrontendHelper::EntryListHelper((int) App::frontend()->context()->posts->post_id, App::frontend()->context()->posts->post_lang, $post_type, $w->get('current'), $current);
+        $current = '';
+        $table   = FrontendHelper::EntryListHelper($post_id, $post_lang, $post_type, $w->get('current'), $current, $static);
         if (!is_array($table)) {
             return '';
         }
@@ -53,10 +64,17 @@ class FrontendWidgets
         $res = ($w->title ? $w->renderTitle(Html::escapeHTML($w->title)) . "\n" : '');
 
         // Render widget list of translations
-        $list = '';
+        $list  = '';
+        $langs = L10n::getLanguagesName();
+
         foreach ($table as $name => $url) {
             $link  = ($name != $current || $w->get('current') == 'link');
             $class = ($name == $current ? ' class="current"' : '');
+
+            if ($static) {
+                $url  = App::blog()->url() . App::url()->getURLFor('lang', $name);
+                $name = $langs[$name] ?? $langs[App::blog()->settings()->system->lang];
+            }
 
             $list .= '<li' . $class . '>' .
                 ($link ? '<a href="' . $url . '">' : '') .
