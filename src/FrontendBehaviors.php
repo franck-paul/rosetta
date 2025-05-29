@@ -72,6 +72,9 @@ class FrontendBehaviors
      */
     private static function getPostLang(int $id, ?string $type): ?string
     {
+        /**
+         * @var        ArrayObject<string, mixed>
+         */
         $params = new ArrayObject([
             'post_id'    => $id,
             'no_content' => true, ]);
@@ -199,10 +202,11 @@ class FrontendBehaviors
     /**
      * Finds a translated entry.
      *
-     * @param      Url      $handler  The handler
-     * @param      string   $lang     The language
+     * @param      Url          $handler  The handler
+     * @param      string       $lang     The language
+     * @param      null|string  $direct   The entry URL to use
      */
-    private static function findTranslatedEntry(Url $handler, string $lang): bool
+    private static function findTranslatedEntry(Url $handler, string $lang, ?string $direct): bool
     {
         $postTypes = ['post'];
         if (App::plugins()->moduleExists('pages')) {
@@ -211,11 +215,12 @@ class FrontendBehaviors
 
         // Get post/page id
         $paramsSrc = new ArrayObject([
-            'post_url'   => $handler->args,
+            'post_url'   => $direct ?? $handler->args,
             'post_type'  => $postTypes,
-            'no_content' => true, ]);
+            'no_content' => true,
+        ]);
 
-        App::behavior()->callBehavior('publicPostBeforeGetPosts', $paramsSrc, $handler->args);
+        App::behavior()->callBehavior('publicPostBeforeGetPosts', $paramsSrc, $direct ?? $handler->args);
         $rsSrc = App::blog()->getPosts($paramsSrc);
 
         // Check if post/page id exists in rosetta table
@@ -235,9 +240,10 @@ class FrontendBehaviors
                 $paramsDst = new ArrayObject([
                     'post_id'    => $id,
                     'post_type'  => $postTypes,
-                    'no_content' => true, ]);
+                    'no_content' => true,
+                ]);
 
-                App::behavior()->callBehavior('publicPostBeforeGetPosts', $paramsDst, $handler->args);
+                App::behavior()->callBehavior('publicPostBeforeGetPosts', $paramsDst, $direct ?? $handler->args);
                 $rsDst = App::blog()->getPosts($paramsDst);
 
                 if ($rsDst->count()) {
@@ -267,6 +273,7 @@ class FrontendBehaviors
             return '';
         }
 
+        $home  = false;
         $langs = [];
         if (!empty($_GET['lang'])) {
             // Check lang scheme
@@ -281,13 +288,23 @@ class FrontendBehaviors
             if (in_array($urlType, ['post', 'pages'])) {
                 // It is a post or page: Try to find a translation according to the browser settings
                 $langs = Http::getAcceptLanguages();
+            } else {
+                // May be a static home with an entry?
+                if ($urlType === 'home') {
+                    // Check if it's an entry or a static HTML
+                    if (App::blog()->settings()->system->static_home_url) {
+                        // It is a single entry: Try to find a translation according to the browser settings
+                        $langs = Http::getAcceptLanguages();
+                        $home  = true;
+                    }
+                }
             }
         }
 
         if (count($langs) > 0) {
             foreach ($langs as $lang) {
                 // Try to find an according translation (will http-redirect if any)
-                if (self::findTranslatedEntry($handler, $lang)) {
+                if (self::findTranslatedEntry($handler, $lang, $home ? App::blog()->settings()->system->static_home_url : null)) {
                     // The current entry is already in one of the browser languages
                     break;
                 }
