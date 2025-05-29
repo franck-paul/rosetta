@@ -72,7 +72,7 @@ class FrontendWidgets
             $class = ($name == $current ? ' class="current"' : '');
 
             if ($static) {
-                $url  = App::blog()->url() . App::url()->getURLFor('lang', $name);
+                $url  = App::blog()->getQmarkURL() . 'lang=' . $name;
                 $name = $langs[$name] ?? $langs[App::blog()->settings()->system->lang];
             }
 

@@ -43,7 +43,15 @@ class FrontendTemplateCode
     ): void {
         $rosetta_url = App::blog()->settings()->system->static_home_url;
         if ($_override_ && $rosetta_url) {
-            $rosetta_langs = \Dotclear\Helper\Network\Http::getAcceptLanguages();
+            if (!empty($_GET['lang'])) {
+                // Check lang scheme
+                if (preg_match('/^[a-z]{2}(-[a-z]{2})?$/', rawurldecode((string) $_GET['lang']), $matches)) {
+                    // Assume that the URL scheme is for post/page
+                    $rosetta_langs[] = $matches[0];
+                }
+            } else {
+                $rosetta_langs = \Dotclear\Helper\Network\Http::getAcceptLanguages();
+            }
             if (count($rosetta_langs) > 0) {
                 foreach ($rosetta_langs as $rosetta_lang) {
                     $rosetta_new = \Dotclear\Plugin\rosetta\FrontendHelper::findTranslatedEntry($rosetta_url, $rosetta_lang);
