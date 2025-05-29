@@ -43,6 +43,7 @@ class FrontendTemplateCode
     ): void {
         $rosetta_url = App::blog()->settings()->system->static_home_url;
         if ($_override_ && $rosetta_url) {
+            $rosetta_langs = [];
             if (!empty($_GET['lang'])) {
                 // Check lang scheme
                 if (preg_match('/^[a-z]{2}(-[a-z]{2})?$/', rawurldecode((string) $_GET['lang']), $matches)) {
