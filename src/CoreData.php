@@ -335,7 +335,7 @@ class CoreData
             $rs->fetch();
 
             // Return found ID
-            return $rs->src_id == $src_id ? $rs->dst_id : $rs->src_id;
+            return $rs->src_id == $src_id ? (int) $rs->dst_id : (int) $rs->src_id;
         }
 
         if ($indirect) {

@@ -23,6 +23,66 @@ use Dotclear\Helper\L10n;
 class FrontendHelper
 {
     /**
+     * Finds a translated entry.
+     *
+     * @param      string       $entry    The original entry url
+     * @param      string       $lang     The language
+     *
+     * @return     string       The translated entry URL or empty string if not found
+     */
+    public static function findTranslatedEntry(string $entry, string $lang): string
+    {
+        $postTypes = array_keys(App::postTypes()->dump());
+
+        // Get post/page id
+        $paramsSrc = new ArrayObject([
+            'post_url'   => $entry,
+            'post_type'  => $postTypes,
+            'no_content' => true,
+        ]);
+
+        App::behavior()->callBehavior('publicPostBeforeGetPosts', $paramsSrc, $entry);
+        $rsSrc = App::blog()->getPosts($paramsSrc);
+
+        // Check if post/page id exists in rosetta table
+        if ($rsSrc->count()) {
+            // Load first record
+            $rsSrc->fetch();
+
+            // If current entry is in the requested languages, return true
+            if ($rsSrc->post_lang == $lang) {
+                return $entry;
+            }
+
+            // Try to find an associated post corresponding to the requested lang
+            $id = CoreData::findTranslation((int) $rsSrc->post_id, $rsSrc->post_lang, $lang);
+            if (($id >= 0) && ($id != (int) $rsSrc->post_id)) {
+                // Get post/page URL
+                $paramsDst = new ArrayObject([
+                    'post_id'    => $id,
+                    'post_type'  => $postTypes,
+                    'no_content' => true,
+                ]);
+
+                App::behavior()->callBehavior('publicPostBeforeGetPosts', $paramsDst, $entry);
+                $rsDst = App::blog()->getPosts($paramsDst);
+
+                if ($rsDst->count()) {
+                    // Load first record
+                    $rsDst->fetch();
+
+                    // Return entry URL
+                    $url = $rsDst->post_url;
+
+                    return $url;
+                }
+            }
+        }
+
+        return '';
+    }
+
+    /**
      * @param      int          $post_id    The post identifier
      * @param      null|string  $post_lang  The post language
      * @param      string       $post_type  The post type

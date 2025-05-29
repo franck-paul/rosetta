@@ -23,6 +23,22 @@ class FrontendTemplate
     /**
      * @param      array<string, mixed>|\ArrayObject<string, mixed>  $attr      The attribute
      */
+    public static function BlogStaticEntryURL(array|ArrayObject $attr): string
+    {
+        $settings = My::settings();
+
+        return Code::getPHPTemplateValueCode(
+            FrontendTemplateCode::BlogStaticEntryURL(...),
+            [
+                $settings->active,
+            ],
+            attr: $attr,
+        );
+    }
+
+    /**
+     * @param      array<string, mixed>|\ArrayObject<string, mixed>  $attr      The attribute
+     */
     public static function rosettaEntryList(array|ArrayObject $attr): string
     {
         $settings = My::settings();

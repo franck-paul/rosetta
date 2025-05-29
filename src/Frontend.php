@@ -48,7 +48,10 @@ class Frontend extends Process
         ]);
 
         // Public template tags
-        App::frontend()->template()->addValue('RosettaEntryList', FrontendTemplate::rosettaEntryList(...));
+        App::frontend()->template()->addValues([
+            'RosettaEntryList'   => FrontendTemplate::rosettaEntryList(...),
+            'BlogStaticEntryURL' => FrontendTemplate::BlogStaticEntryURL(...),  // Override standard one
+        ]);
 
         return true;
     }

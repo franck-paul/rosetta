@@ -20,6 +20,52 @@ use Dotclear\App;
 class FrontendTemplateCode
 {
     /**
+     * tpl:BlogStaticEntryURL [attributes] : Prepare the blog's static home URL entry (tpl value)
+     *
+     * Should be set before a tpl:Entries block to display the according entry (post, page, …)
+     *
+     * attributes:
+     *
+     *      - any filters     See self::getFilters()
+     *
+     * @param      ArrayObject<string, mixed>    $attr     The attributes
+     */
+
+    /**
+     * PHP code for tpl:BlogStaticEntryURL value
+     *
+     * @param      array<int|string, mixed>     $_params_  The parameters
+     */
+    public static function BlogStaticEntryURL(
+        bool $_override_,
+        array $_params_,
+        string $_tag_,
+    ): void {
+        $rosetta_url = App::blog()->settings()->system->static_home_url;
+        if ($_override_ && $rosetta_url) {
+            $rosetta_langs = \Dotclear\Helper\Network\Http::getAcceptLanguages();
+            if (count($rosetta_langs) > 0) {
+                foreach ($rosetta_langs as $rosetta_lang) {
+                    $rosetta_new = \Dotclear\Plugin\rosetta\FrontendHelper::findTranslatedEntry($rosetta_url, $rosetta_lang);
+                    if ($rosetta_new !== '') {
+                        $rosetta_url = $rosetta_new;
+
+                        break;
+                    }
+                }
+            }
+        }
+        $params['post_type'] = array_keys(App::postTypes()->dump());
+        $params['post_url']  = \Dotclear\Core\Frontend\Ctx::global_filters(
+            $rosetta_url,
+            $_params_,
+            $_tag_
+        );
+
+        unset($rosetta_url, $rosetta_langs, $rosetta_lang, $rosetta_new);
+    }
+
+    /**
      * PHP code for tpl:RosettaEntryList value
      *
      * @param      array<int|string, mixed>     $_params_  The parameters
