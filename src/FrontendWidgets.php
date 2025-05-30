@@ -90,6 +90,10 @@ class FrontendWidgets
             return '';
         }
 
+        if (($w->homeonly == 1 && !App::url()->isHome(App::url()->getType())) || ($w->homeonly == 2 && App::url()->isHome(App::url()->getType()))) {
+            return '';
+        }
+
         if (App::blog()->settings()->system->static_home_url) {
             $rs = App::blog()->getPosts(['post_url' => App::blog()->settings()->system->static_home_url, 'post_type' => '']);
             if ($rs->isEmpty()) {

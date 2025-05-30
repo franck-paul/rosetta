@@ -56,6 +56,7 @@ class Widgets
                 __('Language(s) of blog')
             )
             ->addTitle(__('Language'))
+            ->addHomeOnly()
             ->addContentOnly()
             ->addClass()
             ->addOffline();
