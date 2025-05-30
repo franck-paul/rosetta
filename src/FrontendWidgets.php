@@ -33,8 +33,10 @@ class FrontendWidgets
             return '';
         }
 
-        $urlTypes = array_keys(App::postTypes()->dump());
-        $static   = false;
+        $urlTypes = [
+            'post',
+            'pages',
+        ];
 
         if (in_array(App::url()->getType(), $urlTypes)) {
             $post_id   = (int) App::frontend()->context()->posts->post_id;
@@ -46,7 +48,7 @@ class FrontendWidgets
 
         // Get list of available translations for current entry
         $current = '';
-        $table   = FrontendHelper::EntryListHelper($post_id, $post_lang, $post_type, $w->get('current'), $current, $static);
+        $table   = FrontendHelper::EntryListHelper($post_id, $post_lang, $post_type, $w->get('current'), $current);
         if (!is_array($table)) {
             return '';
         }
