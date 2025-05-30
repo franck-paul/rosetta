@@ -59,6 +59,12 @@ class FrontendWidgets
         if (!is_array($table)) {
             return '';
         }
+        if (App::url()->getType() === 'static' && App::blog()->settings()->system->static_home_url) {
+            if (isset($_GET['lang'])) {
+                // Get current language
+                $current = Html::escapeHTML($_GET['lang']);
+            }
+        }
 
         // Render widget title
         $res = ($w->title ? $w->renderTitle(Html::escapeHTML($w->title)) . "\n" : '');
