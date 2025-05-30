@@ -198,7 +198,7 @@ class BackendRest
                 $rs = App::blog()->getPosts($params);
                 if ($rs->count()) {
                     $rs->fetch();
-                    $post_link = '<a id="r-%s" href="' . App::postTypes()->get($rs->post_type)->adminUrl($rs->post_id) . '" title="%s">%s</a>';
+                    $post_link = '<a id="r-%s" href="' . App::postTypes()->get($rs->post_type)->adminUrl($rs->post_id) . '" class="%s" title="%s">%s</a>';
                     $langs     = L10n::getLanguagesName();
                     $name      = $langs[$rs->post_lang] ?? $langs[App::blog()->settings()->system->lang];
                     // Get the translation row
