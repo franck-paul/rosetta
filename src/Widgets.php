@@ -45,5 +45,19 @@ class Widgets
             ->addContentOnly()
             ->addClass()
             ->addOffline();
+
+        // Widget for static home entry
+        $w
+            ->create(
+                'rosettaStaticHome',
+                __('Blog language'),
+                FrontendWidgets::rosettaStaticHomeWidget(...),
+                null,
+                __('Language(s) of blog')
+            )
+            ->addTitle(__('Language'))
+            ->addContentOnly()
+            ->addClass()
+            ->addOffline();
     }
 }
