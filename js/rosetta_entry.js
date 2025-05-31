@@ -165,6 +165,9 @@ dotclear.ready(() => {
                 // Append new row at the end of translations list
                 addTranslationRow(post_id, post_lang, data.id, '#rosetta-list');
                 if (edit_new) {
+                  // Reset hidden fields to prevent dirtying form
+                  rosetta_title.value = '';
+                  rosetta_lang.value = '';
                   // Redirect to new entry edition if requested
                   window.location.href = data.edit;
                 }
