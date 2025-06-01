@@ -28,7 +28,8 @@ class Widgets
                 __('Entry\'s translations'),
                 FrontendWidgets::rosettaEntryWidget(...),
                 null,
-                __('Translation(s) of this entry')
+                __('Translation(s) of this entry'),
+                My::id()
             )
             ->addTitle(__('Translations'))
             ->setting(
@@ -53,7 +54,8 @@ class Widgets
                 __('Blog language'),
                 FrontendWidgets::rosettaStaticHomeWidget(...),
                 null,
-                __('Language(s) of blog')
+                __('Language(s) of blog'),
+                My::id()
             )
             ->addTitle(__('Language'))
             ->addHomeOnly()
