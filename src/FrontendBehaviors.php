@@ -173,7 +173,7 @@ class FrontendBehaviors
         $urlTypes  = ['post'];
         $postTypes = ['post'];
         if (App::plugins()->moduleExists('pages')) {
-            $urlTypes[]  = 'page';
+            $urlTypes[]  = 'pages';
             $postTypes[] = 'page';
         }
 
