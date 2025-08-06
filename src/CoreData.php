@@ -80,7 +80,7 @@ class CoreData
             return false;
         }
 
-        if (self::findTranslation($src_id, $src_lang, $dst_lang) != -1) {
+        if (self::findTranslation($src_id, $src_lang, $dst_lang) !== -1) {
             // translation already attached
             return false;
         }
@@ -94,22 +94,26 @@ class CoreData
                 // No translation yet, add direct one
                 App::con()->writeLock(App::con()->prefix() . self::ROSETTA_TABLE_NAME);
                 $cur           = App::con()->openCursor(App::con()->prefix() . self::ROSETTA_TABLE_NAME);
-                $cur->src_id   = $src_id;
-                $cur->src_lang = $src_lang;
-                $cur->dst_id   = $dst_id;
-                $cur->dst_lang = $dst_lang;
+                $row           = new RowRosetta();
+                $row->src_id   = $src_id;
+                $row->src_lang = $src_lang;
+                $row->dst_id   = $dst_id;
+                $row->dst_lang = $dst_lang;
+                $row->setCursor($cur);
                 $cur->insert();
                 App::con()->unlock();
             } else {
                 foreach ($list as $lang => $id) {
-                    if (self::findTranslation($id, $lang, $dst_lang, false) == -1) {
+                    if (self::findTranslation($id, $lang, $dst_lang, false) === -1) {
                         // Add the new translation
                         App::con()->writeLock(App::con()->prefix() . self::ROSETTA_TABLE_NAME);
                         $cur           = App::con()->openCursor(App::con()->prefix() . self::ROSETTA_TABLE_NAME);
-                        $cur->src_id   = $id;
-                        $cur->src_lang = $lang;
-                        $cur->dst_id   = $dst_id;
-                        $cur->dst_lang = $dst_lang;
+                        $row           = new RowRosetta();
+                        $row->src_id   = $id;
+                        $row->src_lang = $lang;
+                        $row->dst_id   = $dst_id;
+                        $row->dst_lang = $dst_lang;
+                        $row->setCursor($cur);
                         $cur->insert();
                         App::con()->unlock();
                     }
@@ -224,14 +228,15 @@ class CoreData
              */
             $list = [];
             while ($rs->fetch()) {
+                $row = new RowRosetta($rs);
                 // Add src couple if requested
-                if (($full) || ($rs->src_id != $id || $rs->src_lang != $lang)) {
-                    $list[(string) $rs->src_lang] = (int) $rs->src_id;
+                if (($full) || ($row->src_id !== $id || $row->src_lang != $lang)) {
+                    $list[(string) $row->src_lang] = $row->src_id;
                 }
 
                 // Add dst couple if requested
-                if (($full) || ($rs->dst_id != $id || $rs->dst_lang != $lang)) {
-                    $list[(string) $rs->dst_lang] = (int) $rs->dst_id;
+                if (($full) || ($row->dst_id !== $id || $row->dst_lang != $lang)) {
+                    $list[(string) $row->dst_lang] = $row->dst_id;
                 }
             }
 
@@ -333,9 +338,10 @@ class CoreData
         if ($rs && $rs->count()) {
             // Load first record
             $rs->fetch();
+            $row = new RowRosetta($rs);
 
             // Return found ID
-            return $rs->src_id == $src_id ? (int) $rs->dst_id : (int) $rs->src_id;
+            return $row->src_id === $src_id ? $row->dst_id : $row->src_id;
         }
 
         if ($indirect) {
