@@ -35,60 +35,47 @@ abstract class Row
      */
     protected array $properties;
 
-    public function __construct(?MetaRecord $rs = null)
+    /**
+     * @param MetaRecord|array<int|string, mixed>|null      $data       Current values
+     * @param bool                                          $complete   True if all values must be present in data
+     *
+     * Use a MetaRecord to populate properties values or
+     * Use an array (associative or indexed) to populate properties values
+     *
+     * If using an indexed array, values must be given in same order as declared properties.
+     */
+    public function __construct(MetaRecord|array|null $data = null, bool $complete = true)
     {
-        if ($rs instanceof MetaRecord) {
-            $reflectionClass = new ReflectionClass($this);
-            if (!isset($this->properties)) {
-                $this->properties = $reflectionClass->getProperties(ReflectionProperty::IS_PUBLIC);
-            }
-
-            foreach ($this->properties as $property) {
-                if ($rs->exists($property->getName())) {
-                    $value = $rs->field($property->getName());
-                    if ($property->hasType() && $property->getType() instanceof ReflectionNamedType) {
-                        if (!$property->getType()->allowsNull() && $value === null) {
-                            throw new Exception(sprintf('Null is not an allowed value for field %s', $property->getName()));
-                        }
-                        if ($value !== null) {
-                            // Will only work with basic types (int, string, …)
-                            settype($value, $property->getType()->getName());
-                        }
-                    } elseif ($property->hasType()) {
-                        if ($property->getType() instanceof ReflectionUnionType || $property->getType() instanceof ReflectionIntersectionType) {
-                            throw new Exception(sprintf('Unsupported property type for %s', $property->getName()));
-                        }
-                    }
-                    $this->{$property->getName()} = $value;
-                } else {
-                    throw new Exception(sprintf('Field %s not present in record', $property->getName()));
-                }
-            }
+        if (!is_null($data)) {
+            $this->populate($data, $complete);
         }
     }
 
     /**
-     * Populate Row properties with given data
+     * @param MetaRecord|array<int|string, mixed>           $data       Current values
+     * @param bool                                          $complete   True if all values must be present in data
      *
-     * Data array may be associative or sequential (must be in same order as declared properties in this case)
+     * Use a MetaRecord to populate properties values or
+     * Use an array (associative or indexed) to populate properties values
      *
-     * @param  array<int|string, mixed>     $data     Data
-     * @param  bool                         $complete Throw exception if some value(s) are missing from data
+     * If using an indexed array, values must be given in same order as declared properties.
      */
-    public function populate(array $data, bool $complete = false): void
+    public function populate(MetaRecord|array $data, bool $complete = true): void
     {
+        $reflectionClass = new ReflectionClass($this);
         if (!isset($this->properties)) {
-            $reflectionClass  = new ReflectionClass($this);
             $this->properties = $reflectionClass->getProperties(ReflectionProperty::IS_PUBLIC);
         }
 
         $index = 0;
         foreach ($this->properties as $property) {
-            if (isset($data[$property->getName()]) || isset($data[$index])) {
-                $value = $data[$property->getName()] ?? $data[$index];
+            $propertyName = $property->getName();
+            $valueExists  = is_array($data) ? (isset($data[$propertyName]) || isset($data[$index])) : $data->exists($propertyName);
+            if ($valueExists) {
+                $value = is_array($data) ? $data[$propertyName] ?? $data[$index] : $data->field($propertyName);
                 if ($property->hasType() && $property->getType() instanceof ReflectionNamedType) {
                     if (!$property->getType()->allowsNull() && $value === null) {
-                        throw new Exception(sprintf('Null is not an allowed value for field %s', $property->getName()));
+                        throw new Exception(sprintf('Null is not an allowed value for field %s', $propertyName));
                     }
                     if ($value !== null) {
                         // Will only work with basic types (int, string, …)
@@ -96,12 +83,16 @@ abstract class Row
                     }
                 } elseif ($property->hasType()) {
                     if ($property->getType() instanceof ReflectionUnionType || $property->getType() instanceof ReflectionIntersectionType) {
-                        throw new Exception(sprintf('Unsupported property type for %s', $property->getName()));
+                        throw new Exception(sprintf('Unsupported property type for %s', $propertyName));
                     }
                 }
-                $this->{$property->getName()} = $value;
+                $this->{$propertyName} = $value;
             } elseif ($complete) {
-                throw new Exception(sprintf('Field %s not present in data', $property->getName()));
+                // Value is missing
+                throw new Exception(sprintf('Field %s not present in %s', $propertyName, is_array($data) ? 'array' : 'record'));
+            } elseif ($property->getType() instanceof ReflectionNamedType && $property->getType()->allowsNull()) {
+                // Set value to null if nullable
+                $this->{$propertyName} = null;
             }
             $index++;
         }
