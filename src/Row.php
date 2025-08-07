@@ -33,7 +33,7 @@ abstract class Row
 
     /**
      * @param MetaRecord|array<int|string, mixed>|null      $data       Current values
-     * @param bool                                          $complete   True if all values must be present in data
+     * @param bool                                          $complete   True if all values must be present in given data
      *
      * Use a MetaRecord to populate properties values or
      * Use an array (associative or indexed) to populate properties values
@@ -96,6 +96,15 @@ abstract class Row
 
     /**
      * Initialize Cursor data with Row properties values
+     *
+     * Example (using a RowMyTable class which extends this one):
+     * ```php
+     * $cursor = App::con()->openCursor(App::con()->prefix() . 'my_table');
+     * $row = new RowMyTable();
+     * $row->id = 0;
+     * $row->lang = 'en';
+     * $row->setCursor($cursor);
+     * ```
      *
      * @param Cursor $cursor The Cursor to populate
      */
