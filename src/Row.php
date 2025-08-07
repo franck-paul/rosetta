@@ -27,10 +27,6 @@ use ReflectionUnionType;
 abstract class Row
 {
     /**
-     * Create a new instance
-     *
-     * If a MetaRecord is given, the properties are initialized with the current values
-     *
      * @var \ReflectionProperty[] $properties  Class properties
      */
     protected array $properties;
