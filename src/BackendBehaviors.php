@@ -250,7 +250,7 @@ class BackendBehaviors
                                 ]),
                             // Add buttons to create (and edit) a new translation
                             (new Para())
-                                ->class(['form-buttons', 'top-add', 'new-stuff'])   // 'top-add' should be removed when 2.35 were released
+                                ->class(['form-buttons', 'new-stuff'])
                                 ->items([
                                     (new Link())
                                         ->href($url . sprintf(
