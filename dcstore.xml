@@ -1,12 +1,12 @@
 <modules xmlns:da="http://dotaddict.org/da/">
   <module id="rosetta">
     <name>Rosetta</name>
-    <version>6.12</version>
+    <version>7.0</version>
     <author>Franck Paul</author>
     <desc>Manage post/page translations</desc>
-    <date>2025-07-21T13:42:42+0200</date>
-    <file>https://github.com/franck-paul/rosetta/releases/download/6.12/plugin-rosetta-6.12.zip</file>
-    <da:dcmin>2.34</da:dcmin>
+    <date>2025-08-15T08:15:23+0200</date>
+    <file>https://github.com/franck-paul/rosetta/releases/download/7.0/plugin-rosetta-7.0.zip</file>
+    <da:dcmin>2.35</da:dcmin>
     <da:details>https://open-time.net/?q=rosetta</da:details>
     <da:support>https://github.com/franck-paul/rosetta</da:support>
   </module>
