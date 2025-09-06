@@ -17,7 +17,6 @@ namespace Dotclear\Plugin\rosetta;
 
 use Dotclear\App;
 use Dotclear\Core\Process;
-use Dotclear\Database\Structure;
 use Exception;
 
 class Install extends Process
@@ -35,7 +34,7 @@ class Install extends Process
 
         try {
             // Database schema
-            $new_structure = new Structure(App::con(), App::con()->prefix());
+            $new_structure = App::db()->structure();
 
             $new_structure->rosetta
                 ->field('src_id', 'bigint', 0, false)
@@ -61,7 +60,7 @@ class Install extends Process
             $new_structure->rosetta->reference('fk_rosetta_dst', 'dst_id', App::blog()::POST_TABLE_NAME, 'post_id', 'cascade', 'cascade');
 
             // Schema installation
-            $current_structure = new Structure(App::con(), App::con()->prefix());
+            $current_structure = App::db()->structure();
             $current_structure->synchronize($new_structure);
 
             // Default state is inactive

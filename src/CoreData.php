@@ -92,8 +92,8 @@ class CoreData
         try {
             if (!is_array($list)) {
                 // No translation yet, add direct one
-                App::con()->writeLock(App::con()->prefix() . self::ROSETTA_TABLE_NAME);
-                $cur           = App::con()->openCursor(App::con()->prefix() . self::ROSETTA_TABLE_NAME);
+                App::db()->con()->writeLock(App::db()->con()->prefix() . self::ROSETTA_TABLE_NAME);
+                $cur           = App::db()->con()->openCursor(App::db()->con()->prefix() . self::ROSETTA_TABLE_NAME);
                 $row           = new RowRosetta();
                 $row->src_id   = $src_id;
                 $row->src_lang = $src_lang;
@@ -101,13 +101,13 @@ class CoreData
                 $row->dst_lang = $dst_lang;
                 $row->setCursor($cur);
                 $cur->insert();
-                App::con()->unlock();
+                App::db()->con()->unlock();
             } else {
                 foreach ($list as $lang => $id) {
                     if (self::findTranslation($id, $lang, $dst_lang, false) === -1) {
                         // Add the new translation
-                        App::con()->writeLock(App::con()->prefix() . self::ROSETTA_TABLE_NAME);
-                        $cur           = App::con()->openCursor(App::con()->prefix() . self::ROSETTA_TABLE_NAME);
+                        App::db()->con()->writeLock(App::db()->con()->prefix() . self::ROSETTA_TABLE_NAME);
+                        $cur           = App::db()->con()->openCursor(App::db()->con()->prefix() . self::ROSETTA_TABLE_NAME);
                         $row           = new RowRosetta();
                         $row->src_id   = $id;
                         $row->src_lang = $lang;
@@ -115,12 +115,12 @@ class CoreData
                         $row->dst_lang = $dst_lang;
                         $row->setCursor($cur);
                         $cur->insert();
-                        App::con()->unlock();
+                        App::db()->con()->unlock();
                     }
                 }
             }
         } catch (Exception $exception) {
-            App::con()->unlock();
+            App::db()->con()->unlock();
 
             throw $exception;
         }
@@ -160,13 +160,13 @@ class CoreData
             return false;
         }
 
-        App::con()->writeLock(App::con()->prefix() . self::ROSETTA_TABLE_NAME);
+        App::db()->con()->writeLock(App::db()->con()->prefix() . self::ROSETTA_TABLE_NAME);
 
         try {
             // Remove the translations
             $sql = new DeleteStatement();
             $sql
-                ->from(App::con()->prefix() . self::ROSETTA_TABLE_NAME)
+                ->from(App::db()->con()->prefix() . self::ROSETTA_TABLE_NAME)
                 ->where($sql->orGroup([
                     $sql->andGroup([
                         'src_id = ' . $dst_id,
@@ -179,9 +179,9 @@ class CoreData
                 ]))
             ;
             $sql->delete();
-            App::con()->unlock();
+            App::db()->con()->unlock();
         } catch (Exception $exception) {
-            App::con()->unlock();
+            App::db()->con()->unlock();
 
             throw $exception;
         }
@@ -207,7 +207,7 @@ class CoreData
 
         $sql = new SelectStatement();
         $sql
-            ->from(App::con()->prefix() . self::ROSETTA_TABLE_NAME)
+            ->from(App::db()->con()->prefix() . self::ROSETTA_TABLE_NAME)
             ->where($sql->orGroup([
                 $sql->andGroup([
                     'src_id = ' . $id,
@@ -319,7 +319,7 @@ class CoreData
         // Looks for a post/page with an association with the corresponding lang
         $sql = new SelectStatement();
         $sql
-            ->from(App::con()->prefix() . self::ROSETTA_TABLE_NAME)
+            ->from(App::db()->con()->prefix() . self::ROSETTA_TABLE_NAME)
             ->where($sql->orGroup([
                 $sql->andGroup([
                     'src_id = ' . $src_id,

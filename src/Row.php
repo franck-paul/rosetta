@@ -99,7 +99,7 @@ abstract class Row
      *
      * Example (using a RowMyTable class which extends this one):
      * ```php
-     * $cursor = App::con()->openCursor(App::con()->prefix() . 'my_table');
+     * $cursor = App::db()->con()->openCursor(App::db()->con()->prefix() . 'my_table');
      * $row = new RowMyTable();
      * $row->id = 0;
      * $row->lang = 'en';

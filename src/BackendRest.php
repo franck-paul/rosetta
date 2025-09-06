@@ -57,7 +57,7 @@ class BackendRest
                 }
 
                 // Create a new entry with given title and lang
-                $cur = App::con()->openCursor(App::con()->prefix() . App::blog()::POST_TABLE_NAME);
+                $cur = App::db()->con()->openCursor(App::db()->con()->prefix() . App::blog()::POST_TABLE_NAME);
 
                 $cur->post_title = $rosetta_title;
                 $cur->post_type  = $type;

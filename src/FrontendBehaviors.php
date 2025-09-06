@@ -17,7 +17,7 @@ namespace Dotclear\Plugin\rosetta;
 
 use ArrayObject;
 use Dotclear\App;
-use Dotclear\Core\Frontend\Url;
+use Dotclear\Core\Url;
 use Dotclear\Database\MetaRecord;
 use Dotclear\Helper\Network\Http;
 

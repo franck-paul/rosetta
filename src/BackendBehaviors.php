@@ -485,8 +485,8 @@ class BackendBehaviors
         $sql
             ->column('R.*')
             ->from([
-                $sql->as(App::con()->prefix() . CoreData::ROSETTA_TABLE_NAME, 'R'),
-                $sql->as(App::con()->prefix() . App::blog()::POST_TABLE_NAME, 'P'),
+                $sql->as(App::db()->con()->prefix() . CoreData::ROSETTA_TABLE_NAME, 'R'),
+                $sql->as(App::db()->con()->prefix() . App::blog()::POST_TABLE_NAME, 'P'),
             ])
             ->where('P.post_id = R.src_id')
             ->and('P.blog_id = ' . $sql->quote($blog_id))
@@ -509,7 +509,7 @@ class BackendBehaviors
 
     public static function importInit(FlatImportV2 $fi): string
     {
-        $fi->setExtraCursor(CoreData::ROSETTA_TABLE_NAME, App::con()->openCursor(App::con()->prefix() . CoreData::ROSETTA_TABLE_NAME));
+        $fi->setExtraCursor(CoreData::ROSETTA_TABLE_NAME, App::db()->con()->openCursor(App::db()->con()->prefix() . CoreData::ROSETTA_TABLE_NAME));
 
         return '';
     }
