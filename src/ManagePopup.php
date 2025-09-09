@@ -38,7 +38,9 @@ class ManagePopup
      */
     public static function init(): bool
     {
-        return self::status(My::checkContext(My::MANAGE) && !empty($_REQUEST['popup_new']));
+        return empty($_REQUEST['popup_new']) ?
+            self::status(My::checkContext(My::MANAGE)) :
+            self::status(My::checkContext(My::BACKEND));
     }
 
     /**
@@ -46,7 +48,7 @@ class ManagePopup
      */
     public static function process(): bool
     {
-        return (bool) self::status();
+        return self::status();
     }
 
     /**

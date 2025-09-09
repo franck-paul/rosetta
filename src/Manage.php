@@ -39,11 +39,9 @@ class Manage
      */
     public static function init(): bool
     {
-        if (My::checkContext(My::MANAGE)) {
-            return self::status(empty($_REQUEST['popup_new']) ? true : ManagePopup::init());
-        }
-
-        return self::status(My::checkContext(My::MANAGE));
+        return empty($_REQUEST['popup_new']) ?
+            self::status(My::checkContext(My::MANAGE)) :
+            ManagePopup::init();
     }
 
     /**
