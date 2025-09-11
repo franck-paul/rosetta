@@ -315,10 +315,14 @@ class BackendBehaviors
      */
     public static function adminColumnsLists(ArrayObject $cols): string
     {
-        $cols['posts'][1]['language']     = [true, __('Language')];
-        $cols['posts'][1]['translations'] = [true, __('Translations')];
-        $cols['pages'][1]['language']     = [true, __('Language')];
-        $cols['pages'][1]['translations'] = [true, __('Translations')];
+        if (isset($cols['posts'])) {
+            $cols['posts'][1]['language']     = [true, __('Language')];
+            $cols['posts'][1]['translations'] = [true, __('Translations')];
+        }
+        if (isset($cols['pages'])) {
+            $cols['pages'][1]['language']     = [true, __('Language')];
+            $cols['pages'][1]['translations'] = [true, __('Translations')];
+        }
 
         return '';
     }
