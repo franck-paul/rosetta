@@ -49,12 +49,12 @@ class Manage
      */
     public static function process(): bool
     {
-        if (!self::status()) {
-            return false;
-        }
-
         if (!empty($_REQUEST['popup_new'])) {
             return ManagePopup::process();
+        }
+
+        if (!self::status()) {
+            return false;
         }
 
         if (!empty($_POST['save_settings'])) {
@@ -82,13 +82,13 @@ class Manage
      */
     public static function render(): void
     {
-        if (!self::status()) {
-            return;
-        }
-
         if (!empty($_REQUEST['popup_new'])) {
             ManagePopup::render();
 
+            return;
+        }
+
+        if (!self::status()) {
             return;
         }
 
