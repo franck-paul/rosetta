@@ -65,7 +65,7 @@ class FrontendTemplateCode
             }
         }
         $params['post_type'] = array_keys(App::postTypes()->dump());
-        $params['post_url']  = \Dotclear\Core\Frontend\Ctx::global_filters(
+        $params['post_url']  = App::frontend()->context()::global_filters(
             $rosetta_url,
             $_params_,
             $_tag_
