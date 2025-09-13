@@ -328,52 +328,57 @@ class BackendBehaviors
     }
 
     /**
-     * @param      ArrayObject<string, string>    $cols   The cols
+     * @param      ArrayObject<string, mixed>     $cols         The cols
+     * @param      bool                           $component    Component as value is prefered
      */
-    private static function adminEntryListHeader(ArrayObject $cols): string
+    private static function adminEntryListHeader(ArrayObject $cols, bool $component = false): string
     {
         $settings = My::settings();
         if ($settings->active) {
-            $cols['language'] = (new Th())
+            $value = (new Th())
                 ->scope('col')
                 ->class('nowrap')
                 ->translate(false)
-                ->text(__('Language'))
-            ->render();
-            $cols['translations'] = (new Th())
+                ->text(__('Language'));
+            $cols['language'] = $component ? $value : $value->render();
+
+            $value = (new Th())
                 ->scope('col')
                 ->class('nowrap')
                 ->translate(false)
-                ->text(__('Translations'))
-            ->render();
+                ->text(__('Translations'));
+            $cols['translations'] = $component ? $value : $value->render();
         }
 
         return '';
     }
 
     /**
-     * @param      MetaRecord                     $rs     The recordset
-     * @param      ArrayObject<string, string>    $cols   The cols
+     * @param      MetaRecord                     $rs           The recordset
+     * @param      ArrayObject<string, mixed>     $cols         The cols
+     * @param      bool                           $component    Component as value is prefered
      */
-    public static function adminPostListHeader(MetaRecord $rs, ArrayObject $cols): string
+    public static function adminPostListHeader(MetaRecord $rs, ArrayObject $cols, bool $component = false): string
     {
-        return self::adminEntryListHeader($cols);
+        return self::adminEntryListHeader($cols, $component);
     }
 
     /**
-     * @param      MetaRecord                     $rs     The recordset
-     * @param      ArrayObject<string, string>    $cols   The cols
+     * @param      MetaRecord                     $rs           The recordset
+     * @param      ArrayObject<string, mixed>     $cols         The cols
+     * @param      bool                           $component    Component as value is prefered
      */
-    public static function adminPagesListHeader(MetaRecord $rs, ArrayObject $cols): string
+    public static function adminPagesListHeader(MetaRecord $rs, ArrayObject $cols, bool $component = false): string
     {
-        return self::adminEntryListHeader($cols);
+        return self::adminEntryListHeader($cols, $component);
     }
 
     /**
-     * @param      MetaRecord                     $rs     The recordset
-     * @param      ArrayObject<string, string>    $cols   The cols
+     * @param      MetaRecord                     $rs           The recordset
+     * @param      ArrayObject<string, mixed>     $cols         The cols
+     * @param      bool                           $component    Component as value is prefered
      */
-    private static function adminEntryListValue(MetaRecord $rs, ArrayObject $cols): string
+    private static function adminEntryListValue(MetaRecord $rs, ArrayObject $cols, bool $component = false): string
     {
         $settings = My::settings();
         if ($settings->active) {
@@ -402,73 +407,78 @@ class BackendBehaviors
                 }
             }
 
-            $cols['language'] = (new Td())
+            $value = (new Td())
                 ->class('nowrap')
                 ->text($rs->post_lang)
-                ->translate(false)
-            ->render();
-            $cols['translations'] = (new Td())
+                ->translate(false);
+            $cols['language'] = $component ? $value : $value->render();
+
+            $value = (new Td())
                 ->class('nowrap')
                 ->translate(false)
                 ->items([
                     (new Span(implode(', ', array_map(fn ($translation) => $translation->render(), $translations)))),
-                ])
-            ->render();
+                ]);
+            $cols['translations'] = $component ? $value : $value->render();
         }
 
         return '';
     }
 
     /**
-     * @param      MetaRecord                     $rs     The recordset
-     * @param      ArrayObject<string, string>    $cols   The cols
+     * @param      MetaRecord                     $rs           The recordset
+     * @param      ArrayObject<string, mixed>     $cols         The cols
+     * @param      bool                           $component    Component as value is prefered
      */
-    public static function adminPostListValue(MetaRecord $rs, ArrayObject $cols): string
+    public static function adminPostListValue(MetaRecord $rs, ArrayObject $cols, bool $component = false): string
     {
-        return self::adminEntryListValue($rs, $cols);
+        return self::adminEntryListValue($rs, $cols, $component);
     }
 
     /**
-     * @param      MetaRecord                     $rs     The recordset
-     * @param      ArrayObject<string, string>    $cols   The cols
+     * @param      MetaRecord                     $rs           The recordset
+     * @param      ArrayObject<string, mixed>     $cols         The cols
+     * @param      bool                           $component    Component as value is prefered
      */
-    public static function adminPagesListValue(MetaRecord $rs, ArrayObject $cols): string
+    public static function adminPagesListValue(MetaRecord $rs, ArrayObject $cols, bool $component = false): string
     {
-        return self::adminEntryListValue($rs, $cols);
+        return self::adminEntryListValue($rs, $cols, $component);
     }
 
     /**
-     * @param      MetaRecord                     $rs     The recordset
-     * @param      ArrayObject<string, string>    $cols   The cols
+     * @param      MetaRecord                     $rs           The recordset
+     * @param      ArrayObject<string, mixed>     $cols         The cols
+     * @param      bool                           $component    Component as value is prefered
      */
-    public static function adminPostMiniListHeader(MetaRecord $rs, ArrayObject $cols): string
+    public static function adminPostMiniListHeader(MetaRecord $rs, ArrayObject $cols, bool $component = false): string
     {
         $settings = My::settings();
         if ($settings->active) {
-            $cols['language'] = (new Th())
+            $value = (new Th())
                 ->scope('col')
                 ->class('nowrap')
                 ->text(__('Language'))
-                ->translate(false)
-            ->render();
+                ->translate(false);
+            $cols['language'] = $component ? $value : $value->render();
         }
 
         return '';
     }
 
     /**
-     * @param      MetaRecord                     $rs     The recordset
-     * @param      ArrayObject<string, string>    $cols   The cols
+     * @param      MetaRecord                     $rs           The recordset
+     * @param      ArrayObject<string, mixed>     $cols         The cols
+     * @param      bool                           $component    Component as value is prefered
      */
-    public static function adminPostMiniListValue(MetaRecord $rs, ArrayObject $cols): string
+    public static function adminPostMiniListValue(MetaRecord $rs, ArrayObject $cols, bool $component = false): string
     {
         $settings = My::settings();
         if ($settings->active) {
-            $cols['language'] = (new Td())
+            $value = (new Td())
                 ->class('nowrap')
                 ->text($rs->post_lang)
-                ->translate(false)
-            ->render();
+                ->translate(false);
+            $cols['language'] = $component ? $value : $value->render();
         }
 
         return '';
