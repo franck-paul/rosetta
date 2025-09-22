@@ -16,9 +16,6 @@ declare(strict_types=1);
 namespace Dotclear\Plugin\rosetta;
 
 use Dotclear\App;
-use Dotclear\Core\Backend\Combos;
-use Dotclear\Core\Backend\Notices;
-use Dotclear\Core\Backend\Page;
 use Dotclear\Helper\Html\Form\Btn;
 use Dotclear\Helper\Html\Form\Form;
 use Dotclear\Helper\Html\Form\Input;
@@ -70,7 +67,7 @@ class ManagePopup
             'order_by' => 'nb_post',
             'order'    => 'desc',
         ]);
-        $lang_combo = Combos::getLangsCombo($rs, true);
+        $lang_combo = App::backend()->combos()->getLangsCombo($rs, true);
         // Remove empty select
         unset($lang_combo['']);
         // Remove already existed translation's languages from combo
@@ -93,15 +90,15 @@ class ManagePopup
 
         $head = My::jsLoad('popup_new.js');
 
-        Page::openModule(__('Create a new translation'), $head);
+        App::backend()->page()->openModule(__('Create a new translation'), $head);
 
-        echo Page::breadcrumb(
+        echo App::backend()->page()->breadcrumb(
             [
                 Html::escapeHTML(App::blog()->name()) => '',
                 __('Rosetta')                         => '',
             ]
         );
-        echo Notices::getNotices();
+        echo App::backend()->notices()->getNotices();
 
         echo (new Set())
             ->items([
@@ -136,6 +133,6 @@ class ManagePopup
             ])
         ->render();
 
-        Page::closeModule();
+        App::backend()->page()->closeModule();
     }
 }

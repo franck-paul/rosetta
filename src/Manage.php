@@ -16,8 +16,6 @@ declare(strict_types=1);
 namespace Dotclear\Plugin\rosetta;
 
 use Dotclear\App;
-use Dotclear\Core\Backend\Notices;
-use Dotclear\Core\Backend\Page;
 use Dotclear\Helper\Html\Form\Checkbox;
 use Dotclear\Helper\Html\Form\Div;
 use Dotclear\Helper\Html\Form\Fieldset;
@@ -65,7 +63,7 @@ class Manage
                 $settings->put('active', !empty($_POST['active']), App::blogWorkspace()::NS_BOOL);
                 $settings->put('accept_language', !empty($_POST['accept_language']), App::blogWorkspace()::NS_BOOL);
 
-                Notices::addSuccessNotice(__('Configuration successfully updated.'));
+                App::backend()->notices()->addSuccessNotice(__('Configuration successfully updated.'));
                 My::redirect([
                     'tab' => $tab,
                 ], '#' . $tab);
@@ -99,17 +97,17 @@ class Manage
 
         $tab = empty($_REQUEST['tab']) ? '' : $_REQUEST['tab'];
 
-        $head = Page::jsPageTabs($tab);
+        $head = App::backend()->page()->jsPageTabs($tab);
 
-        Page::openModule(My::name(), $head);
+        App::backend()->page()->openModule(My::name(), $head);
 
-        echo Page::breadcrumb(
+        echo App::backend()->page()->breadcrumb(
             [
                 Html::escapeHTML(App::blog()->name()) => '',
                 __('Rosetta')                         => '',
             ]
         );
-        echo Notices::getNotices();
+        echo App::backend()->notices()->getNotices();
 
         // Form
 
@@ -202,6 +200,6 @@ class Manage
             ->render();
         }
 
-        Page::closeModule();
+        App::backend()->page()->closeModule();
     }
 }

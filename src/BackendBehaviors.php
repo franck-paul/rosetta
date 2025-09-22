@@ -18,7 +18,6 @@ namespace Dotclear\Plugin\rosetta;
 use ArrayObject;
 use Dotclear\App;
 use Dotclear\Core\Backend\Favorites;
-use Dotclear\Core\Backend\Page;
 use Dotclear\Database\MetaRecord;
 use Dotclear\Database\Statement\SelectStatement;
 use Dotclear\Helper\Html\Form\Caption;
@@ -65,7 +64,7 @@ class BackendBehaviors
     private static function adminEntryHeaders(): string
     {
         return
-        Page::jsJson('rosetta_entry', [
+        App::backend()->page()->jsJson('rosetta_entry', [
             'msg'     => ['confirm_remove_rosetta' => __('Are you sure to remove this translation?')],
             'rosetta' => [
                 'popup_posts_url' => App::backend()->url()->get('admin.posts.popup', [
@@ -88,7 +87,7 @@ class BackendBehaviors
         $settings = My::settings();
         if ($settings->active) {
             return
-            Page::jsJson('rosetta_type', ['post_type' => 'post']) .
+            App::backend()->page()->jsJson('rosetta_type', ['post_type' => 'post']) .
             self::adminEntryHeaders();
         }
 
@@ -100,7 +99,7 @@ class BackendBehaviors
         $settings = My::settings();
         if ($settings->active) {
             return
-            Page::jsJson('rosetta_type', ['post_type' => 'page']) .
+            App::backend()->page()->jsJson('rosetta_type', ['post_type' => 'page']) .
             self::adminEntryHeaders();
         }
 
@@ -140,7 +139,7 @@ class BackendBehaviors
                             ->class('rosetta-remove')
                             ->title(__('Remove this translation\'s link'))
                             ->items([
-                                (new Img(urldecode(Page::getPF(My::id() . '/img/unlink.png'))))
+                                (new Img(urldecode((string) App::backend()->page()->getPF(My::id() . '/img/unlink.png'))))
                                     ->alt(__('Remove this translation\'s link')),
                             ]),
                     ]),
