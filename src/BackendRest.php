@@ -17,7 +17,6 @@ namespace Dotclear\Plugin\rosetta;
 
 use ArrayObject;
 use Dotclear\App;
-use Dotclear\Helper\L10n;
 use Exception;
 
 class BackendRest
@@ -199,7 +198,7 @@ class BackendRest
                 if ($rs->count()) {
                     $rs->fetch();
                     $post_link = '<a id="r-%s" href="' . App::postTypes()->get($rs->post_type)->adminUrl($rs->post_id) . '" class="%s" title="%s">%s</a>';
-                    $langs     = L10n::getLanguagesName();
+                    $langs     = App::lang()->getLanguagesName();
                     $name      = $langs[$rs->post_lang] ?? $langs[App::blog()->settings()->system->lang];
                     // Get the translation row
                     $row = BackendBehaviors::translationRow(

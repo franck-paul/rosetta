@@ -18,7 +18,6 @@ namespace Dotclear\Plugin\rosetta;
 use ArrayObject;
 use Dotclear\App;
 use Dotclear\Helper\Html\Html;
-use Dotclear\Helper\L10n;
 
 class FrontendHelper
 {
@@ -104,7 +103,7 @@ class FrontendHelper
         // destination = $table : array ('language' (or 'lang' if $code=true) => 'entry-url')
         // $current = current language
         $table = [];
-        $langs = L10n::getLanguagesName();
+        $langs = App::lang()->getLanguagesName();
         foreach ($ids as $lang => $id) {
             $name = $langs[$lang] ?? $langs[App::blog()->settings()->system->lang];
             if ($post_id == $id) {

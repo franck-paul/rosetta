@@ -36,7 +36,6 @@ use Dotclear\Helper\Html\Form\Th;
 use Dotclear\Helper\Html\Form\Thead;
 use Dotclear\Helper\Html\Form\Tr;
 use Dotclear\Helper\Html\Html;
-use Dotclear\Helper\L10n;
 use Dotclear\Plugin\importExport\FlatBackupItem;
 use Dotclear\Plugin\importExport\FlatExport;
 use Dotclear\Plugin\importExport\FlatImportV2;
@@ -172,7 +171,7 @@ class BackendBehaviors
             if (is_array($list) && count($list)) {
                 App::lexical()->lexicalKeySort($list, App::lexical()::ADMIN_LOCALE);
 
-                $langs = L10n::getLanguagesName();
+                $langs = App::lang()->getLanguagesName();
                 foreach ($list as $lang => $id) {
                     // Display existing translations
                     $name = $langs[$lang] ?? $langs[App::blog()->settings()->system->lang];
@@ -385,7 +384,7 @@ class BackendBehaviors
             $list         = CoreData::findAllTranslations((int) $rs->post_id, $rs->post_lang, false);
             if (is_array($list) && count($list)) {
                 App::lexical()->lexicalKeySort($list, App::lexical()::ADMIN_LOCALE);
-                $langs = L10n::getLanguagesName();
+                $langs = App::lang()->getLanguagesName();
                 foreach ($list as $lang => $id) {
                     // Display existing translations
                     $name = $langs[$lang] ?? $langs[App::blog()->settings()->system->lang];

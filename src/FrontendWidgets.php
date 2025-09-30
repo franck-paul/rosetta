@@ -17,7 +17,6 @@ namespace Dotclear\Plugin\rosetta;
 
 use Dotclear\App;
 use Dotclear\Helper\Html\Html;
-use Dotclear\Helper\L10n;
 use Dotclear\Plugin\widgets\WidgetsElement;
 
 class FrontendWidgets
@@ -124,7 +123,7 @@ class FrontendWidgets
 
         // Render widget list of translations
         $list  = '';
-        $langs = L10n::getLanguagesName();
+        $langs = App::lang()->getLanguagesName();
 
         foreach ($table as $name => $url) {
             $class = ($name === $current ? ' class="current"' : '');
