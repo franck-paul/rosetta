@@ -55,7 +55,7 @@ class FrontendHelper
 
             // Try to find an associated post corresponding to the requested lang
             $id = CoreData::findTranslation((int) $rsSrc->post_id, $rsSrc->post_lang, $lang);
-            if (($id >= 0) && ($id != (int) $rsSrc->post_id)) {
+            if (($id >= 0) && ($id !== (int) $rsSrc->post_id)) {
                 // Get post/page URL
                 $paramsDst = new ArrayObject([
                     'post_id'    => $id,
