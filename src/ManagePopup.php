@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace Dotclear\Plugin\rosetta;
 
 use Dotclear\App;
+use Dotclear\Database\MetaRecord;
 use Dotclear\Helper\Html\Form\Btn;
 use Dotclear\Helper\Html\Form\Form;
 use Dotclear\Helper\Html\Form\Input;
@@ -63,30 +64,21 @@ class ManagePopup
         $title = '';
 
         // Languages combo
-        $rs = App::blog()->getLangs([
+        $langs = [];
+        $ids   = CoreData::findAllTranslations((int) $id, $lang, true);
+        $rs    = App::blog()->getLangs([
             'order_by' => 'nb_post',
             'order'    => 'desc',
         ]);
-        $lang_combo = App::backend()->combos()->getLangsCombo($rs, true);
-        // Remove empty select
-        unset($lang_combo['']);
-        // Remove already existed translation's languages from combo
-        $ids = CoreData::findAllTranslations((int) $id, $lang, true);
-        if (is_array($ids)) {
-            foreach ($lang_combo as $lc => $lv) {
-                if (is_array($lv)) {
-                    foreach ($lv as $name => $code) {
-                        if (array_key_exists($code, $ids)) {
-                            unset($lang_combo[$lc][$name]);
-                        }
-                    }
-
-                    if ((is_countable($lang_combo[$lc]) ? count($lang_combo[$lc]) : 0) === 0) {
-                        unset($lang_combo[$lc]);
-                    }
-                }
+        while ($rs->fetch()) {
+            if (is_array($ids) && !array_key_exists($rs->post_lang, $ids)) {
+                $langs[] = ['post_lang' => $rs->post_lang];
             }
         }
+
+        $lang_combo = App::backend()->combos()->getLangsCombo(MetaRecord::newFromArray($langs), true, true);
+        // Remove 1st empty option
+        unset($lang_combo[0]);
 
         $head = My::jsLoad('popup_new.js');
 
@@ -118,7 +110,6 @@ class ManagePopup
                             ->items([
                                 (new Select('lang'))
                                     ->items($lang_combo)
-                                    ->default($lang)
                                     ->label(new Label(__('Entry language:'), Label::OL_TF)),
                             ]),
                     ]),
