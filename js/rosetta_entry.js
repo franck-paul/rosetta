@@ -63,7 +63,7 @@ dotclear.ready(() => {
           row.remove();
         } else {
           // Display error message
-          window.alert(data.msg);
+          globalThis.alert(data.msg);
         }
       },
       {
@@ -117,7 +117,7 @@ dotclear.ready(() => {
               addTranslationRow(post_id, post_lang, rosetta_id, '#rosetta-list');
             } else {
               // Display error message
-              window.alert(data.msg);
+              globalThis.alert(data.msg);
             }
           },
           {
@@ -169,7 +169,7 @@ dotclear.ready(() => {
                   rosetta_title.value = '';
                   rosetta_lang.value = '';
                   // Redirect to new entry edition if requested
-                  window.location.href = data.edit;
+                  globalThis.location.href = data.edit;
                 }
                 // Reset hidden fields to prevent dirtying form
                 rosetta_title.value = rosetta_title.defaultValue;
@@ -180,7 +180,7 @@ dotclear.ready(() => {
               rosetta_title.value = rosetta_title.defaultValue;
               rosetta_lang.value = rosetta_lang.defaultValue;
               // Display error message
-              window.alert(data.msg);
+              globalThis.alert(data.msg);
             },
             {
               id: post_id,
