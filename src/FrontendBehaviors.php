@@ -49,7 +49,8 @@ class FrontendBehaviors
                     'category',
                     'tag',
                     'search',
-                    'archive', ];
+                    'archive',
+                ];
                 if (in_array(App::url()->getType(), $url_types)) {
                     // Set language according to blog default language setting
                     $params['post_lang'] = App::blog()->settings()->system->lang;
@@ -66,30 +67,33 @@ class FrontendBehaviors
      * Gets the post language.
      *
      * @param      int          $id     The identifier
-     * @param      null|string  $type   The type
+     * @param      string       $type   The type
      *
-     * @return     null|string  The post language.
+     * @return     string  The post language.
      */
-    private static function getPostLang(int $id, ?string $type): ?string
+    private static function getPostLang(int $id, string $type): string
     {
+        $system_lang = is_string($system_lang = App::blog()->settings()->system->lang) ? $system_lang : 'en';
+
         /**
          * @var        ArrayObject<string, mixed>
          */
         $params = new ArrayObject([
             'post_id'    => $id,
-            'no_content' => true, ]);
-        if (!is_null($type)) {
+            'no_content' => true,
+        ]);
+        if ($type !== '') {
             $params['type'] = $type;
         }
         $rs = App::blog()->getPosts($params);
         if ($rs->count()) {
             $rs->fetch();
 
-            return $rs->post_lang;
+            return is_string($post_lang = $rs->post_lang) ? $post_lang : $system_lang;
         }
 
         // Return blog default lang
-        return App::blog()->settings()->system->lang;
+        return $system_lang;
     }
 
     /**
@@ -114,22 +118,29 @@ class FrontendBehaviors
                     $nbx = 0;
                     while ($rs->fetch()) {
                         $exchanged = false;
-                        $post_lang = $rs->exists('post_lang') ? $rs->post_lang : self::getPostLang((int) $rs->post_id, $rs->post_type);
+                        $post_id   = is_numeric($post_id = $rs->post_id) ? (int) $post_id : 0;
+                        $post_type = is_string($post_type = $rs->post_type) ? $post_type : '';
+                        $post_lang = $rs->exists('post_lang') && is_string($rs->post_lang) ? $rs->post_lang : self::getPostLang($post_id, $post_type);
                         foreach ($langs as $lang) {
-                            if ($post_lang == $lang) {
+                            if ($post_lang === $lang) {
                                 // Already in an accepted language, do nothing
                                 break;
                             }
 
                             // Try to find an associated post corresponding to the requested lang
-                            $id = CoreData::findTranslation((int) $rs->post_id, $post_lang, $lang);
-                            if (($id >= 0) && ($id != $rs->post_id)) {
+                            $id = CoreData::findTranslation($post_id, $post_lang, $lang);
+                            if (($id >= 0) && ($id !== $post_id)) {
                                 // Get post/page data
+
+                                /**
+                                 * @var        ArrayObject<string, mixed>
+                                 */
                                 $params = new ArrayObject([
                                     'post_id'     => $id,
-                                    'post_type'   => $rs->post_type,
+                                    'post_type'   => $post_type,
                                     'post_status' => $rs->post_status,
-                                    'no_content'  => false, ]);
+                                    'no_content'  => false,
+                                ]);
                                 $rst = App::blog()->getPosts($params);
                                 if ($rst->count()) {
                                     // Load first record
@@ -153,8 +164,14 @@ class FrontendBehaviors
 
                     if (count($ids) && $nbx) {
                         // Get new list of posts as we have at least one exchange done
+
+                        /**
+                         * @var        ArrayObject<string, mixed>
+                         */
                         $params = new ArrayObject([
-                            'post_id' => $ids, ]);
+                            'post_id' => $ids,
+                        ]);
+
                         $alt['rs'] = App::blog()->getPosts($params);
                     }
                 }
@@ -178,12 +195,15 @@ class FrontendBehaviors
         }
 
         $settings = My::settings();
-        if ($settings->active && in_array(App::url()->getType(), $urlTypes) && in_array(App::frontend()->context()->posts->post_type, $postTypes)) {
+        if ($settings->active && App::frontend()->context()->posts instanceof MetaRecord && in_array(App::url()->getType(), $urlTypes) && in_array(App::frontend()->context()->posts->post_type, $postTypes)) {
             // Find translations and add meta in header
-            $list = FrontendHelper::EntryListHelper(
-                (int) App::frontend()->context()->posts->post_id,
-                App::frontend()->context()->posts->post_lang,
-                App::frontend()->context()->posts->post_type,
+            $post_id   = is_numeric($post_id = App::frontend()->context()->posts->post_id) ? (int) $post_id : 0;
+            $post_lang = is_string($post_lang = App::frontend()->context()->posts->post_lang) ? $post_lang : '';
+            $post_type = is_string($post_type = App::frontend()->context()->posts->post_type) ? $post_type : '';
+            $list      = FrontendHelper::EntryListHelper(
+                $post_id,
+                $post_lang,
+                $post_type,
                 'none',
                 $current,
                 true
@@ -213,6 +233,10 @@ class FrontendBehaviors
         }
 
         // Get post/page id
+
+        /**
+         * @var        ArrayObject<string, mixed>
+         */
         $paramsSrc = new ArrayObject([
             'post_url'   => $handler->args,
             'post_type'  => $postTypes,
@@ -227,15 +251,22 @@ class FrontendBehaviors
             // Load first record
             $rsSrc->fetch();
 
+            // Try to find an associated post corresponding to the requested lang
+            $post_id   = is_numeric($post_id = $rsSrc->post_id) ? (int) $post_id : 0;
+            $post_lang = is_string($post_lang = $rsSrc->post_lang) ? $post_lang : '';
+
             // If current entry is in the requested languages, return true
-            if ($rsSrc->post_lang == $lang) {
+            if ($post_lang === $lang) {
                 return true;
             }
 
-            // Try to find an associated post corresponding to the requested lang
-            $id = CoreData::findTranslation((int) $rsSrc->post_id, $rsSrc->post_lang, $lang);
-            if (($id >= 0) && ($id != $rsSrc->post_id)) {
+            $id = CoreData::findTranslation($post_id, $post_lang, $lang);
+            if (($id >= 0) && ($id !== $post_id)) {
                 // Get post/page URL
+
+                /**
+                 * @var        ArrayObject<string, mixed>
+                 */
                 $paramsDst = new ArrayObject([
                     'post_id'    => $id,
                     'post_type'  => $postTypes,
@@ -250,14 +281,16 @@ class FrontendBehaviors
                     $rsDst->fetch();
 
                     // Redirect to translated post
-                    $url = $rsDst->getURL();
-                    if (!preg_match('%^https?://%', (string) $url)) {
-                        // Prepend scheme if not present
-                        $url = (isset($_SERVER['HTTPS']) ? 'https:' : 'http:') . $url;
-                    }
+                    $url = is_string($url = $rsDst->getURL()) ? $url : '';
+                    if ($url !== '') {
+                        if (!preg_match('%^https?://%', $url)) {
+                            // Prepend scheme if not present
+                            $url = (isset($_SERVER['HTTPS']) ? 'https:' : 'http:') . $url;
+                        }
 
-                    Http::redirect($url);
-                    exit;
+                        Http::redirect($url);
+                        exit;
+                    }
                 }
             }
         }
@@ -273,16 +306,19 @@ class FrontendBehaviors
         }
 
         $langs = [];
-        if (!empty($_GET['lang'])) {
+        $lang  = isset($_GET['lang']) && is_string($lang = $_GET['lang']) ? $lang : '';
+
+        if ($lang !== '') {
             // Check lang scheme
-            if (preg_match('/^[a-z]{2}(-[a-z]{2})?$/', rawurldecode((string) $_GET['lang']), $matches)) {
+            if (preg_match('/^[a-z]{2}(-[a-z]{2})?$/', rawurldecode($lang), $matches)) {
                 // Assume that the URL scheme is for post/page
                 $langs[] = $matches[0];
             }
         } elseif ($settings->accept_language) {
             $urlType = '';
             $urlPart = '';
-            $handler->getArgs($_SERVER['URL_REQUEST_PART'], $urlType, $urlPart);
+            $url     = is_string($url = $_SERVER['URL_REQUEST_PART']) ? $url : '';
+            $handler->getArgs($url, $urlType, $urlPart);
             if (in_array($urlType, ['post', 'pages'])) {
                 // It is a post or page: Try to find a translation according to the browser settings
                 $langs = Http::getAcceptLanguages();

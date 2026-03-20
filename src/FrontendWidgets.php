@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace Dotclear\Plugin\rosetta;
 
 use Dotclear\App;
+use Dotclear\Database\MetaRecord;
 use Dotclear\Helper\Html\Html;
 use Dotclear\Plugin\widgets\WidgetsElement;
 
@@ -37,17 +38,18 @@ class FrontendWidgets
             'pages',
         ];
 
-        if (in_array(App::url()->getType(), $urlTypes)) {
-            $post_id   = (int) App::frontend()->context()->posts->post_id;
-            $post_lang = App::frontend()->context()->posts->post_lang;
-            $post_type = App::frontend()->context()->posts->post_type;
+        if (in_array(App::url()->getType(), $urlTypes) && App::frontend()->context()->posts instanceof MetaRecord) {
+            $post_id   = is_numeric($post_id = App::frontend()->context()->posts->post_id) ? (int) $post_id : 0;
+            $post_lang = is_string($post_lang = App::frontend()->context()->posts->post_lang) ? $post_lang : '';
+            $post_type = is_string($post_type = App::frontend()->context()->posts->post_type) ? $post_type : '';
         } else {
             return '';
         }
 
         // Get list of available translations for current entry
         $current = '';
-        $table   = FrontendHelper::EntryListHelper($post_id, $post_lang, $post_type, $w->get('current'), $current);
+        $include = is_string($include = $w->get('current')) ? $include : '';
+        $table   = FrontendHelper::EntryListHelper($post_id, $post_lang, $post_type, $include, $current);
         if (!is_array($table)) {
             return '';
         }
@@ -98,9 +100,9 @@ class FrontendWidgets
             if ($rs->isEmpty()) {
                 return '';
             }
-            $post_id   = (int) $rs->post_id;
-            $post_lang = $rs->post_lang;
-            $post_type = $rs->post_type;
+            $post_id   = is_numeric($post_id = $rs->post_id) ? (int) $post_id : 0;
+            $post_lang = is_string($post_lang = $rs->post_lang) ? $post_lang : '';
+            $post_type = is_string($post_type = $rs->post_type) ? $post_type : '';
         } else {
             return '';
         }
@@ -113,23 +115,25 @@ class FrontendWidgets
         }
 
         // Get current language if set in URL
-        if (isset($_GET['lang'])) {
+        $lang = isset($_GET['lang']) && is_string($lang = $_GET['lang']) ? $lang : '';
+        if ($lang !== '') {
             // Get current language
-            $current = Html::escapeHTML($_GET['lang']);
+            $current = Html::escapeHTML($lang);
         }
 
         // Render widget title
         $res = ($w->title ? $w->renderTitle(Html::escapeHTML($w->title)) . "\n" : '');
 
         // Render widget list of translations
-        $list  = '';
-        $langs = App::lang()->getLanguagesName();
+        $list        = '';
+        $langs       = App::lang()->getLanguagesName();
+        $system_lang = is_string($system_lang = App::blog()->settings()->system->lang) ? $system_lang : 'en';
 
         foreach ($table as $name => $url) {
             $class = ($name === $current ? ' class="current"' : '');
 
             $url  = App::blog()->getQmarkURL() . 'lang=' . $name;
-            $name = $langs[$name] ?? $langs[App::blog()->settings()->system->lang];
+            $name = $langs[$name] ?? $langs[$system_lang] ?? $system_lang;
 
             $list .= '<li' . $class . '>' .
                 '<a href="' . $url . '">' .

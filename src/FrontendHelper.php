@@ -34,6 +34,10 @@ class FrontendHelper
         $postTypes = array_keys(App::postTypes()->dump());
 
         // Get post/page id
+
+        /**
+         * @var ArrayObject<string, mixed>  $paramsSrc
+         */
         $paramsSrc = new ArrayObject([
             'post_url'   => $entry,
             'post_type'  => $postTypes,
@@ -54,9 +58,15 @@ class FrontendHelper
             }
 
             // Try to find an associated post corresponding to the requested lang
-            $id = CoreData::findTranslation((int) $rsSrc->post_id, $rsSrc->post_lang, $lang);
-            if (($id >= 0) && ($id !== (int) $rsSrc->post_id)) {
+            $post_id   = is_numeric($post_id = $rsSrc->post_id) ? (int) $post_id : 0;
+            $post_lang = is_string($post_lang = $rsSrc->post_lang) ? $post_lang : '';
+            $id        = CoreData::findTranslation($post_id, $post_lang, $lang);
+            if (($id >= 0) && ($id !== $post_id)) {
                 // Get post/page URL
+
+                /**
+                 * @var ArrayObject<string, mixed>  $paramsDst
+                 */
                 $paramsDst = new ArrayObject([
                     'post_id'    => $id,
                     'post_type'  => $postTypes,
@@ -71,9 +81,7 @@ class FrontendHelper
                     $rsDst->fetch();
 
                     // Return entry URL
-                    $url = $rsDst->post_url;
-
-                    return $url;
+                    return is_string($post_url = $rsDst->post_url) ? $post_url : '';
                 }
             }
         }
@@ -89,9 +97,9 @@ class FrontendHelper
      * @param      string       $current    The current language
      * @param      bool         $code_only  The code only
      *
-     * @return     array<string, string>|bool
+     * @return     array<string, string>|false
      */
-    public static function EntryListHelper(int $post_id, ?string $post_lang, string $post_type, string $include, string &$current, bool $code_only = false): array|bool
+    public static function EntryListHelper(int $post_id, ?string $post_lang, string $post_type, string $include, string &$current, bool $code_only = false): array|false
     {
         // Get associated entries
         $ids = CoreData::findAllTranslations($post_id, $post_lang, ($include !== 'none'));
@@ -102,27 +110,42 @@ class FrontendHelper
         // source = $ids : array ('lang' => 'entry-id')
         // destination = $table : array ('language' (or 'lang' if $code=true) => 'entry-url')
         // $current = current language
-        $table = [];
-        $langs = App::lang()->getLanguagesName();
+
+        /**
+         * @var array<string, string>
+         */
+        $table       = [];
+        $langs       = App::lang()->getLanguagesName();
+        $system_lang = is_string($system_lang = App::blog()->settings()->system->lang) ? $system_lang : 'en';
+
         foreach ($ids as $lang => $id) {
-            $name = $langs[$lang] ?? $langs[App::blog()->settings()->system->lang];
-            if ($post_id == $id) {
+            $name = $langs[$lang] ?? $langs[$system_lang] ?? $system_lang;
+            if ($post_id === $id) {
                 $current = $code_only ? $lang : $name;
             }
 
-            if ($post_id == $id && $include !== 'link') {
+            if ($post_id === $id && $include !== 'link') {
                 $table[($code_only ? $lang : $name)] = '';
             } else {
                 // Get post/page URL
+
+                /**
+                 * @var ArrayObject<string, mixed>  $params
+                 */
                 $params = new ArrayObject([
                     'post_id'    => $id,
                     'post_type'  => $post_type,
-                    'no_content' => true, ]);
+                    'no_content' => true,
+                ]);
+
                 App::behavior()->callBehavior('publicPostBeforeGetPosts', $params, null);
                 $rs = App::blog()->getPosts($params);
+
                 if ($rs->count()) {
                     $rs->fetch();
-                    $url = App::blog()->url() . App::postTypes()->get($post_type)->publicUrl(Html::sanitizeURL($rs->post_url));
+                    $post_url = is_string($post_url = $rs->post_url) ? $post_url : '';
+
+                    $url = App::blog()->url() . App::postTypes()->get($post_type)->publicUrl(Html::sanitizeURL($post_url));
 
                     $settings = My::settings();
                     if ($settings->accept_language) {
@@ -141,6 +164,6 @@ class FrontendHelper
 
         App::lexical()->lexicalKeySort($table, App::lexical()::PUBLIC_LOCALE);
 
-        return $table;
+        return $table;  // @phpstan-ignore return.type (lexicalKeySort will not change type of values in array)
     }
 }

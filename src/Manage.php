@@ -56,7 +56,7 @@ class Manage
         }
 
         if (!empty($_POST['save_settings'])) {
-            $tab = empty($_REQUEST['tab']) ? '' : $_REQUEST['tab'];
+            $tab = isset($_REQUEST['tab']) && is_string($tab = $_REQUEST['tab']) ? $tab : '';
 
             try {
                 $settings = My::settings();
@@ -91,9 +91,9 @@ class Manage
         }
 
         // Main page of plugin
-        $settings                = My::settings();
-        $rosetta_active          = $settings->active;
-        $rosetta_accept_language = $settings->accept_language;
+        $settings        = My::settings();
+        $active          = (bool) $settings->active;
+        $accept_language = (bool) $settings->accept_language;
 
         $tab = empty($_REQUEST['tab']) ? '' : $_REQUEST['tab'];
 
@@ -171,7 +171,7 @@ class Manage
                                 ->fields([
                                     (new Para())
                                         ->items([
-                                            (new Checkbox('active', $rosetta_active))
+                                            (new Checkbox('active', $active))
                                                 ->value(1)
                                                 ->label(new Label(__('Enable posts/pages translations for this blog'), Label::IL_FT)),
                                         ]),
@@ -181,7 +181,7 @@ class Manage
                                 ->fields([
                                     (new Para())
                                         ->items([
-                                            (new Checkbox('accept_language', $rosetta_accept_language))
+                                            (new Checkbox('accept_language', $accept_language))
                                                 ->value(1)
                                                 ->label(new Label(__('Automatic posts/pages redirect on browser\'s language for this blog'), Label::IL_FT)),
                                         ]),

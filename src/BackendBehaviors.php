@@ -151,6 +151,8 @@ class BackendBehaviors
      */
     private static function adminEntryForm(?MetaRecord $post, string $post_type = 'post'): string
     {
+        $system_lang = is_string($system_lang = App::blog()->settings()->system->lang) ? $system_lang : 'en';
+
         $settings = My::settings();
         if ($settings->active) {
             if (!$post instanceof MetaRecord || !$post->post_id) {
@@ -167,30 +169,45 @@ class BackendBehaviors
             $html_lines   = '';
             $translations = [];
 
-            $list = CoreData::findAllTranslations((int) $post->post_id, $post->post_lang, false);
+            $post_id   = is_numeric($post_id = $post->post_id) ? (int) $post_id : 0;
+            $post_lang = is_string($post_lang = $post->post_lang) ? $post_lang : '';
+
+            $list = CoreData::findAllTranslations($post_id, $post_lang, false);
             if (is_array($list) && count($list)) {
                 App::lexical()->lexicalKeySort($list, App::lexical()::ADMIN_LOCALE);
 
                 $langs = App::lang()->getLanguagesName();
                 foreach ($list as $lang => $id) {
+                    // Ensure Id is int
+                    $new_id = is_numeric($new_id = $id) ? (int) $new_id : 0;
+
                     // Display existing translations
-                    $name = $langs[$lang] ?? $langs[App::blog()->settings()->system->lang];
+                    $name = $langs[$lang] ?? $langs[$system_lang] ?? $system_lang;
                     // Get post/page id
+
+                    /**
+                     * @var ArrayObject<string, mixed>
+                     */
                     $params = new ArrayObject([
-                        'post_id'    => $id,
+                        'post_id'    => $new_id,
                         'post_type'  => $post_type,
                         'no_content' => true,
                     ]);
                     $rs = App::blog()->getPosts($params);
+
                     if ($rs->count()) {
                         $rs->fetch();
+
+                        $post_title = is_string($post_title = $rs->post_title) ? $post_title : '';
+                        $post_link  = is_string($post_link = App::backend()->post_link) ? $post_link : '';
+
                         $translation = self::translationRow(
-                            $post->post_lang,
-                            $id,
+                            $post_lang,
+                            $new_id,
                             $lang,
                             $name,
-                            $rs->post_title,
-                            App::backend()->post_link,
+                            $post_title,
+                            $post_link,
                             $url
                         );
                         $translations[] = $translation;
@@ -236,7 +253,7 @@ class BackendBehaviors
                                     (new Link())
                                         ->href($url . sprintf(
                                             self::$args_rosetta,
-                                            ($post->post_lang == '' || !$post->post_lang ? App::blog()->settings()->system->lang : $post->post_lang),
+                                            $post_lang === '' ? $system_lang : $post_lang,
                                             $post_type,
                                             'add',
                                             0,
@@ -253,7 +270,7 @@ class BackendBehaviors
                                     (new Link())
                                         ->href($url . sprintf(
                                             self::$args_rosetta,
-                                            ($post->post_lang == '' || !$post->post_lang ? App::blog()->settings()->system->lang : $post->post_lang),
+                                            $post_lang === '' ? $system_lang : $post_lang,
                                             $post_type,
                                             'new',
                                             0,
@@ -264,7 +281,7 @@ class BackendBehaviors
                                     (new Link())
                                         ->href($url . sprintf(
                                             self::$args_rosetta,
-                                            ($post->post_lang == '' || !$post->post_lang ? App::blog()->settings()->system->lang : $post->post_lang),
+                                            $post_lang === '' ? $system_lang : $post_lang,
                                             $post_type,
                                             'new_edit',
                                             0,
@@ -313,13 +330,16 @@ class BackendBehaviors
      */
     public static function adminColumnsLists(ArrayObject $cols): string
     {
-        if (isset($cols['posts'])) {
-            $cols['posts'][1]['language']     = [true, __('Language')];
-            $cols['posts'][1]['translations'] = [true, __('Translations')];
+        $template = [
+            'language'     => [true, __('Language')],
+            'translations' => [true, __('Translations')],
+        ];
+
+        if (isset($cols['posts']) && is_array($cols['posts']) && is_array($cols['posts'][1])) {
+            $cols['posts'][1] = array_merge($cols['posts'][1], $template);
         }
-        if (isset($cols['pages'])) {
-            $cols['pages'][1]['language']     = [true, __('Language')];
-            $cols['pages'][1]['translations'] = [true, __('Translations')];
+        if (isset($cols['pages']) && is_array($cols['pages']) && is_array($cols['pages'][1])) {
+            $cols['pages'][1] = array_merge($cols['pages'][1], $template);
         }
 
         return '';
@@ -378,27 +398,42 @@ class BackendBehaviors
      */
     private static function adminEntryListValue(MetaRecord $rs, ArrayObject $cols, bool $component = false): string
     {
+        $system_lang = is_string($system_lang = App::blog()->settings()->system->lang) ? $system_lang : 'en';
+
         $settings = My::settings();
         if ($settings->active) {
             $translations = [];
-            $list         = CoreData::findAllTranslations((int) $rs->post_id, $rs->post_lang, false);
+
+            $post_id   = is_numeric($post_id = $rs->post_id) ? (int) $post_id : 0;
+            $post_lang = is_string($post_lang = $rs->post_lang) ? $post_lang : '';
+            $post_type = is_string($post_type = $rs->post_type) ? $post_type : '';
+
+            $list = CoreData::findAllTranslations($post_id, $post_lang, false);
             if (is_array($list) && count($list)) {
                 App::lexical()->lexicalKeySort($list, App::lexical()::ADMIN_LOCALE);
                 $langs = App::lang()->getLanguagesName();
                 foreach ($list as $lang => $id) {
                     // Display existing translations
-                    $name = $langs[$lang] ?? $langs[App::blog()->settings()->system->lang];
+                    $name = $langs[$lang] ?? $langs[$system_lang] ?? $system_lang;
                     // Get post/page id
+
+                    /**
+                     * @var ArrayObject<string, mixed>
+                     */
                     $params = new ArrayObject([
                         'post_id'    => $id,
-                        'post_type'  => $rs->post_type,
+                        'post_type'  => $post_type,
                         'no_content' => true, ]);
                     $rst = App::blog()->getPosts($params);
+
                     if ($rst->count()) {
                         $rst->fetch();
+
+                        $post_title = is_string($post_title = $rst->post_title) ? $post_title : '';
+
                         $translations[] = (new Link())
-                            ->href(App::postTypes()->get($rs->post_type)->adminUrl($rs->post_id))
-                            ->title($rst->post_title)
+                            ->href(App::postTypes()->get($post_type)->adminUrl($post_id))
+                            ->title($post_title)
                             ->translate(false)
                             ->text($name);
                     }
@@ -407,7 +442,7 @@ class BackendBehaviors
 
             $value = (new Td())
                 ->class('nowrap')
-                ->text($rs->post_lang)
+                ->text($post_lang)
                 ->translate(false);
             $cols['language'] = $component ? $value : $value->render();
 
@@ -472,9 +507,10 @@ class BackendBehaviors
     {
         $settings = My::settings();
         if ($settings->active) {
-            $value = (new Td())
+            $post_lang = is_string($post_lang = $rs->post_lang) ? $post_lang : '';
+            $value     = (new Td())
                 ->class('nowrap')
-                ->text($rs->post_lang)
+                ->text($post_lang)
                 ->translate(false);
             $cols['language'] = $component ? $value : $value->render();
         }

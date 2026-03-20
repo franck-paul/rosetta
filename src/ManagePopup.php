@@ -21,6 +21,8 @@ use Dotclear\Helper\Html\Form\Btn;
 use Dotclear\Helper\Html\Form\Form;
 use Dotclear\Helper\Html\Form\Input;
 use Dotclear\Helper\Html\Form\Label;
+use Dotclear\Helper\Html\Form\Optgroup;
+use Dotclear\Helper\Html\Form\Option;
 use Dotclear\Helper\Html\Form\Para;
 use Dotclear\Helper\Html\Form\Select;
 use Dotclear\Helper\Html\Form\Set;
@@ -58,25 +60,30 @@ class ManagePopup
             return;
         }
 
-        $id   = empty($_GET['id']) ? '' : $_GET['id'];
-        $lang = empty($_GET['lang']) ? '' : $_GET['lang'];
+        $id   = isset($_GET['id'])   && is_numeric($id = $_GET['id']) ? (int) $id : 0;
+        $lang = isset($_GET['lang']) && is_string($lang = $_GET['lang']) ? $lang : '';
 
         $title = '';
 
         // Languages combo
         $langs = [];
-        $ids   = CoreData::findAllTranslations((int) $id, $lang, true);
+        $ids   = CoreData::findAllTranslations($id, $lang, true);
         $rs    = App::blog()->getLangs([
             'order_by' => 'nb_post',
             'order'    => 'desc',
         ]);
         while ($rs->fetch()) {
-            if (is_array($ids) && !array_key_exists($rs->post_lang, $ids)) {
-                $langs[] = ['post_lang' => $rs->post_lang];
+            $post_lang = is_string($post_lang = $rs->post_lang) ? $post_lang : '';
+            if (is_array($ids) && !array_key_exists($post_lang, $ids)) {
+                $langs[] = ['post_lang' => $post_lang];
             }
         }
 
+        /**
+         * @var array<array-key, OptGroup|Option> $lang_combo
+         */
         $lang_combo = App::backend()->combos()->getLangsCombo(MetaRecord::newFromArray($langs), true, true);
+
         // Remove 1st empty option
         unset($lang_combo[0]);
 

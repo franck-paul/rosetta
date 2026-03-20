@@ -46,7 +46,7 @@ class FrontendTemplate
             return '';
         }
 
-        $option = empty($attr['include_current']) ? 'std' : (string) $attr['include_current'];
+        $option = is_string($option = $attr['include_current']) ? $option : 'std';
         if (!preg_match('#^(std|link|none)$#', $option)) {
             $option = 'std';
         }

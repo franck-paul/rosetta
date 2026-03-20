@@ -65,18 +65,20 @@ class CoreData
      */
     public static function addTranslation(int $src_id, ?string $src_lang, int $dst_id, ?string $dst_lang): bool
     {
+        $system_lang = is_string($system_lang = App::blog()->settings()->system->lang) ? $system_lang : 'en';
+
         // Check args
-        if ($src_lang == '' || !$src_lang) {
+        if (is_null($src_lang) || $src_lang === '') {
             // Use blog language if language not specified for original post
-            $src_lang = App::blog()->settings()->system->lang;
+            $src_lang = $system_lang;
         }
 
-        if ($dst_lang == '' || !$dst_lang) {
+        if (is_null($dst_lang) || $dst_lang === '') {
             // Use blog language if language not specified for original post
-            $dst_lang = App::blog()->settings()->system->lang;
+            $dst_lang = $system_lang;
         }
 
-        if ($src_lang == $dst_lang) {
+        if ($src_lang === $dst_lang) {
             return false;
         }
 
@@ -140,18 +142,20 @@ class CoreData
      */
     public static function removeTranslation(int $src_id, ?string $src_lang, int $dst_id, ?string $dst_lang): bool
     {
+        $system_lang = is_string($system_lang = App::blog()->settings()->system->lang) ? $system_lang : 'en';
+
         // Check args
-        if ($src_lang == '' || !$src_lang) {
+        if (is_null($src_lang) || $src_lang === '') {
             // Use blog language if language not specified for original post
-            $src_lang = App::blog()->settings()->system->lang;
+            $src_lang = $system_lang;
         }
 
-        if ($dst_lang == '' || !$dst_lang) {
+        if (is_null($dst_lang) || $dst_lang === '') {
             // Use blog language if language not specified for original post
-            $dst_lang = App::blog()->settings()->system->lang;
+            $dst_lang = $system_lang;
         }
 
-        if ($src_lang == $dst_lang) {
+        if ($src_lang === $dst_lang) {
             return false;
         }
 
@@ -196,13 +200,16 @@ class CoreData
      * @param  null|string  $lang original lang
      * @param  bool         $full result should include original post/page+lang
      *
-     * @return bool|array<string, int>         associative array (lang => id), false if nothing found
+     * @return false|array<string, int>         associative array (lang => id), false if nothing found
      */
-    private static function findDirectTranslations(int $id, ?string $lang, bool $full = false): array|bool
+    private static function findDirectTranslations(int $id, ?string $lang, bool $full = false): array|false
     {
-        if ($lang == '' || !$lang) {
+        $system_lang = is_string($system_lang = App::blog()->settings()->system->lang) ? $system_lang : 'en';
+
+        // Check args
+        if (is_null($lang) || $lang === '') {
             // Use blog language if language not specified for original post
-            $lang = App::blog()->settings()->system->lang;
+            $lang = $system_lang;
         }
 
         $sql = new SelectStatement();
@@ -254,13 +261,16 @@ class CoreData
      * @param  null|string  $lang         original lang
      * @param  bool         $full         result should include original post/page+lang
      *
-     * @return array<string, int>|bool    associative array (lang => id), false if nothing found
+     * @return array<string, int>|false    associative array (lang => id), false if nothing found
      */
-    public static function findAllTranslations(int $id, ?string $lang, bool $full = false): array|bool
+    public static function findAllTranslations(int $id, ?string $lang, bool $full = false): array|false
     {
-        if ($lang == '' || !$lang) {
+        $system_lang = is_string($system_lang = App::blog()->settings()->system->lang) ? $system_lang : 'en';
+
+        // Check args
+        if (is_null($lang) || $lang === '') {
             // Use blog language if language not specified for original post
-            $lang = App::blog()->settings()->system->lang;
+            $lang = $system_lang;
         }
 
         // Get direct associations
@@ -311,9 +321,12 @@ class CoreData
      */
     public static function findTranslation(int $src_id, ?string $src_lang, string $dst_lang, bool $indirect = true): int
     {
-        if ($src_lang == '' || !$src_lang) {
+        $system_lang = is_string($system_lang = App::blog()->settings()->system->lang) ? $system_lang : 'en';
+
+        // Check args
+        if (is_null($src_lang) || $src_lang === '') {
             // Use blog language if language not specified for original post
-            $src_lang = App::blog()->settings()->system->lang;
+            $src_lang = $system_lang;
         }
 
         // Looks for a post/page with an association with the corresponding lang

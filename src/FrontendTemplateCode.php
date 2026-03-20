@@ -41,12 +41,13 @@ class FrontendTemplateCode
         array $_params_,
         string $_tag_,
     ): void {
-        $rosetta_url = App::blog()->settings()->system->static_home_url;
-        if ($_override_ && $rosetta_url) {
+        $rosetta_url = is_string($rosetta_url = App::blog()->settings()->system->static_home_url) ? $rosetta_url : '';
+        if ($_override_ && $rosetta_url !== '') {
             $rosetta_langs = [];
-            if (!empty($_GET['lang'])) {
+            $rosetta_lang  = isset($_GET['lang']) && is_string($rosetta_lang = $_GET['lang']) ? $rosetta_lang : '';
+            if ($rosetta_lang !== '') {
                 // Check lang scheme
-                if (preg_match('/^[a-z]{2}(-[a-z]{2})?$/', rawurldecode((string) $_GET['lang']), $matches)) {
+                if (preg_match('/^[a-z]{2}(-[a-z]{2})?$/', rawurldecode($rosetta_lang), $matches)) {
                     // Assume that the URL scheme is for post/page
                     $rosetta_langs[] = $matches[0];
                 }
@@ -84,11 +85,18 @@ class FrontendTemplateCode
         array $_params_,
         string $_tag_,
     ): void {
-        $rosetta_current = '';
-        $rosetta_table   = \Dotclear\Plugin\rosetta\FrontendHelper::EntryListHelper(
-            App::frontend()->context()->posts->post_id,
-            App::frontend()->context()->posts->post_lang,
-            App::frontend()->context()->posts->post_type,
+        if (!App::frontend()->context()->posts instanceof \Dotclear\Database\MetaRecord) {
+            return;
+        }
+
+        $rosetta_current   = '';
+        $rosetta_post_id   = is_numeric($rosetta_post_id = App::frontend()->context()->posts->post_id) ? (int) $rosetta_post_id : 0;
+        $rosetta_post_lang = is_string($rosetta_post_lang = App::frontend()->context()->posts->post_lang) ? $rosetta_post_lang : '';
+        $rosetta_post_type = is_string($rosetta_post_type = App::frontend()->context()->posts->post_type) ? $rosetta_post_type : '';
+        $rosetta_table     = \Dotclear\Plugin\rosetta\FrontendHelper::EntryListHelper(
+            $rosetta_post_id,
+            $rosetta_post_lang,
+            $rosetta_post_type,
             $_option_,
             $rosetta_current
         );
@@ -123,6 +131,6 @@ class FrontendTemplateCode
             unset($rosetta_list, $rosetta_name, $rosetta_url, $rosetta_is_current, $rosetta_text, $rosetta_item);
         }
 
-        unset($rosetta_current, $rosetta_table);
+        unset($rosetta_current, $rosetta_post_id, $rosetta_post_lang, $rosetta_post_type, $rosetta_table);
     }
 }
