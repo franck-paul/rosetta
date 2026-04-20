@@ -1,11 +1,11 @@
 <modules xmlns:da="http://dotaddict.org/da/">
   <module id="rosetta">
     <name>Rosetta</name>
-    <version>8.8</version>
+    <version>8.9</version>
     <author>Franck Paul</author>
     <desc>Manage post/page translations</desc>
-    <date>2026-03-20T17:36:59+0100</date>
-    <file>https://github.com/franck-paul/rosetta/releases/download/8.8/plugin-rosetta-8.8.zip</file>
+    <date>2026-04-20T18:25:09+0200</date>
+    <file>https://github.com/franck-paul/rosetta/releases/download/8.9/plugin-rosetta-8.9.zip</file>
     <da:dcmin>2.36</da:dcmin>
     <da:details>https://dotclear.org/plugin/detail/rosetta</da:details>
     <da:support>https://github.com/franck-paul/rosetta</da:support>
