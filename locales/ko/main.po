@@ -3,7 +3,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Franck Paul <carnet.franck.paul@gmail.com>, 2023
+# Franck Paul <contact@open-time.net>, 2023
 # 
 #, fuzzy
 msgid ""
@@ -12,7 +12,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-06-14 09:20+0200\n"
 "PO-Revision-Date: 2023-06-14 07:23+0000\n"
-"Last-Translator: Franck Paul <carnet.franck.paul@gmail.com>, 2023\n"
+"Last-Translator: Franck Paul <contact@open-time.net>, 2023\n"
 "Language-Team: Korean (https://app.transifex.com/open-time/teams/109573/ko/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"

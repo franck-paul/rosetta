@@ -8,7 +8,7 @@
  *
  * @author Franck Paul and contributors
  *
- * @copyright Franck Paul carnet.franck.paul@gmail.com
+ * @copyright Franck Paul contact@open-time.net
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
 declare(strict_types=1);
@@ -178,18 +178,16 @@ class BackendBehaviors
 
                 $langs = App::lang()->getLanguagesName();
                 foreach ($list as $lang => $id) {
-                    // Ensure Id is int
-                    $new_id = is_numeric($new_id = $id) ? (int) $new_id : 0;
-
                     // Display existing translations
                     $name = $langs[$lang] ?? $langs[$system_lang] ?? $system_lang;
+
                     // Get post/page id
 
                     /**
                      * @var ArrayObject<string, mixed>
                      */
                     $params = new ArrayObject([
-                        'post_id'    => $new_id,
+                        'post_id'    => $id,
                         'post_type'  => $post_type,
                         'no_content' => true,
                     ]);
@@ -203,7 +201,7 @@ class BackendBehaviors
 
                         $translation = self::translationRow(
                             $post_lang,
-                            $new_id,
+                            $id,
                             $lang,
                             $name,
                             $post_title,
