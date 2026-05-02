@@ -54,6 +54,7 @@ class FrontendTemplateCode
             } else {
                 $rosetta_langs = \Dotclear\Helper\Network\Http::getAcceptLanguages();
             }
+
             if (count($rosetta_langs) > 0) {
                 foreach ($rosetta_langs as $rosetta_lang) {
                     $rosetta_new = \Dotclear\Plugin\rosetta\FrontendHelper::findTranslatedEntry($rosetta_url, $rosetta_lang);
@@ -65,6 +66,7 @@ class FrontendTemplateCode
                 }
             }
         }
+
         $params['post_type'] = array_keys(App::postTypes()->dump());
         $params['post_url']  = App::frontend()->context()::global_filters(
             $rosetta_url,
@@ -117,12 +119,14 @@ class FrontendTemplateCode
                 } else {
                     $rosetta_item = $rosetta_text;
                 }
+
                 $rosetta_list[] = (new \Dotclear\Helper\Html\Form\Li())
                     ->class($rosetta_is_current ? 'current' : '')
                     ->items([
                         $rosetta_item,
                     ]);
             }
+
             echo (new \Dotclear\Helper\Html\Form\Ul())
                 ->class('rosetta-entries-list')
                 ->items($rosetta_list)

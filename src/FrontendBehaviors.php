@@ -85,6 +85,7 @@ class FrontendBehaviors
         if ($type !== '') {
             $params['type'] = $type;
         }
+
         $rs = App::blog()->getPosts($params);
         if ($rs->count()) {
             $rs->fetch();

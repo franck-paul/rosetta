@@ -73,6 +73,7 @@ abstract class Row
                     if (!$property->getType()->allowsNull() && $value === null) {
                         throw new Exception(sprintf('Null is not an allowed value for field %s', $propertyName));
                     }
+
                     if ($value !== null) {
                         // Will only work with basic types (int, string, …)
                         settype($value, $property->getType()->getName());
@@ -82,6 +83,7 @@ abstract class Row
                         throw new Exception(sprintf('Unsupported property type for %s', $propertyName));
                     }
                 }
+
                 $this->{$propertyName} = $value;
             } elseif ($complete) {
                 // Value is missing
@@ -90,6 +92,7 @@ abstract class Row
                 // Set value to null if nullable
                 $this->{$propertyName} = null;
             }
+
             $index++;
         }
     }
