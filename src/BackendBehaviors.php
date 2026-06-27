@@ -567,10 +567,10 @@ class BackendBehaviors
         if (!is_null($cur)) {
             $cur->clean();
 
-            $cur->src_id   = (int) $line->src_id;   // @phpstan-ignore-line
-            $cur->src_lang = (string) $line->src_lang;  // @phpstan-ignore-line
-            $cur->dst_id   = (int) $line->dst_id;   // @phpstan-ignore-line
-            $cur->dst_lang = (string) $line->dst_lang;  // @phpstan-ignore-line
+            $cur->src_id   = (int) $line->src_id;       // @phpstan-ignore cast.int, property.notFound
+            $cur->src_lang = (string) $line->src_lang;  // @phpstan-ignore cast.string, property.notFound
+            $cur->dst_id   = (int) $line->dst_id;       // @phpstan-ignore cast.int, property.notFound
+            $cur->dst_lang = (string) $line->dst_lang;  // @phpstan-ignore cast.string, property.notFound
 
             $cur->insert();
         }
@@ -579,9 +579,9 @@ class BackendBehaviors
     public static function importSingle(FlatBackupItem $line, FlatImportV2 $fi): string
     {
         if ($line->__name == CoreData::ROSETTA_TABLE_NAME) {
-            if (isset($fi->old_ids['post'][(int) $line->src_id]) && isset($fi->old_ids['post'][(int) $line->dst_id])) { // @phpstan-ignore-line
-                $line->src_id = $fi->old_ids['post'][(int) $line->src_id];  // @phpstan-ignore-line
-                $line->dst_id = $fi->old_ids['post'][(int) $line->dst_id];  // @phpstan-ignore-line
+            if (isset($fi->old_ids['post'][(int) $line->src_id]) && isset($fi->old_ids['post'][(int) $line->dst_id])) { // @phpstan-ignore cast.int, property.notFound, cast.int, property.notFound
+                $line->src_id = $fi->old_ids['post'][(int) $line->src_id];  // @phpstan-ignore cast.int, property.notFound, property.notFound
+                $line->dst_id = $fi->old_ids['post'][(int) $line->dst_id];  // @phpstan-ignore cast.int, property.notFound, property.notFound
                 self::insertRosettaLine($line, $fi);
             } else {
                 throw new Exception(sprintf(
