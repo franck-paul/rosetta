@@ -428,7 +428,7 @@ class BackendBehaviors
                     if ($rst->count()) {
                         $rst->fetch();
 
-                        $post_title = is_string($post_title = $rst->post_title) ? $post_title : '';
+                        $post_title = $rst->strField('post_title');
 
                         $translations[] = (new Link())
                             ->href(App::postTypes()->get($post_type)->adminUrl($post_id))

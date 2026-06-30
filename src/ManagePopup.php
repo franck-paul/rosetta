@@ -73,7 +73,7 @@ class ManagePopup
             'order'    => 'desc',
         ]);
         while ($rs->fetch()) {
-            $post_lang = is_string($post_lang = $rs->post_lang) ? $post_lang : '';
+            $post_lang = $rs->strField('post_lang');
             if (is_array($ids) && !array_key_exists($post_lang, $ids)) {
                 $langs[] = ['post_lang' => $post_lang];
             }

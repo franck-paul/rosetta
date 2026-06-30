@@ -58,8 +58,8 @@ class FrontendHelper
             }
 
             // Try to find an associated post corresponding to the requested lang
-            $post_id   = is_numeric($post_id = $rsSrc->post_id) ? (int) $post_id : 0;
-            $post_lang = is_string($post_lang = $rsSrc->post_lang) ? $post_lang : '';
+            $post_id   = $rsSrc->intField('post_id');
+            $post_lang = $rsSrc->strField('post_lang');
             $id        = CoreData::findTranslation($post_id, $post_lang, $lang);
             if (($id >= 0) && ($id !== $post_id)) {
                 // Get post/page URL
@@ -81,7 +81,7 @@ class FrontendHelper
                     $rsDst->fetch();
 
                     // Return entry URL
-                    return is_string($post_url = $rsDst->post_url) ? $post_url : '';
+                    return $rsDst->strField('post_url');
                 }
             }
         }
@@ -143,7 +143,7 @@ class FrontendHelper
 
                 if ($rs->count()) {
                     $rs->fetch();
-                    $post_url = is_string($post_url = $rs->post_url) ? $post_url : '';
+                    $post_url = $rs->strField('post_url');
 
                     $url = App::blog()->url() . App::postTypes()->get($post_type)->publicUrl(Html::sanitizeURL($post_url));
 

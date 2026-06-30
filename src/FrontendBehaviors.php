@@ -90,7 +90,9 @@ class FrontendBehaviors
         if ($rs->count()) {
             $rs->fetch();
 
-            return is_string($post_lang = $rs->post_lang) ? $post_lang : $system_lang;
+            $post_lang = $rs->strField('post_lang');
+
+            return $post_lang !== '' ? $post_lang : $system_lang;
         }
 
         // Return blog default lang
@@ -119,9 +121,15 @@ class FrontendBehaviors
                     $nbx = 0;
                     while ($rs->fetch()) {
                         $exchanged = false;
-                        $post_id   = is_numeric($post_id = $rs->post_id) ? (int) $post_id : 0;
-                        $post_type = is_string($post_type = $rs->post_type) ? $post_type : '';
-                        $post_lang = $rs->exists('post_lang') && is_string($rs->post_lang) ? $rs->post_lang : self::getPostLang($post_id, $post_type);
+
+                        $post_id   = $rs->intField('post_id');
+                        $post_type = $rs->strField('post_type');
+                        $post_lang = $rs->strField('post_lang');
+
+                        if ($post_lang === '') {
+                            $post_lang = self::getPostLang($post_id, $post_type);
+                        }
+
                         foreach ($langs as $lang) {
                             if ($post_lang === $lang) {
                                 // Already in an accepted language, do nothing
@@ -257,8 +265,8 @@ class FrontendBehaviors
             $rsSrc->fetch();
 
             // Try to find an associated post corresponding to the requested lang
-            $post_id   = is_numeric($post_id = $rsSrc->post_id) ? (int) $post_id : 0;
-            $post_lang = is_string($post_lang = $rsSrc->post_lang) ? $post_lang : '';
+            $post_id   = $rsSrc->intField('post_id');
+            $post_lang = $rsSrc->strField('post_lang');
 
             // If current entry is in the requested languages, return true
             if ($post_lang === $lang) {

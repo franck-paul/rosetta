@@ -134,7 +134,7 @@ class BackendRest
                 if ($rs->count()) {
                     // Load first record
                     $rs->fetch();
-                    $rosetta_lang = is_string($rosetta_lang = $rs->post_lang) ? $rosetta_lang : '';
+                    $rosetta_lang = $rs->strField('post_lang');
                 }
             }
 
@@ -215,8 +215,8 @@ class BackendRest
             if ($rs->count()) {
                 $rs->fetch();
 
-                $post_id   = is_numeric($post_id = $rs->post_id) ? (int) $post_id : 0;
-                $post_type = is_string($post_type = $rs->post_type) ? $post_type : '';
+                $post_id   = $rs->intField('post_id');
+                $post_type = $rs->strField('post_type');
 
                 $url_page = App::postTypes()->get($post_type)->adminUrl($post_id);
 
@@ -233,10 +233,10 @@ class BackendRest
                 if ($rs->count()) {
                     $rs->fetch();
 
-                    $post_id    = is_numeric($post_id = $rs->post_id) ? (int) $post_id : 0;
-                    $post_type  = is_string($post_type = $rs->post_type) ? $post_type : '';
-                    $post_lang  = is_string($post_lang = $rs->post_lang) ? $post_lang : '';
-                    $post_title = is_string($post_title = $rs->post_title) ? $post_title : '';
+                    $post_id    = $rs->intField('post_id');
+                    $post_type  = $rs->strField('post_type');
+                    $post_lang  = $rs->strField('post_lang');
+                    $post_title = $rs->strField('post_title');
 
                     $post_link = '<a id="r-%s" href="' . App::postTypes()->get($post_type)->adminUrl($post_id) . '" class="%s" title="%s">%s</a>';
 

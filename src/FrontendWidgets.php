@@ -101,9 +101,9 @@ class FrontendWidgets
                 return '';
             }
 
-            $post_id   = is_numeric($post_id = $rs->post_id) ? (int) $post_id : 0;
-            $post_lang = is_string($post_lang = $rs->post_lang) ? $post_lang : '';
-            $post_type = is_string($post_type = $rs->post_type) ? $post_type : '';
+            $post_id   = $rs->intField('post_id');
+            $post_lang = $rs->strField('post_lang');
+            $post_type = $rs->strField('post_type');
         } else {
             return '';
         }
