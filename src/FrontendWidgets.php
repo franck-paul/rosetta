@@ -39,9 +39,9 @@ class FrontendWidgets
         ];
 
         if (in_array(App::url()->getType(), $urlTypes) && App::frontend()->context()->posts instanceof MetaRecord) {
-            $post_id   = is_numeric($post_id = App::frontend()->context()->posts->post_id) ? (int) $post_id : 0;
-            $post_lang = is_string($post_lang = App::frontend()->context()->posts->post_lang) ? $post_lang : '';
-            $post_type = is_string($post_type = App::frontend()->context()->posts->post_type) ? $post_type : '';
+            $post_id   = App::frontend()->context()->posts->intField('post_id');
+            $post_lang = App::frontend()->context()->posts->strField('post_lang');
+            $post_type = App::frontend()->context()->posts->strField('post_type');
         } else {
             return '';
         }

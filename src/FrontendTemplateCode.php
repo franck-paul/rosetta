@@ -92,9 +92,9 @@ class FrontendTemplateCode
         }
 
         $rosetta_current   = '';
-        $rosetta_post_id   = is_numeric($rosetta_post_id = App::frontend()->context()->posts->post_id) ? (int) $rosetta_post_id : 0;
-        $rosetta_post_lang = is_string($rosetta_post_lang = App::frontend()->context()->posts->post_lang) ? $rosetta_post_lang : '';
-        $rosetta_post_type = is_string($rosetta_post_type = App::frontend()->context()->posts->post_type) ? $rosetta_post_type : '';
+        $rosetta_post_id   = App::frontend()->context()->posts->intField('post_id');
+        $rosetta_post_lang = App::frontend()->context()->posts->strField('post_lang');
+        $rosetta_post_type = App::frontend()->context()->posts->strField('post_type');
         $rosetta_table     = \Dotclear\Plugin\rosetta\FrontendHelper::EntryListHelper(
             $rosetta_post_id,
             $rosetta_post_lang,

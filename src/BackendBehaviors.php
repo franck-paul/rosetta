@@ -50,11 +50,11 @@ class BackendBehaviors
     public static function adminDashboardFavorites(Favorites $favs): string
     {
         $favs->register('rosetta', [
-            'title'       => __('Rosetta'),
-            'url'         => My::manageUrl(),
-            'small-icon'  => My::icons(),
-            'large-icon'  => My::icons(),
-            'permissions' => My::checkContext(My::MENU),
+            'title'          => __('Rosetta'),
+            'url'            => My::manageUrl(),
+            'menu-icon'      => My::icon(),
+            'dashboard-icon' => My::icon(),
+            'permissions'    => My::checkContext(My::MENU),
         ]);
 
         return '';
@@ -169,8 +169,8 @@ class BackendBehaviors
             $html_lines   = '';
             $translations = [];
 
-            $post_id   = is_numeric($post_id = $post->post_id) ? (int) $post_id : 0;
-            $post_lang = is_string($post_lang = $post->post_lang) ? $post_lang : '';
+            $post_id   = $post->intField('post_id');
+            $post_lang = $post->strField('post_lang');
 
             $list = CoreData::findAllTranslations($post_id, $post_lang, false);
             if (is_array($list) && count($list)) {
@@ -196,7 +196,7 @@ class BackendBehaviors
                     if ($rs->count()) {
                         $rs->fetch();
 
-                        $post_title = is_string($post_title = $rs->post_title) ? $post_title : '';
+                        $post_title = $rs->strField('post_title');
                         $post_link  = is_string($post_link = App::backend()->post_link) ? $post_link : '';
 
                         $translation = self::translationRow(
@@ -403,9 +403,9 @@ class BackendBehaviors
         if ($settings->active) {
             $translations = [];
 
-            $post_id   = is_numeric($post_id = $rs->post_id) ? (int) $post_id : 0;
-            $post_lang = is_string($post_lang = $rs->post_lang) ? $post_lang : '';
-            $post_type = is_string($post_type = $rs->post_type) ? $post_type : '';
+            $post_id   = $rs->intField('post_id');
+            $post_lang = $rs->strField('post_lang');
+            $post_type = $rs->strField('post_type');
 
             $list = CoreData::findAllTranslations($post_id, $post_lang, false);
             if (is_array($list) && count($list)) {
@@ -506,7 +506,7 @@ class BackendBehaviors
     {
         $settings = My::settings();
         if ($settings->active) {
-            $post_lang = is_string($post_lang = $rs->post_lang) ? $post_lang : '';
+            $post_lang = $rs->strField('post_lang');
             $value     = (new Td())
                 ->class('nowrap')
                 ->text($post_lang)
