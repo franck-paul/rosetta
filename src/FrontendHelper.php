@@ -116,7 +116,7 @@ class FrontendHelper
          */
         $table       = [];
         $langs       = App::lang()->getLanguagesName();
-        $system_lang = is_string($system_lang = App::blog()->settings()->system->lang) ? $system_lang : 'en';
+        $system_lang = App::blog()->settings()->get('system')->getStr('lang', false) ?: 'en';
 
         foreach ($ids as $lang => $id) {
             $name = $langs[$lang] ?? $langs[$system_lang] ?? $system_lang;
@@ -148,7 +148,7 @@ class FrontendHelper
                     $url = App::blog()->url() . App::postTypes()->get($post_type)->publicUrl(Html::sanitizeURL($post_url));
 
                     $settings = My::settings();
-                    if ($settings->accept_language) {
+                    if ($settings->getBool('accept_language')) {
                         // Add lang parameter to the URL to prevent accept-language auto redirect
                         $url .= (str_contains($url, '?') ? '&' : '?') . 'lang=' . $lang;
                     }

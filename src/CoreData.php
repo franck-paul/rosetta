@@ -65,7 +65,7 @@ class CoreData
      */
     public static function addTranslation(int $src_id, ?string $src_lang, int $dst_id, ?string $dst_lang): bool
     {
-        $system_lang = is_string($system_lang = App::blog()->settings()->system->lang) ? $system_lang : 'en';
+        $system_lang = App::blog()->settings()->get('system')->getStr('lang', false) ?: 'en';
 
         // Check args
         if (is_null($src_lang) || $src_lang === '') {
@@ -142,7 +142,7 @@ class CoreData
      */
     public static function removeTranslation(int $src_id, ?string $src_lang, int $dst_id, ?string $dst_lang): bool
     {
-        $system_lang = is_string($system_lang = App::blog()->settings()->system->lang) ? $system_lang : 'en';
+        $system_lang = App::blog()->settings()->get('system')->getStr('lang', false) ?: 'en';
 
         // Check args
         if (is_null($src_lang) || $src_lang === '') {
@@ -204,7 +204,7 @@ class CoreData
      */
     private static function findDirectTranslations(int $id, ?string $lang, bool $full = false): array|false
     {
-        $system_lang = is_string($system_lang = App::blog()->settings()->system->lang) ? $system_lang : 'en';
+        $system_lang = App::blog()->settings()->get('system')->getStr('lang', false) ?: 'en';
 
         // Check args
         if (is_null($lang) || $lang === '') {
@@ -265,7 +265,7 @@ class CoreData
      */
     public static function findAllTranslations(int $id, ?string $lang, bool $full = false): array|false
     {
-        $system_lang = is_string($system_lang = App::blog()->settings()->system->lang) ? $system_lang : 'en';
+        $system_lang = App::blog()->settings()->get('system')->getStr('lang', false) ?: 'en';
 
         // Check args
         if (is_null($lang) || $lang === '') {
@@ -321,7 +321,7 @@ class CoreData
      */
     public static function findTranslation(int $src_id, ?string $src_lang, string $dst_lang, bool $indirect = true): int
     {
-        $system_lang = is_string($system_lang = App::blog()->settings()->system->lang) ? $system_lang : 'en';
+        $system_lang = App::blog()->settings()->get('system')->getStr('lang', false) ?: 'en';
 
         // Check args
         if (is_null($src_lang) || $src_lang === '') {

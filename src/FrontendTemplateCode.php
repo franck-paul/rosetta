@@ -41,7 +41,7 @@ class FrontendTemplateCode
         array $_params_,
         string $_tag_,
     ): void {
-        $rosetta_url = is_string($rosetta_url = App::blog()->settings()->system->static_home_url) ? $rosetta_url : '';
+        $rosetta_url = App::blog()->settings()->get('system')->getStr('static_home_url', false);
         if ($_override_ && $rosetta_url !== '') {
             $rosetta_langs = [];
             $rosetta_lang  = isset($_GET['lang']) && is_string($rosetta_lang = $_GET['lang']) ? $rosetta_lang : '';

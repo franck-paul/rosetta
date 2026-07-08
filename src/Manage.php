@@ -92,8 +92,8 @@ class Manage
 
         // Main page of plugin
         $settings        = My::settings();
-        $active          = (bool) $settings->active;
-        $accept_language = (bool) $settings->accept_language;
+        $active          = $settings->getBool('active', false);
+        $accept_language = $settings->getBool('accept_language', false);
 
         $tab = empty($_REQUEST['tab']) ? '' : $_REQUEST['tab'];
 

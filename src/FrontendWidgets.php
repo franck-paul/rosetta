@@ -25,7 +25,7 @@ class FrontendWidgets
     public static function rosettaEntryWidget(WidgetsElement $w): string
     {
         $settings = My::settings();
-        if (!$settings->active) {
+        if (!$settings->getBool('active')) {
             return '';
         }
 
@@ -83,7 +83,7 @@ class FrontendWidgets
     public static function rosettaStaticHomeWidget(WidgetsElement $w): string
     {
         $settings = My::settings();
-        if (!$settings->active) {
+        if (!$settings->getBool('active')) {
             return '';
         }
 
@@ -95,8 +95,9 @@ class FrontendWidgets
             return '';
         }
 
-        if (App::blog()->settings()->system->static_home_url) {
-            $rs = App::blog()->getPosts(['post_url' => App::blog()->settings()->system->static_home_url, 'post_type' => '']);
+        $static_home_url = App::blog()->settings()->get('system')->getStr('static_home_url', false);
+        if ($static_home_url !== '') {
+            $rs = App::blog()->getPosts(['post_url' => $static_home_url, 'post_type' => '']);
             if ($rs->isEmpty()) {
                 return '';
             }
@@ -128,7 +129,7 @@ class FrontendWidgets
         // Render widget list of translations
         $list        = '';
         $langs       = App::lang()->getLanguagesName();
-        $system_lang = is_string($system_lang = App::blog()->settings()->system->lang) ? $system_lang : 'en';
+        $system_lang = App::blog()->settings()->get('system')->getStr('lang', false) ?: 'en';
 
         foreach ($table as $name => $url) {
             $class = ($name === $current ? ' class="current"' : '');

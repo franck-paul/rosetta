@@ -58,8 +58,8 @@ class BackendRest
                     }
                 }
 
-                $allow_comments   = is_bool($allow_comments = App::blog()->settings()->system->allow_comments)     && $allow_comments;
-                $allow_trackbacks = is_bool($allow_trackbacks = App::blog()->settings()->system->allow_trackbacks) && $allow_trackbacks;
+                $allow_comments   = App::blog()->settings()->get('system')->getBool('allow_comments', false);
+                $allow_trackbacks = App::blog()->settings()->get('system')->getBool('allow_trackbacks', false);
 
                 // Create a new entry with given title and lang
                 $cur = App::db()->con()->openCursor(App::db()->con()->prefix() . App::blog()::POST_TABLE_NAME);
@@ -190,7 +190,7 @@ class BackendRest
      */
     public static function getTranslationRow(array $get, array $post): array
     {
-        $system_lang = is_string($system_lang = App::blog()->settings()->system->lang) ? $system_lang : 'en';
+        $system_lang = App::blog()->settings()->get('system')->getStr('lang', false) ?: 'en';
 
         $_Int = fn (string $name, int $default = 0): int => isset($post[$name]) && is_numeric($val = $post[$name]) ? (int) $val : $default;
         $_Str = fn (string $name, string $default = ''): string => isset($post[$name]) && is_string($val = $post[$name]) ? $val : $default;

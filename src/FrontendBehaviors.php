@@ -37,7 +37,7 @@ class FrontendBehaviors
     public static function coreBlogBeforeGetPosts(ArrayObject $params): string
     {
         $settings = My::settings();
-        if ($settings->active) {
+        if ($settings->getBool('active')) {
             if (static::$state !== self::ROSETTA_NONE || isset($params['post_lang'])) {
                 return '';
             }
@@ -53,7 +53,7 @@ class FrontendBehaviors
                 ];
                 if (in_array(App::url()->getType(), $url_types)) {
                     // Set language according to blog default language setting
-                    $params['post_lang'] = App::blog()->settings()->system->lang;
+                    $params['post_lang'] = App::blog()->settings()->get('system')->getStr('lang');
                     // Filtering posts state
                     static::$state = self::ROSETTA_FILTER;
                 }
@@ -73,7 +73,7 @@ class FrontendBehaviors
      */
     private static function getPostLang(int $id, string $type): string
     {
-        $system_lang = is_string($system_lang = App::blog()->settings()->system->lang) ? $system_lang : 'en';
+        $system_lang = App::blog()->settings()->get('system')->getStr('lang', false) ?: 'en';
 
         /**
          * @var        ArrayObject<string, mixed>
@@ -109,7 +109,11 @@ class FrontendBehaviors
     {
         $settings = My::settings();
         // Start replacing posts only if in Filtering posts state
-        if ($settings->active && $settings->accept_language && $rs->count() && static::$state === self::ROSETTA_FILTER) {
+        if ($settings->getBool('active')
+            && $settings->getBool('accept_language')
+            && $rs->count()
+            && static::$state === self::ROSETTA_FILTER
+        ) {
             $cols = $rs->columns();
             if (count($cols) > 1 || !str_starts_with((string) $cols[0], 'count(')) {
                 // Only operate when not counting (aka getPosts() called with $count_only = true)
@@ -204,7 +208,7 @@ class FrontendBehaviors
         }
 
         $settings = My::settings();
-        if ($settings->active
+        if ($settings->getBool('active')
             && App::frontend()->context()->posts instanceof MetaRecord
             && in_array(App::url()->getType(), $urlTypes)
             && in_array(App::frontend()->context()->posts->strField('post_type'), $postTypes)
@@ -314,7 +318,7 @@ class FrontendBehaviors
     public static function urlHandlerGetArgsDocument(Url $handler): string
     {
         $settings = My::settings();
-        if (!$settings->active) {
+        if (!$settings->getBool('active')) {
             return '';
         }
 
@@ -327,7 +331,7 @@ class FrontendBehaviors
                 // Assume that the URL scheme is for post/page
                 $langs[] = $matches[0];
             }
-        } elseif ($settings->accept_language) {
+        } elseif ($settings->getBool('accept_language')) {
             $urlType = '';
             $urlPart = '';
             $url     = is_string($url = $_SERVER['URL_REQUEST_PART']) ? $url : '';

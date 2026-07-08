@@ -30,7 +30,7 @@ class FrontendTemplate
         return Code::getPHPTemplateValueCode(
             FrontendTemplateCode::BlogStaticEntryURL(...),
             [
-                $settings->active,
+                $settings->getBool('active', false),
             ],
             attr: $attr,
         );
@@ -42,7 +42,7 @@ class FrontendTemplate
     public static function rosettaEntryList(array|ArrayObject $attr): string
     {
         $settings = My::settings();
-        if (!$settings->active) {
+        if (!$settings->getBool('active')) {
             return '';
         }
 
