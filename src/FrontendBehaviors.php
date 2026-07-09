@@ -298,9 +298,9 @@ class FrontendBehaviors
                     $rsDst->fetch();
 
                     // Redirect to translated post
-                    $url = is_string($url = $rsDst->getURL()) ? $url : '';
+                    $url = $rsDst->getURL();
                     if ($url !== '') {
-                        if (!preg_match('%^https?://%', $url)) {
+                        if (!preg_match('%^https?://%', (string) $url)) {
                             // Prepend scheme if not present
                             $url = (isset($_SERVER['HTTPS']) ? 'https:' : 'http:') . $url;
                         }
