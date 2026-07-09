@@ -155,15 +155,15 @@ class BackendBehaviors
 
         $settings = My::settings();
         if ($settings->getBool('active')) {
-            if (!$post instanceof MetaRecord || !$post->post_id) {
+            if (!$post instanceof MetaRecord || !$post->intField('post_id', true)) {
                 // Manage translation only on already created posts/pages
                 return '';
             }
 
             if ($post_type === 'post') {
-                $url = App::backend()->url()->get('admin.post', ['id' => $post->post_id]);
+                $url = App::backend()->url()->get('admin.post', ['id' => $post->intField('post_id')]);
             } else {
-                $url = App::backend()->url()->get('admin.plugin.pages', ['act' => 'page', 'id' => $post->post_id]);
+                $url = App::backend()->url()->get('admin.plugin.pages', ['act' => 'page', 'id' => $post->intField('post_id')]);
             }
 
             $html_lines   = '';

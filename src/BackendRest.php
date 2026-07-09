@@ -52,7 +52,7 @@ class BackendRest
                 $rs = App::blog()->getPosts(['post_id' => $id]);
                 if (!$rs->isEmpty()) {
                     $rs->fetch();
-                    $format = $rs->post_format;
+                    $format = $rs->strField('post_format');
                     if ($format != 'xhtml') {
                         $content = '…';
                     }

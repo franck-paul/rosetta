@@ -151,7 +151,7 @@ class FrontendBehaviors
                                 $params = new ArrayObject([
                                     'post_id'     => $id,
                                     'post_type'   => $post_type,
-                                    'post_status' => $rs->post_status,
+                                    'post_status' => $rs->intField('post_status'),
                                     'no_content'  => false,
                                 ]);
                                 $rst = App::blog()->getPosts($params);
@@ -171,7 +171,7 @@ class FrontendBehaviors
 
                         if (!$exchanged) {
                             // Nothing found, keep source id
-                            $ids[] = $rs->post_id;
+                            $ids[] = $rs->intField('post_id');
                         }
                     }
 

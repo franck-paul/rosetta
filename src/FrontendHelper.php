@@ -53,7 +53,7 @@ class FrontendHelper
             $rsSrc->fetch();
 
             // If current entry is in the requested languages, return true
-            if ($rsSrc->post_lang == $lang) {
+            if ($rsSrc->strField('post_lang') === $lang) {
                 return $entry;
             }
 
