@@ -33,12 +33,7 @@ class FrontendWidgets
             return '';
         }
 
-        $urlTypes = [
-            'post',
-            'pages',
-        ];
-
-        if (in_array(App::url()->getType(), $urlTypes) && App::frontend()->context()->posts instanceof MetaRecord) {
+        if (App::url()->isType(['post', 'pages']) && App::frontend()->context()->posts instanceof MetaRecord) {
             $post_id   = App::frontend()->context()->posts->intField('post_id');
             $post_lang = App::frontend()->context()->posts->strField('post_lang');
             $post_type = App::frontend()->context()->posts->strField('post_type');
