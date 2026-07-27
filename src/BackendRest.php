@@ -42,7 +42,11 @@ class BackendRest
 
         $ret        = false;
         $rosetta_id = -1;
-        if ($id !== -1 && $lang !== '' && $rosetta_title !== '' && $rosetta_lang !== '') {
+        if ($id               !== -1
+            && $lang          !== ''
+            && $rosetta_title !== ''
+            && $rosetta_lang  !== ''
+        ) {
             try {
                 // Default format and content
                 $format  = 'xhtml';

@@ -42,7 +42,10 @@ class FrontendBehaviors
                 return '';
             }
 
-            if (!isset($params['no_context']) && !isset($params['post_url']) && !isset($params['post_id'])) {
+            if (!isset($params['no_context'])
+                && !isset($params['post_url'])
+                && !isset($params['post_id'])
+            ) {
                 // Operates only in contexts with list of posts
                 $url_types = [
                     'default', 'default-page', 'feed',

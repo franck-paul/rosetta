@@ -333,11 +333,17 @@ class BackendBehaviors
             'translations' => [true, __('Translations')],
         ];
 
-        if (isset($cols['posts']) && is_array($cols['posts']) && is_array($cols['posts'][1])) {
+        if (isset($cols['posts'])
+            && is_array($cols['posts'])
+            && is_array($cols['posts'][1])
+        ) {
             $cols['posts'][1] = array_merge($cols['posts'][1], $template);
         }
 
-        if (isset($cols['pages']) && is_array($cols['pages']) && is_array($cols['pages'][1])) {
+        if (isset($cols['pages'])
+            && is_array($cols['pages'])
+            && is_array($cols['pages'][1])
+        ) {
             $cols['pages'][1] = array_merge($cols['pages'][1], $template);
         }
 
