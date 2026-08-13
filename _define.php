@@ -11,24 +11,28 @@
  * @copyright Franck Paul contact@open-time.net
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-$this->registerModule(
-    'Rosetta',
-    'Manage post/page translations',
-    'Franck Paul',
-    '9.0',
-    [
-        'date'     => '2026-08-03T10:09:39+0200',
-        'requires' => [
-            ['core', '2.39'],
-            ['TemplateHelper'],
-        ],
-        'permissions' => 'My',
-        'priority'    => 1001,
-        'type'        => 'plugin',
+declare(strict_types=1);
 
-        'details'    => 'https://open-time.net/?q=rosetta',
-        'support'    => 'https://github.com/franck-paul/rosetta',
-        'repository' => 'https://raw.githubusercontent.com/franck-paul/rosetta/main/dcstore.xml',
-        'license'    => 'gpl2',
-    ]
-);
+if (isset($this) && is_object($this) && method_exists($this, 'registerModule') && isset($this->id) && is_string($this->id)) {
+    $this->registerModule(
+        'Rosetta',
+        'Manage post/page translations',
+        'Franck Paul',
+        '9.0',
+        [
+            'date'     => '2026-08-03T10:09:39+0200',
+            'requires' => [
+                ['core', '2.39'],
+                ['TemplateHelper'],
+            ],
+            'permissions' => 'My',
+            'priority'    => 1001,
+            'type'        => 'plugin',
+
+            'details'    => 'https://open-time.net/?q=rosetta',
+            'support'    => 'https://github.com/franck-paul/rosetta',
+            'repository' => 'https://raw.githubusercontent.com/franck-paul/rosetta/main/dcstore.xml',
+            'license'    => 'gpl2',
+        ]
+    );
+}
