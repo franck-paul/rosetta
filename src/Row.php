@@ -59,9 +59,7 @@ abstract class Row
     public function populate(MetaRecord|array $data, bool $complete = true): void
     {
         $reflectionClass = new ReflectionClass($this);
-        if (!isset($this->properties)) {
-            $this->properties = $reflectionClass->getProperties(ReflectionProperty::IS_PUBLIC);
-        }
+        $this->properties ??= $reflectionClass->getProperties(ReflectionProperty::IS_PUBLIC);
 
         $index = 0;
         foreach ($this->properties as $property) {
