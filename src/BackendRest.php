@@ -68,16 +68,16 @@ class BackendRest
                 // Create a new entry with given title and lang
                 $cur = App::db()->con()->openCursor(App::db()->con()->prefix() . App::blog()::POST_TABLE_NAME);
 
-                $cur->post_title = $rosetta_title;
-                $cur->post_type  = $type;
-                $cur->post_lang  = $rosetta_lang;
+                $cur->setStrField('post_title', $rosetta_title);
+                $cur->setStrField('post_type', $type);
+                $cur->setStrField('post_lang', $rosetta_lang);
 
-                $cur->user_id           = App::auth()->userID();
-                $cur->post_content      = $content;
-                $cur->post_format       = $format;
-                $cur->post_status       = App::status()->post()::PENDING; // forced to pending
-                $cur->post_open_comment = (int) $allow_comments;
-                $cur->post_open_tb      = (int) $allow_trackbacks;
+                $cur->setStrField('user_id', App::auth()->userID());
+                $cur->setStrField('post_content', $content);
+                $cur->setStrField('post_format', $format);
+                $cur->setIntField('post_status', App::status()->post()::PENDING); // forced to pending
+                $cur->setBoolField('post_open_comment', $allow_comments);
+                $cur->setBoolField('post_open_tb', $allow_trackbacks);
 
                 # --BEHAVIOR-- adminBeforePostCreate
                 App::behavior()->callBehavior('adminBeforePostCreate', $cur);

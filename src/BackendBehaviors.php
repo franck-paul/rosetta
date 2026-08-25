@@ -573,10 +573,10 @@ class BackendBehaviors
         if (!is_null($cur)) {
             $cur->clean();
 
-            $cur->src_id   = (int) $line->src_id;       // @phpstan-ignore cast.int, property.notFound
-            $cur->src_lang = (string) $line->src_lang;  // @phpstan-ignore cast.string, property.notFound
-            $cur->dst_id   = (int) $line->dst_id;       // @phpstan-ignore cast.int, property.notFound
-            $cur->dst_lang = (string) $line->dst_lang;  // @phpstan-ignore cast.string, property.notFound
+            $cur->setIntField('src_id', (int) $line->src_id);       // @phpstan-ignore cast.int, property.notFound
+            $cur->setStrField('src_lang', (string) $line->src_lang);  // @phpstan-ignore cast.string, property.notFound
+            $cur->setIntField('dst_id', (int) $line->dst_id);       // @phpstan-ignore cast.int, property.notFound
+            $cur->setStrField('dst_lang', (string) $line->dst_lang);  // @phpstan-ignore cast.string, property.notFound
 
             $cur->insert();
         }
