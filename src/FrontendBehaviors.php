@@ -23,10 +23,19 @@ use Dotclear\Helper\Network\Http;
 
 class FrontendBehaviors
 {
+    /**
+     * @var int ROSETTA_NONE
+     */
     public const ROSETTA_NONE = 0;
 
+    /**
+     * @var int ROSETTA_FILTER
+     */
     public const ROSETTA_FILTER = 1;
 
+    /**
+     * @var int ROSETTA_SWITCH
+     */
     public const ROSETTA_SWITCH = 2;
 
     public static int $state = self::ROSETTA_NONE;
