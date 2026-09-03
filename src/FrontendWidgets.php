@@ -22,14 +22,14 @@ use Dotclear\Plugin\widgets\WidgetsElement;
 
 class FrontendWidgets
 {
-    public static function rosettaEntryWidget(WidgetsElement $w): string
+    public static function rosettaEntryWidget(WidgetsElement $widgetsElement): string
     {
         $settings = My::settings();
         if (!$settings->getBool('active')) {
             return '';
         }
 
-        if ($w->offline) {
+        if ($widgetsElement->offline) {
             return '';
         }
 
@@ -43,19 +43,19 @@ class FrontendWidgets
 
         // Get list of available translations for current entry
         $current = '';
-        $include = is_string($include = $w->get('current')) ? $include : '';
+        $include = is_string($include = $widgetsElement->get('current')) ? $include : '';
         $table   = FrontendHelper::EntryListHelper($post_id, $post_lang, $post_type, $include, $current);
         if (!is_array($table)) {
             return '';
         }
 
         // Render widget title
-        $res = ($w->title ? $w->renderTitle(Html::escapeHTML($w->title)) . "\n" : '');
+        $res = ($widgetsElement->title ? $widgetsElement->renderTitle(Html::escapeHTML($widgetsElement->title)) . "\n" : '');
 
         // Render widget list of translations
         $list = '';
         foreach ($table as $name => $url) {
-            $link  = ($name !== $current || $w->get('current') == 'link');
+            $link  = ($name !== $current || $widgetsElement->get('current') == 'link');
             $class = ($name === $current ? ' class="current"' : '');
 
             $list .= '<li' . $class . '>' .
@@ -72,22 +72,22 @@ class FrontendWidgets
         $res .= '<ul>' . $list . '</ul>' . "\n";
 
         // Render full content
-        return $w->renderDiv((bool) $w->content_only, 'rosetta-entries ' . $w->class, '', $res);
+        return $widgetsElement->renderDiv((bool) $widgetsElement->content_only, 'rosetta-entries ' . $widgetsElement->class, '', $res);
     }
 
-    public static function rosettaStaticHomeWidget(WidgetsElement $w): string
+    public static function rosettaStaticHomeWidget(WidgetsElement $widgetsElement): string
     {
         $settings = My::settings();
         if (!$settings->getBool('active')) {
             return '';
         }
 
-        if ($w->offline) {
+        if ($widgetsElement->offline) {
             return '';
         }
 
-        if (($w->homeonly == 1 && !App::url()->isHome(App::url()->getType()))
-            || ($w->homeonly == 2 && App::url()->isHome(App::url()->getType()))
+        if (($widgetsElement->homeonly == 1 && !App::url()->isHome(App::url()->getType()))
+            || ($widgetsElement->homeonly == 2 && App::url()->isHome(App::url()->getType()))
         ) {
             return '';
         }
@@ -121,7 +121,7 @@ class FrontendWidgets
         }
 
         // Render widget title
-        $res = ($w->title ? $w->renderTitle(Html::escapeHTML($w->title)) . "\n" : '');
+        $res = ($widgetsElement->title ? $widgetsElement->renderTitle(Html::escapeHTML($widgetsElement->title)) . "\n" : '');
 
         // Render widget list of translations
         $list        = '';
@@ -148,6 +148,6 @@ class FrontendWidgets
         $res .= '<ul>' . $list . '</ul>' . "\n";
 
         // Render full content
-        return $w->renderDiv((bool) $w->content_only, 'rosetta-static-home ' . $w->class, '', $res);
+        return $widgetsElement->renderDiv((bool) $widgetsElement->content_only, 'rosetta-static-home ' . $widgetsElement->class, '', $res);
     }
 }

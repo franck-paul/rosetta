@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace Dotclear\Plugin\rosetta;
 
+use ArrayObject;
 use Dotclear\App;
 
 class FrontendTemplateCode
@@ -44,10 +45,10 @@ class FrontendTemplateCode
         $rosetta_url = App::blog()->settings()->get('system')->getStr('static_home_url', false);
         if ($_override_ && $rosetta_url !== '') {
             $rosetta_langs = [];
-            $rosetta_lang  = isset($_GET['lang']) && is_string($rosetta_lang = $_GET['lang']) ? $rosetta_lang : '';
-            if ($rosetta_lang !== '') {
+            $rosettum_lang = isset($_GET['lang']) && is_string($rosettum_lang = $_GET['lang']) ? $rosettum_lang : '';
+            if ($rosettum_lang !== '') {
                 // Check lang scheme
-                if (preg_match('/^[a-z]{2}(-[a-z]{2})?$/', rawurldecode($rosetta_lang), $matches)) {
+                if (preg_match('/^[a-z]{2}(-[a-z]{2})?$/', rawurldecode($rosettum_lang), $matches)) {
                     // Assume that the URL scheme is for post/page
                     $rosetta_langs[] = $matches[0];
                 }
@@ -56,8 +57,8 @@ class FrontendTemplateCode
             }
 
             if (count($rosetta_langs) > 0) {
-                foreach ($rosetta_langs as $rosetta_lang) {
-                    $rosetta_new = \Dotclear\Plugin\rosetta\FrontendHelper::findTranslatedEntry($rosetta_url, $rosetta_lang);
+                foreach ($rosetta_langs as $rosettum_lang) {
+                    $rosetta_new = \Dotclear\Plugin\rosetta\FrontendHelper::findTranslatedEntry($rosetta_url, $rosettum_lang);
                     if ($rosetta_new !== '') {
                         $rosetta_url = $rosetta_new;
 
@@ -74,7 +75,7 @@ class FrontendTemplateCode
             $_tag_
         );
 
-        unset($rosetta_url, $rosetta_langs, $rosetta_lang, $rosetta_new);
+        unset($rosetta_url, $rosetta_langs, $rosettum_lang, $rosetta_new);
     }
 
     /**

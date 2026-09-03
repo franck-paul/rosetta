@@ -41,19 +41,19 @@ class FrontendBehaviors
     public static int $state = self::ROSETTA_NONE;
 
     /**
-     * @param      ArrayObject<string, mixed>  $params  The parameters
+     * @param      ArrayObject<string, mixed>  $arrayObject  The parameters
      */
-    public static function coreBlogBeforeGetPosts(ArrayObject $params): string
+    public static function coreBlogBeforeGetPosts(ArrayObject $arrayObject): string
     {
         $settings = My::settings();
         if ($settings->getBool('active')) {
-            if (static::$state !== self::ROSETTA_NONE || isset($params['post_lang'])) {
+            if (static::$state !== self::ROSETTA_NONE || isset($arrayObject['post_lang'])) {
                 return '';
             }
 
-            if (!isset($params['no_context'])
-                && !isset($params['post_url'])
-                && !isset($params['post_id'])
+            if (!isset($arrayObject['no_context'])
+                && !isset($arrayObject['post_url'])
+                && !isset($arrayObject['post_id'])
             ) {
                 // Operates only in contexts with list of posts
                 $url_types = [
@@ -65,7 +65,7 @@ class FrontendBehaviors
                 ];
                 if (in_array(App::url()->getType(), $url_types)) {
                     // Set language according to blog default language setting
-                    $params['post_lang'] = App::blog()->settings()->get('system')->getStr('lang');
+                    $arrayObject['post_lang'] = App::blog()->settings()->get('system')->getStr('lang');
                     // Filtering posts state
                     static::$state = self::ROSETTA_FILTER;
                 }
@@ -90,15 +90,15 @@ class FrontendBehaviors
         /**
          * @var        ArrayObject<string, mixed>
          */
-        $params = new ArrayObject([
+        $arrayObject = new ArrayObject([
             'post_id'    => $id,
             'no_content' => true,
         ]);
         if ($type !== '') {
-            $params['type'] = $type;
+            $arrayObject['type'] = $type;
         }
 
-        $rs = App::blog()->getPosts($params);
+        $rs = App::blog()->getPosts($arrayObject);
         if ($rs->count()) {
             $rs->fetch();
 
@@ -112,21 +112,21 @@ class FrontendBehaviors
     }
 
     /**
-     * @param      MetaRecord                   $rs     Recordset
+     * @param      MetaRecord                   $metaRecord     Recordset
      * @param      ArrayObject<string, mixed>   $alt    The alternate params
      *
      * @return     string                         ( description_of_the_return_value )
      */
-    public static function coreBlogAfterGetPosts(MetaRecord $rs, ArrayObject $alt): string
+    public static function coreBlogAfterGetPosts(MetaRecord $metaRecord, ArrayObject $alt): string
     {
         $settings = My::settings();
         // Start replacing posts only if in Filtering posts state
         if ($settings->getBool('active')
             && $settings->getBool('accept_language')
-            && $rs->count()
+            && $metaRecord->count()
             && static::$state === self::ROSETTA_FILTER
         ) {
-            $cols = $rs->columns();
+            $cols = $metaRecord->columns();
             if (count($cols) > 1 || !str_starts_with((string) $cols[0], 'count(')) {
                 // Only operate when not counting (aka getPosts() called with $count_only = true)
                 static::$state = self::ROSETTA_SWITCH;
@@ -135,12 +135,12 @@ class FrontendBehaviors
                 if (count($langs) > 0) {
                     $ids = [];
                     $nbx = 0;
-                    while ($rs->fetch()) {
+                    while ($metaRecord->fetch()) {
                         $exchanged = false;
 
-                        $post_id   = $rs->intField('post_id');
-                        $post_type = $rs->strField('post_type');
-                        $post_lang = $rs->strField('post_lang');
+                        $post_id   = $metaRecord->intField('post_id');
+                        $post_type = $metaRecord->strField('post_type');
+                        $post_lang = $metaRecord->strField('post_lang');
 
                         if ($post_lang === '') {
                             $post_lang = self::getPostLang($post_id, $post_type);
@@ -163,7 +163,7 @@ class FrontendBehaviors
                                 $params = new ArrayObject([
                                     'post_id'     => $id,
                                     'post_type'   => $post_type,
-                                    'post_status' => $rs->intField('post_status'),
+                                    'post_status' => $metaRecord->intField('post_status'),
                                     'no_content'  => false,
                                 ]);
                                 $rst = App::blog()->getPosts($params);
@@ -183,7 +183,7 @@ class FrontendBehaviors
 
                         if (!$exchanged) {
                             // Nothing found, keep source id
-                            $ids[] = $rs->intField('post_id');
+                            $ids[] = $metaRecord->intField('post_id');
                         }
                     }
 

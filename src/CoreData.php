@@ -168,21 +168,21 @@ class CoreData
 
         try {
             // Remove the translations
-            $sql = new DeleteStatement();
-            $sql
+            $deleteStatement = new DeleteStatement();
+            $deleteStatement
                 ->from(App::db()->con()->prefix() . self::ROSETTA_TABLE_NAME)
-                ->where($sql->orGroup([
-                    $sql->andGroup([
+                ->where($deleteStatement->orGroup([
+                    $deleteStatement->andGroup([
                         'src_id = ' . $dst_id,
-                        'src_lang = ' . $sql->quote($dst_lang),
+                        'src_lang = ' . $deleteStatement->quote($dst_lang),
                     ]),
-                    $sql->andGroup([
+                    $deleteStatement->andGroup([
                         'dst_id = ' . $dst_id,
-                        'dst_lang = ' . $sql->quote($dst_lang),
+                        'dst_lang = ' . $deleteStatement->quote($dst_lang),
                     ]),
                 ]))
             ;
-            $sql->delete();
+            $deleteStatement->delete();
             App::db()->con()->unlock();
         } catch (Exception $exception) {
             App::db()->con()->unlock();
@@ -212,23 +212,23 @@ class CoreData
             $lang = $system_lang;
         }
 
-        $sql = new SelectStatement();
-        $sql
+        $selectStatement = new SelectStatement();
+        $selectStatement
             ->from(App::db()->con()->prefix() . self::ROSETTA_TABLE_NAME)
-            ->where($sql->orGroup([
-                $sql->andGroup([
+            ->where($selectStatement->orGroup([
+                $selectStatement->andGroup([
                     'src_id = ' . $id,
-                    'src_lang = ' . $sql->quote($lang),
+                    'src_lang = ' . $selectStatement->quote($lang),
                 ]),
-                $sql->andGroup([
+                $selectStatement->andGroup([
                     'dst_id = ' . $id,
-                    'dst_lang = ' . $sql->quote($lang),
+                    'dst_lang = ' . $selectStatement->quote($lang),
                 ]),
             ]))
             ->order('dst_id DESC')
         ;
 
-        $rs = $sql->select();
+        $rs = $selectStatement->select();
         if ($rs && $rs->count()) {
             /**
              * @var array<string, int>
@@ -336,31 +336,31 @@ class CoreData
         }
 
         // Looks for a post/page with an association with the corresponding lang
-        $sql = new SelectStatement();
-        $sql
+        $selectStatement = new SelectStatement();
+        $selectStatement
             ->from(App::db()->con()->prefix() . self::ROSETTA_TABLE_NAME)
-            ->where($sql->orGroup([
-                $sql->andGroup([
+            ->where($selectStatement->orGroup([
+                $selectStatement->andGroup([
                     'src_id = ' . $src_id,
-                    'dst_lang = ' . $sql->quote($dst_lang),
+                    'dst_lang = ' . $selectStatement->quote($dst_lang),
                 ]),
-                $sql->andGroup([
+                $selectStatement->andGroup([
                     'dst_id = ' . $src_id,
-                    'src_lang = ' . $sql->quote($dst_lang),
+                    'src_lang = ' . $selectStatement->quote($dst_lang),
                 ]),
             ]))
             ->order('dst_id DESC')
         ;
 
-        $rs = $sql->select();
+        $rs = $selectStatement->select();
 
         if ($rs && $rs->count()) {
             // Load first record
             $rs->fetch();
-            $row = new RowRosetta($rs);
+            $rowRosetta = new RowRosetta($rs);
 
             // Return found ID
-            return $row->src_id === $src_id ? $row->dst_id : $row->src_id;
+            return $rowRosetta->src_id === $src_id ? $rowRosetta->dst_id : $rowRosetta->src_id;
         }
 
         if ($indirect) {

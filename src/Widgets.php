@@ -19,10 +19,10 @@ use Dotclear\Plugin\widgets\WidgetsStack;
 
 class Widgets
 {
-    public static function initWidgets(WidgetsStack $w): void
+    public static function initWidgets(WidgetsStack $widgetsStack): void
     {
         // Widget for currently displayed post
-        $w
+        $widgetsStack
             ->create(
                 'rosettaEntry',
                 __('Entry\'s translations'),
@@ -48,7 +48,7 @@ class Widgets
             ->addOffline();
 
         // Widget for static home entry
-        $w
+        $widgetsStack
             ->create(
                 'rosettaStaticHome',
                 __('Blog language'),

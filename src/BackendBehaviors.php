@@ -47,9 +47,9 @@ class BackendBehaviors
 {
     public static string $args_rosetta = '&amp;lang=%s&amp;type=%s&amp;rosetta=%s&amp;rosetta_id=%s&amp;rosetta_lang=%s';
 
-    public static function adminDashboardFavorites(Favorites $favs): string
+    public static function adminDashboardFavorites(Favorites $favorites): string
     {
-        $favs->register('rosetta', [
+        $favorites->register('rosetta', [
             'title'          => __('Rosetta'),
             'url'            => My::manageUrl(),
             'menu-icon'      => My::icon(),
@@ -146,31 +146,31 @@ class BackendBehaviors
     }
 
     /**
-     * @param      MetaRecord|null  $post       The post
+     * @param      MetaRecord|null  $metaRecord       The post
      * @param      string           $post_type  The post type
      */
-    private static function adminEntryForm(?MetaRecord $post, string $post_type = 'post'): string
+    private static function adminEntryForm(?MetaRecord $metaRecord, string $post_type = 'post'): string
     {
         $system_lang = App::blog()->settings()->get('system')->getStr('lang', false) ?: 'en';
 
         $settings = My::settings();
         if ($settings->getBool('active')) {
-            if (!$post instanceof MetaRecord || !$post->intField('post_id', true)) {
+            if (!$metaRecord instanceof MetaRecord || !$metaRecord->intField('post_id', true)) {
                 // Manage translation only on already created posts/pages
                 return '';
             }
 
             if ($post_type === 'post') {
-                $url = App::backend()->url()->get('admin.post', ['id' => $post->intField('post_id')]);
+                $url = App::backend()->url()->get('admin.post', ['id' => $metaRecord->intField('post_id')]);
             } else {
-                $url = App::backend()->url()->get('admin.plugin.pages', ['act' => 'page', 'id' => $post->intField('post_id')]);
+                $url = App::backend()->url()->get('admin.plugin.pages', ['act' => 'page', 'id' => $metaRecord->intField('post_id')]);
             }
 
             $html_lines   = '';
             $translations = [];
 
-            $post_id   = $post->intField('post_id');
-            $post_lang = $post->strField('post_lang');
+            $post_id   = $metaRecord->intField('post_id');
+            $post_lang = $metaRecord->strField('post_lang');
 
             $list = CoreData::findAllTranslations($post_id, $post_lang, false);
             if (is_array($list) && count($list)) {
@@ -299,19 +299,19 @@ class BackendBehaviors
     }
 
     /**
-     * @param      MetaRecord|null  $post   The post
+     * @param      MetaRecord|null  $metaRecord   The post
      */
-    public static function adminPostForm(?MetaRecord $post): string
+    public static function adminPostForm(?MetaRecord $metaRecord): string
     {
-        return self::adminEntryForm($post, 'post');
+        return self::adminEntryForm($metaRecord, 'post');
     }
 
     /**
-     * @param      MetaRecord|null  $post   The post
+     * @param      MetaRecord|null  $metaRecord   The post
      */
-    public static function adminPageForm(?MetaRecord $post): string
+    public static function adminPageForm(?MetaRecord $metaRecord): string
     {
-        return self::adminEntryForm($post, 'page');
+        return self::adminEntryForm($metaRecord, 'page');
     }
 
     public static function adminPopupPosts(string $editor = ''): string
@@ -324,37 +324,37 @@ class BackendBehaviors
     }
 
     /**
-     * @param      ArrayObject<string, mixed>  $cols   The cols
+     * @param      ArrayObject<string, mixed>  $arrayObject   The cols
      */
-    public static function adminColumnsLists(ArrayObject $cols): string
+    public static function adminColumnsLists(ArrayObject $arrayObject): string
     {
         $template = [
             'language'     => [true, __('Language')],
             'translations' => [true, __('Translations')],
         ];
 
-        if (isset($cols['posts'])
-            && is_array($cols['posts'])
-            && is_array($cols['posts'][1])
+        if (isset($arrayObject['posts'])
+            && is_array($arrayObject['posts'])
+            && is_array($arrayObject['posts'][1])
         ) {
-            $cols['posts'][1] = array_merge($cols['posts'][1], $template);
+            $arrayObject['posts'][1] = array_merge($arrayObject['posts'][1], $template);
         }
 
-        if (isset($cols['pages'])
-            && is_array($cols['pages'])
-            && is_array($cols['pages'][1])
+        if (isset($arrayObject['pages'])
+            && is_array($arrayObject['pages'])
+            && is_array($arrayObject['pages'][1])
         ) {
-            $cols['pages'][1] = array_merge($cols['pages'][1], $template);
+            $arrayObject['pages'][1] = array_merge($arrayObject['pages'][1], $template);
         }
 
         return '';
     }
 
     /**
-     * @param      ArrayObject<string, mixed>     $cols         The cols
+     * @param      ArrayObject<string, mixed>     $arrayObject         The cols
      * @param      bool                           $component    Component as value is prefered
      */
-    private static function adminEntryListHeader(ArrayObject $cols, bool $component = false): string
+    private static function adminEntryListHeader(ArrayObject $arrayObject, bool $component = false): string
     {
         $settings = My::settings();
         if ($settings->getBool('active')) {
@@ -363,45 +363,45 @@ class BackendBehaviors
                 ->class('nowrap')
                 ->translate(false)
                 ->text(__('Language'));
-            $cols['language'] = $component ? $value : $value->render();
+            $arrayObject['language'] = $component ? $value : $value->render();
 
             $value = (new Th())
                 ->scope('col')
                 ->class('nowrap')
                 ->translate(false)
                 ->text(__('Translations'));
-            $cols['translations'] = $component ? $value : $value->render();
+            $arrayObject['translations'] = $component ? $value : $value->render();
         }
 
         return '';
     }
 
     /**
-     * @param      MetaRecord                     $rs           The recordset
-     * @param      ArrayObject<string, mixed>     $cols         The cols
+     * @param      MetaRecord                     $metaRecord           The recordset
+     * @param      ArrayObject<string, mixed>     $arrayObject         The cols
      * @param      bool                           $component    Component as value is prefered
      */
-    public static function adminPostListHeader(MetaRecord $rs, ArrayObject $cols, bool $component = false): string
+    public static function adminPostListHeader(MetaRecord $metaRecord, ArrayObject $arrayObject, bool $component = false): string
     {
-        return self::adminEntryListHeader($cols, $component);
+        return self::adminEntryListHeader($arrayObject, $component);
     }
 
     /**
-     * @param      MetaRecord                     $rs           The recordset
-     * @param      ArrayObject<string, mixed>     $cols         The cols
+     * @param      MetaRecord                     $metaRecord           The recordset
+     * @param      ArrayObject<string, mixed>     $arrayObject         The cols
      * @param      bool                           $component    Component as value is prefered
      */
-    public static function adminPagesListHeader(MetaRecord $rs, ArrayObject $cols, bool $component = false): string
+    public static function adminPagesListHeader(MetaRecord $metaRecord, ArrayObject $arrayObject, bool $component = false): string
     {
-        return self::adminEntryListHeader($cols, $component);
+        return self::adminEntryListHeader($arrayObject, $component);
     }
 
     /**
-     * @param      MetaRecord                     $rs           The recordset
-     * @param      ArrayObject<string, mixed>     $cols         The cols
+     * @param      MetaRecord                     $metaRecord           The recordset
+     * @param      ArrayObject<string, mixed>     $arrayObject         The cols
      * @param      bool                           $component    Component as value is prefered
      */
-    private static function adminEntryListValue(MetaRecord $rs, ArrayObject $cols, bool $component = false): string
+    private static function adminEntryListValue(MetaRecord $metaRecord, ArrayObject $arrayObject, bool $component = false): string
     {
         $system_lang = App::blog()->settings()->get('system')->getStr('lang', false) ?: 'en';
 
@@ -409,9 +409,9 @@ class BackendBehaviors
         if ($settings->getBool('active')) {
             $translations = [];
 
-            $post_id   = $rs->intField('post_id');
-            $post_lang = $rs->strField('post_lang');
-            $post_type = $rs->strField('post_type');
+            $post_id   = $metaRecord->intField('post_id');
+            $post_lang = $metaRecord->strField('post_lang');
+            $post_type = $metaRecord->strField('post_type');
 
             $list = CoreData::findAllTranslations($post_id, $post_lang, false);
             if (is_array($list) && count($list)) {
@@ -449,7 +449,7 @@ class BackendBehaviors
                 ->class('nowrap')
                 ->text($post_lang)
                 ->translate(false);
-            $cols['language'] = $component ? $value : $value->render();
+            $arrayObject['language'] = $component ? $value : $value->render();
 
             $value = (new Td())
                 ->class('nowrap')
@@ -457,38 +457,38 @@ class BackendBehaviors
                 ->items([
                     (new Span(implode(', ', array_map(fn ($translation) => $translation->render(), $translations)))),
                 ]);
-            $cols['translations'] = $component ? $value : $value->render();
+            $arrayObject['translations'] = $component ? $value : $value->render();
         }
 
         return '';
     }
 
     /**
-     * @param      MetaRecord                     $rs           The recordset
-     * @param      ArrayObject<string, mixed>     $cols         The cols
+     * @param      MetaRecord                     $metaRecord           The recordset
+     * @param      ArrayObject<string, mixed>     $arrayObject         The cols
      * @param      bool                           $component    Component as value is prefered
      */
-    public static function adminPostListValue(MetaRecord $rs, ArrayObject $cols, bool $component = false): string
+    public static function adminPostListValue(MetaRecord $metaRecord, ArrayObject $arrayObject, bool $component = false): string
     {
-        return self::adminEntryListValue($rs, $cols, $component);
+        return self::adminEntryListValue($metaRecord, $arrayObject, $component);
     }
 
     /**
-     * @param      MetaRecord                     $rs           The recordset
-     * @param      ArrayObject<string, mixed>     $cols         The cols
+     * @param      MetaRecord                     $metaRecord           The recordset
+     * @param      ArrayObject<string, mixed>     $arrayObject         The cols
      * @param      bool                           $component    Component as value is prefered
      */
-    public static function adminPagesListValue(MetaRecord $rs, ArrayObject $cols, bool $component = false): string
+    public static function adminPagesListValue(MetaRecord $metaRecord, ArrayObject $arrayObject, bool $component = false): string
     {
-        return self::adminEntryListValue($rs, $cols, $component);
+        return self::adminEntryListValue($metaRecord, $arrayObject, $component);
     }
 
     /**
-     * @param      MetaRecord                     $rs           The recordset
-     * @param      ArrayObject<string, mixed>     $cols         The cols
+     * @param      MetaRecord                     $metaRecord           The recordset
+     * @param      ArrayObject<string, mixed>     $arrayObject         The cols
      * @param      bool                           $component    Component as value is prefered
      */
-    public static function adminPostMiniListHeader(MetaRecord $rs, ArrayObject $cols, bool $component = false): string
+    public static function adminPostMiniListHeader(MetaRecord $metaRecord, ArrayObject $arrayObject, bool $component = false): string
     {
         $settings = My::settings();
         if ($settings->getBool('active')) {
@@ -497,103 +497,103 @@ class BackendBehaviors
                 ->class('nowrap')
                 ->text(__('Language'))
                 ->translate(false);
-            $cols['language'] = $component ? $value : $value->render();
+            $arrayObject['language'] = $component ? $value : $value->render();
         }
 
         return '';
     }
 
     /**
-     * @param      MetaRecord                     $rs           The recordset
-     * @param      ArrayObject<string, mixed>     $cols         The cols
+     * @param      MetaRecord                     $metaRecord           The recordset
+     * @param      ArrayObject<string, mixed>     $arrayObject         The cols
      * @param      bool                           $component    Component as value is prefered
      */
-    public static function adminPostMiniListValue(MetaRecord $rs, ArrayObject $cols, bool $component = false): string
+    public static function adminPostMiniListValue(MetaRecord $metaRecord, ArrayObject $arrayObject, bool $component = false): string
     {
         $settings = My::settings();
         if ($settings->getBool('active')) {
-            $post_lang = $rs->strField('post_lang');
+            $post_lang = $metaRecord->strField('post_lang');
             $value     = (new Td())
                 ->class('nowrap')
                 ->text($post_lang)
                 ->translate(false);
-            $cols['language'] = $component ? $value : $value->render();
+            $arrayObject['language'] = $component ? $value : $value->render();
         }
 
         return '';
     }
 
     /**
-     * @param      ArrayObject<string, mixed>  $sorts  The sorts
+     * @param      ArrayObject<string, mixed>  $arrayObject  The sorts
      */
-    public static function adminFiltersLists(ArrayObject $sorts): string
+    public static function adminFiltersLists(ArrayObject $arrayObject): string
     {
         // TODO when 1st and 2nd tab of index will be developped, if necessary
         return '';
     }
 
-    public static function exportSingle(FlatExport $exp, string $blog_id): string
+    public static function exportSingle(FlatExport $flatExport, string $blog_id): string
     {
-        $sql = new SelectStatement();
-        $sql
+        $selectStatement = new SelectStatement();
+        $selectStatement
             ->column('R.*')
             ->from([
-                $sql->as(App::db()->con()->prefix() . CoreData::ROSETTA_TABLE_NAME, 'R'),
-                $sql->as(App::db()->con()->prefix() . App::blog()::POST_TABLE_NAME, 'P'),
+                $selectStatement->as(App::db()->con()->prefix() . CoreData::ROSETTA_TABLE_NAME, 'R'),
+                $selectStatement->as(App::db()->con()->prefix() . App::blog()::POST_TABLE_NAME, 'P'),
             ])
             ->where('P.post_id = R.src_id')
-            ->and('P.blog_id = ' . $sql->quote($blog_id))
+            ->and('P.blog_id = ' . $selectStatement->quote($blog_id))
         ;
 
-        $exp->export(
+        $flatExport->export(
             CoreData::ROSETTA_TABLE_NAME,
-            $sql->statement()
+            $selectStatement->statement()
         );
 
         return '';
     }
 
-    public static function exportFull(FlatExport $exp): string
+    public static function exportFull(FlatExport $flatExport): string
     {
-        $exp->exportTable(CoreData::ROSETTA_TABLE_NAME);
+        $flatExport->exportTable(CoreData::ROSETTA_TABLE_NAME);
 
         return '';
     }
 
-    public static function importInit(FlatImportV2 $fi): string
+    public static function importInit(FlatImportV2 $flatImportV2): string
     {
-        $fi->setExtraCursor(CoreData::ROSETTA_TABLE_NAME, App::db()->con()->openCursor(App::db()->con()->prefix() . CoreData::ROSETTA_TABLE_NAME));
+        $flatImportV2->setExtraCursor(CoreData::ROSETTA_TABLE_NAME, App::db()->con()->openCursor(App::db()->con()->prefix() . CoreData::ROSETTA_TABLE_NAME));
 
         return '';
     }
 
-    private static function insertRosettaLine(FlatBackupItem $line, FlatImportV2 $fi): void
+    private static function insertRosettaLine(FlatBackupItem $flatBackupItem, FlatImportV2 $flatImportV2): void
     {
-        $cur = $fi->getExtraCursor(CoreData::ROSETTA_TABLE_NAME);
-        if (!is_null($cur)) {
-            $cur->clean();
+        $cursor = $flatImportV2->getExtraCursor(CoreData::ROSETTA_TABLE_NAME);
+        if (!is_null($cursor)) {
+            $cursor->clean();
 
-            $cur->setIntField('src_id', (int) $line->src_id);       // @phpstan-ignore cast.int, property.notFound
-            $cur->setStrField('src_lang', (string) $line->src_lang);  // @phpstan-ignore cast.string, property.notFound
-            $cur->setIntField('dst_id', (int) $line->dst_id);       // @phpstan-ignore cast.int, property.notFound
-            $cur->setStrField('dst_lang', (string) $line->dst_lang);  // @phpstan-ignore cast.string, property.notFound
+            $cursor->setIntField('src_id', (int) $flatBackupItem->src_id);       // @phpstan-ignore cast.int, property.notFound
+            $cursor->setStrField('src_lang', (string) $flatBackupItem->src_lang);  // @phpstan-ignore cast.string, property.notFound
+            $cursor->setIntField('dst_id', (int) $flatBackupItem->dst_id);       // @phpstan-ignore cast.int, property.notFound
+            $cursor->setStrField('dst_lang', (string) $flatBackupItem->dst_lang);  // @phpstan-ignore cast.string, property.notFound
 
-            $cur->insert();
+            $cursor->insert();
         }
     }
 
-    public static function importSingle(FlatBackupItem $line, FlatImportV2 $fi): string
+    public static function importSingle(FlatBackupItem $flatBackupItem, FlatImportV2 $flatImportV2): string
     {
-        if ($line->__name == CoreData::ROSETTA_TABLE_NAME) {
-            if (isset($fi->old_ids['post'][(int) $line->src_id]) && isset($fi->old_ids['post'][(int) $line->dst_id])) { // @phpstan-ignore cast.int, property.notFound, cast.int, property.notFound
-                $line->src_id = $fi->old_ids['post'][(int) $line->src_id];  // @phpstan-ignore cast.int, property.notFound, property.notFound
-                $line->dst_id = $fi->old_ids['post'][(int) $line->dst_id];  // @phpstan-ignore cast.int, property.notFound, property.notFound
-                self::insertRosettaLine($line, $fi);
+        if ($flatBackupItem->__name == CoreData::ROSETTA_TABLE_NAME) {
+            if (isset($flatImportV2->old_ids['post'][(int) $flatBackupItem->src_id]) && isset($flatImportV2->old_ids['post'][(int) $flatBackupItem->dst_id])) { // @phpstan-ignore cast.int, property.notFound, cast.int, property.notFound
+                $flatBackupItem->src_id = $flatImportV2->old_ids['post'][(int) $flatBackupItem->src_id];  // @phpstan-ignore cast.int, property.notFound, property.notFound
+                $flatBackupItem->dst_id = $flatImportV2->old_ids['post'][(int) $flatBackupItem->dst_id];  // @phpstan-ignore cast.int, property.notFound, property.notFound
+                self::insertRosettaLine($flatBackupItem, $flatImportV2);
             } else {
                 throw new Exception(sprintf(
                     __('ID of "%3$s" does not match on record "%1$s" at line %2$s of backup file.'),
-                    Html::escapeHTML($line->__name),
-                    Html::escapeHTML((string) $line->__line),
+                    Html::escapeHTML($flatBackupItem->__name),
+                    Html::escapeHTML((string) $flatBackupItem->__line),
                     Html::escapeHTML(CoreData::ROSETTA_TABLE_NAME)
                 ));
             }
@@ -602,10 +602,10 @@ class BackendBehaviors
         return '';
     }
 
-    public static function importFull(FlatBackupItem $line, FlatImportV2 $fi): string
+    public static function importFull(FlatBackupItem $flatBackupItem, FlatImportV2 $flatImportV2): string
     {
-        if ($line->__name == CoreData::ROSETTA_TABLE_NAME) {
-            self::insertRosettaLine($line, $fi);
+        if ($flatBackupItem->__name == CoreData::ROSETTA_TABLE_NAME) {
+            self::insertRosettaLine($flatBackupItem, $flatImportV2);
         }
 
         return '';

@@ -129,12 +129,12 @@ class BackendRest
                 /**
                  * @var ArrayObject<string, mixed>
                  */
-                $params = new ArrayObject([
+                $arrayObject = new ArrayObject([
                     'post_id'    => $rosetta_id,
                     'post_type'  => ['post', 'page'],
                     'no_content' => true, ]);
 
-                $rs = App::blog()->getPosts($params);
+                $rs = App::blog()->getPosts($arrayObject);
                 if ($rs->count()) {
                     // Load first record
                     $rs->fetch();
