@@ -1,9 +1,9 @@
 #rosetta-area {
-  padding-bottom: 1em;
+  padding-block-end: 1em;
 }
 
 #rosetta-list {
-  margin-top: 1em;
+  margin-block-start: 1em;
 }
 
 .rosetta-new.button.add {
