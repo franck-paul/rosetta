@@ -166,7 +166,6 @@ class BackendBehaviors
                 $url = App::backend()->url()->get('admin.plugin.pages', ['act' => 'page', 'id' => $metaRecord->intField('post_id')]);
             }
 
-            $html_lines   = '';
             $translations = [];
 
             $post_id   = $metaRecord->intField('post_id');
@@ -209,7 +208,6 @@ class BackendBehaviors
                             $url
                         );
                         $translations[] = $translation;
-                        $html_lines .= $translation->render();
                     }
                 }
             }

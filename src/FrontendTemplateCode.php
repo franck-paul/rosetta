@@ -42,6 +42,7 @@ class FrontendTemplateCode
         array $_params_,
         string $_tag_,
     ): void {
+        global $params; // @phpcode-remove
         $rosetta_url = App::blog()->settings()->get('system')->getStr('static_home_url', false);
         if ($_override_ && $rosetta_url !== '') {
             $rosetta_langs = [];
@@ -68,12 +69,14 @@ class FrontendTemplateCode
             }
         }
 
-        $params['post_type'] = array_keys(App::postTypes()->dump());
-        $params['post_url']  = App::frontend()->context()::global_filters(
-            $rosetta_url,
-            $_params_,
-            $_tag_
-        );
+        if (is_array($params)) {
+            $params['post_type'] = array_keys(App::postTypes()->dump());
+            $params['post_url']  = App::frontend()->context()::global_filters(
+                $rosetta_url,
+                $_params_,
+                $_tag_
+            );
+        }
 
         unset($rosetta_url, $rosetta_langs, $rosettum_lang, $rosetta_new);
     }

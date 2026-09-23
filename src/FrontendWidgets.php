@@ -128,7 +128,8 @@ class FrontendWidgets
         $langs       = App::lang()->getLanguagesName();
         $system_lang = App::blog()->settings()->get('system')->getStr('lang', false) ?: 'en';
 
-        foreach ($table as $name => $url) {
+        $names = array_keys($table);
+        foreach ($names as $name) {
             $class = ($name === $current ? ' class="current"' : '');
 
             $url  = App::blog()->getQmarkURL() . 'lang=' . $name;
