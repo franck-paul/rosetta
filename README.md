@@ -3,7 +3,7 @@
 [![Release](https://img.shields.io/github/v/release/franck-paul/rosetta)](https://github.com/franck-paul/rosetta/releases)
 [![Date](https://img.shields.io/github/release-date/franck-paul/rosetta)](https://github.com/franck-paul/rosetta/releases)
 [![Issues](https://img.shields.io/github/issues/franck-paul/rosetta)](https://github.com/franck-paul/rosetta/issues)
-[![License](https://img.shields.io/github/license/franck-paul/rosetta)](https://github.com/franck-paul/rosetta/blob/master/LICENSE)
+[![License](https://img.shields.io/github/license/franck-paul/rosetta)](https://github.com/franck-paul/rosetta/blob/main/LICENSE)
 
 Gestion des traductions de billets et de pages.
 Lire également l'article de blog : [Plugin-Rosetta-07-pour-Dotclear](https://open-time.net/post/2017/12/07/Plugin-Rosetta-07-pour-Dotclear).
