@@ -48,6 +48,34 @@ abstract class Row
     }
 
     /**
+     * Get a property value
+     */
+    public function get(string $name): mixed
+    {
+        foreach ($this->properties as $property) {
+            if ($property->getName() === $name) {
+                return $property->getValue($this);
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Set a property value
+     */
+    public function set(string $name, mixed $value): void
+    {
+        foreach ($this->properties as $property) {
+            if ($property->getName() === $name) {
+                $property->setValue($this, $value);
+
+                return;
+            }
+        }
+    }
+
+    /**
      * @param MetaRecord|array<int|string, mixed>           $data       Current values
      * @param bool                                          $complete   True if all values must be present in data
      *
@@ -82,13 +110,13 @@ abstract class Row
                     }
                 }
 
-                $this->{$propertyName} = $value;
+                $this->set($propertyName, $value);
             } elseif ($complete) {
                 // Value is missing
                 throw new Exception(sprintf('Field %s not present in %s', $propertyName, is_array($data) ? 'array' : 'record'));
             } elseif ($property->getType() instanceof ReflectionNamedType && $property->getType()->allowsNull()) {
                 // Set value to null if nullable
-                $this->{$propertyName} = null;
+                $this->set($propertyName, null);
             }
 
             $index++;
@@ -117,8 +145,8 @@ abstract class Row
         }
 
         foreach ($this->properties as $property) {
-            $propertyName            = $property->getName();
-            $cursor->{$propertyName} = $this->{$propertyName};
+            $propertyName = $property->getName();
+            $cursor->setField($propertyName, $this->get($propertyName));
         }
     }
 }
