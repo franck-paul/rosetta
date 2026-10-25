@@ -29,7 +29,7 @@ class FrontendWidgets
             return '';
         }
 
-        if ($widgetsElement->offline) {
+        if ($widgetsElement->isOffline()) {
             return '';
         }
 
@@ -50,7 +50,7 @@ class FrontendWidgets
         }
 
         // Render widget title
-        $res = ($widgetsElement->title ? $widgetsElement->renderTitle(Html::escapeHTML($widgetsElement->title)) . "\n" : '');
+        $res = ($widgetsElement->getTitle() !== '' ? $widgetsElement->renderTitle(Html::escapeHTML($widgetsElement->getTitle())) . "\n" : '');
 
         // Render widget list of translations
         $list = '';
@@ -72,7 +72,7 @@ class FrontendWidgets
         $res .= '<ul>' . $list . '</ul>' . "\n";
 
         // Render full content
-        return $widgetsElement->renderDiv((bool) $widgetsElement->content_only, 'rosetta-entries ' . $widgetsElement->class, '', $res);
+        return $widgetsElement->renderDiv((bool) $widgetsElement->getContentOnly(), 'rosetta-entries ' . $widgetsElement->getClass(), '', $res);
     }
 
     public static function rosettaStaticHomeWidget(WidgetsElement $widgetsElement): string
@@ -82,13 +82,11 @@ class FrontendWidgets
             return '';
         }
 
-        if ($widgetsElement->offline) {
+        if ($widgetsElement->isOffline()) {
             return '';
         }
 
-        if (($widgetsElement->homeonly == 1 && !App::url()->isHome(App::url()->getType()))
-            || ($widgetsElement->homeonly == 2 && App::url()->isHome(App::url()->getType()))
-        ) {
+        if (!$widgetsElement->checkHomeOnly(App::url()->getType())) {
             return '';
         }
 
@@ -121,7 +119,7 @@ class FrontendWidgets
         }
 
         // Render widget title
-        $res = ($widgetsElement->title ? $widgetsElement->renderTitle(Html::escapeHTML($widgetsElement->title)) . "\n" : '');
+        $res = ($widgetsElement->getTitle() !== '' ? $widgetsElement->renderTitle(Html::escapeHTML($widgetsElement->getTitle())) . "\n" : '');
 
         // Render widget list of translations
         $list        = '';
@@ -149,6 +147,6 @@ class FrontendWidgets
         $res .= '<ul>' . $list . '</ul>' . "\n";
 
         // Render full content
-        return $widgetsElement->renderDiv((bool) $widgetsElement->content_only, 'rosetta-static-home ' . $widgetsElement->class, '', $res);
+        return $widgetsElement->renderDiv((bool) $widgetsElement->getContentOnly(), 'rosetta-static-home ' . $widgetsElement->getClass(), '', $res);
     }
 }
