@@ -138,7 +138,7 @@ class BackendBehaviors
                             ->class('rosetta-remove')
                             ->title(__('Remove this translation\'s link'))
                             ->items([
-                                (new Img(urldecode((string) App::backend()->page()->getPF(My::id() . '/img/unlink.png'))))
+                                (new Img(urldecode(App::backend()->page()->getPF(My::id() . '/img/unlink.png'))))
                                     ->alt(__('Remove this translation\'s link')),
                             ]),
                     ]),

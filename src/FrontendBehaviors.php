@@ -127,7 +127,7 @@ class FrontendBehaviors
             && static::$state === self::ROSETTA_FILTER
         ) {
             $cols = $metaRecord->columns();
-            if (count($cols) > 1 || !str_starts_with((string) $cols[0], 'count(')) {
+            if (count($cols) > 1 || !str_starts_with($cols[0], 'count(')) {
                 // Only operate when not counting (aka getPosts() called with $count_only = true)
                 static::$state = self::ROSETTA_SWITCH;
                 // replace translated posts if any may be using core->getPosts()
@@ -312,7 +312,7 @@ class FrontendBehaviors
                     // Redirect to translated post
                     $url = $rsDst->getURL();
                     if ($url !== '') {
-                        if (!preg_match('%^https?://%', (string) $url)) {
+                        if (!preg_match('%^https?://%', $url)) {
                             // Prepend scheme if not present
                             $url = (isset($_SERVER['HTTPS']) ? 'https:' : 'http:') . $url;
                         }

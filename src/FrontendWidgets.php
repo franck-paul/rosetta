@@ -72,7 +72,7 @@ class FrontendWidgets
         $res .= '<ul>' . $list . '</ul>' . "\n";
 
         // Render full content
-        return $widgetsElement->renderDiv((bool) $widgetsElement->getContentOnly(), 'rosetta-entries ' . $widgetsElement->getClass(), '', $res);
+        return $widgetsElement->renderDiv($widgetsElement->getContentOnly(), 'rosetta-entries ' . $widgetsElement->getClass(), '', $res);
     }
 
     public static function rosettaStaticHomeWidget(WidgetsElement $widgetsElement): string
@@ -147,6 +147,6 @@ class FrontendWidgets
         $res .= '<ul>' . $list . '</ul>' . "\n";
 
         // Render full content
-        return $widgetsElement->renderDiv((bool) $widgetsElement->getContentOnly(), 'rosetta-static-home ' . $widgetsElement->getClass(), '', $res);
+        return $widgetsElement->renderDiv($widgetsElement->getContentOnly(), 'rosetta-static-home ' . $widgetsElement->getClass(), '', $res);
     }
 }
