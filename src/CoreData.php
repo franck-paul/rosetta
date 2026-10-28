@@ -288,7 +288,7 @@ class CoreData
                 $ids[] = [$l => $i];
             }
 
-            while (count($ids)) {
+            while (count($ids) > 0) {
                 $pair = array_shift($ids);
                 foreach ($pair as $l => $i) {
                     $next = self::findDirectTranslations($i, $l, true);
