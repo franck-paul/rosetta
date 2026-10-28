@@ -63,7 +63,7 @@ class FrontendBehaviors
                     'search',
                     'archive',
                 ];
-                if (in_array(App::url()->getType(), $url_types)) {
+                if (in_array(App::url()->getType(), $url_types, true)) {
                     // Set language according to blog default language setting
                     $arrayObject['post_lang'] = App::blog()->settings()->get('system')->getStr('lang');
                     // Filtering posts state
@@ -222,8 +222,8 @@ class FrontendBehaviors
         $settings = My::settings();
         if ($settings->getBool('active')
             && App::frontend()->context()->posts instanceof MetaRecord
-            && in_array(App::url()->getType(), $urlTypes)
-            && in_array(App::frontend()->context()->posts->strField('post_type'), $postTypes)
+            && in_array(App::url()->getType(), $urlTypes, true)
+            && in_array(App::frontend()->context()->posts->strField('post_type'), $postTypes, true)
         ) {
             // Find translations and add meta in header
             $post_id   = App::frontend()->context()->posts->intField('post_id');
@@ -348,19 +348,17 @@ class FrontendBehaviors
             $urlPart = '';
             $url     = is_string($url = $_SERVER['URL_REQUEST_PART']) ? $url : '';
             $handler->getArgs($url, $urlType, $urlPart);
-            if (in_array($urlType, ['post', 'pages'])) {
+            if (in_array($urlType, ['post', 'pages'], true)) {
                 // It is a post or page: Try to find a translation according to the browser settings
                 $langs = Http::getAcceptLanguages();
             }
         }
 
-        if (count($langs) > 0) {
-            foreach ($langs as $lang) {
-                // Try to find an according translation (will http-redirect if any)
-                if (self::findTranslatedEntry($handler, $lang)) {
-                    // The current entry is already in one of the browser languages
-                    break;
-                }
+        foreach ($langs as $lang) {
+            // Try to find an according translation (will http-redirect if any)
+            if (self::findTranslatedEntry($handler, $lang)) {
+                // The current entry is already in one of the browser languages
+                break;
             }
         }
 
