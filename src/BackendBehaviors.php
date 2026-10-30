@@ -314,7 +314,7 @@ class BackendBehaviors
 
     public static function adminPopupPosts(string $editor = ''): string
     {
-        if ($editor === '' || $editor != My::id()) {
+        if ($editor === '' || $editor !== My::id()) {
             return '';
         }
 
@@ -582,7 +582,7 @@ class BackendBehaviors
 
     public static function importSingle(FlatBackupItem $flatBackupItem, FlatImportV2 $flatImportV2): string
     {
-        if ($flatBackupItem->__name == CoreData::ROSETTA_TABLE_NAME) {
+        if ($flatBackupItem->__name === CoreData::ROSETTA_TABLE_NAME) {
             if (isset($flatImportV2->old_ids['post'][(int) $flatBackupItem->src_id]) && isset($flatImportV2->old_ids['post'][(int) $flatBackupItem->dst_id])) { // @phpstan-ignore cast.int, property.notFound, cast.int, property.notFound
                 $flatBackupItem->src_id = $flatImportV2->old_ids['post'][(int) $flatBackupItem->src_id];  // @phpstan-ignore cast.int, property.notFound, property.notFound
                 $flatBackupItem->dst_id = $flatImportV2->old_ids['post'][(int) $flatBackupItem->dst_id];  // @phpstan-ignore cast.int, property.notFound, property.notFound
@@ -602,7 +602,7 @@ class BackendBehaviors
 
     public static function importFull(FlatBackupItem $flatBackupItem, FlatImportV2 $flatImportV2): string
     {
-        if ($flatBackupItem->__name == CoreData::ROSETTA_TABLE_NAME) {
+        if ($flatBackupItem->__name === CoreData::ROSETTA_TABLE_NAME) {
             self::insertRosettaLine($flatBackupItem, $flatImportV2);
         }
 

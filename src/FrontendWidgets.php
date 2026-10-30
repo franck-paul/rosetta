@@ -55,7 +55,7 @@ class FrontendWidgets
         // Render widget list of translations
         $list = '';
         foreach ($table as $name => $url) {
-            $link  = ($name !== $current || $widgetsElement->get('current') == 'link');
+            $link  = ($name !== $current || $widgetsElement->get('current') === 'link');
             $class = ($name === $current ? ' class="current"' : '');
 
             $list .= '<li' . $class . '>' .

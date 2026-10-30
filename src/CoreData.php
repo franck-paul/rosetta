@@ -238,16 +238,16 @@ class CoreData
                 $row = new RowRosetta($rs);
                 // Add src couple if requested
                 if ($full
-                    || $row->src_id !== $id
-                    || $row->src_lang != $lang
+                    || $row->src_id   !== $id
+                    || $row->src_lang !== $lang
                 ) {
                     $list[(string) $row->src_lang] = $row->src_id;
                 }
 
                 // Add dst couple if requested
-                if (($full)
-                    || $row->dst_id !== $id
-                    || $row->dst_lang != $lang
+                if ($full
+                    || $row->dst_id   !== $id
+                    || $row->dst_lang !== $lang
                 ) {
                     $list[(string) $row->dst_lang] = $row->dst_id;
                 }

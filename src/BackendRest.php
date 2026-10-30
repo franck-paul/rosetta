@@ -57,7 +57,7 @@ class BackendRest
                 if (!$rs->isEmpty()) {
                     $rs->fetch();
                     $format = $rs->strField('post_format');
-                    if ($format != 'xhtml') {
+                    if ($format !== 'xhtml') {
                         $content = '…';
                     }
                 }
