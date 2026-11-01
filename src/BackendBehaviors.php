@@ -84,7 +84,7 @@ class BackendBehaviors
     public static function adminPostHeaders(): string
     {
         $settings = My::settings();
-        if ($settings->getBool('active')) {
+        if ($settings->getBool('active', false)) {
             return
             App::backend()->page()->jsJson('rosetta_type', ['post_type' => 'post']) .
             self::adminEntryHeaders();
@@ -96,7 +96,7 @@ class BackendBehaviors
     public static function adminPageHeaders(): string
     {
         $settings = My::settings();
-        if ($settings->getBool('active')) {
+        if ($settings->getBool('active', false)) {
             return
             App::backend()->page()->jsJson('rosetta_type', ['post_type' => 'page']) .
             self::adminEntryHeaders();
@@ -154,8 +154,8 @@ class BackendBehaviors
         $system_lang = App::blog()->settings()->get('system')->getStr('lang', false) ?: 'en';
 
         $settings = My::settings();
-        if ($settings->getBool('active')) {
-            if (!$metaRecord instanceof MetaRecord || !$metaRecord->intField('post_id', true)) {
+        if ($settings->getBool('active', false)) {
+            if (!$metaRecord instanceof MetaRecord || $metaRecord->intField('post_id') === 0) {
                 // Manage translation only on already created posts/pages
                 return '';
             }
@@ -172,7 +172,7 @@ class BackendBehaviors
             $post_lang = $metaRecord->strField('post_lang');
 
             $list = CoreData::findAllTranslations($post_id, $post_lang, false);
-            if (is_array($list) && count($list)) {
+            if (is_array($list) && count($list) > 0) {
                 App::lexical()->lexicalKeySort($list, App::lexical()::ADMIN_LOCALE);
 
                 $langs = App::lang()->getLanguagesName();
@@ -192,7 +192,7 @@ class BackendBehaviors
                     ]);
                     $rs = App::blog()->getPosts($params);
 
-                    if ($rs->count()) {
+                    if ($rs->count() > 0) {
                         $rs->fetch();
 
                         $post_title = $rs->strField('post_title');
@@ -355,7 +355,7 @@ class BackendBehaviors
     private static function adminEntryListHeader(ArrayObject $arrayObject, bool $component = false): string
     {
         $settings = My::settings();
-        if ($settings->getBool('active')) {
+        if ($settings->getBool('active', false)) {
             $value = (new Th())
                 ->scope('col')
                 ->class('nowrap')
@@ -404,7 +404,7 @@ class BackendBehaviors
         $system_lang = App::blog()->settings()->get('system')->getStr('lang', false) ?: 'en';
 
         $settings = My::settings();
-        if ($settings->getBool('active')) {
+        if ($settings->getBool('active', false)) {
             $translations = [];
 
             $post_id   = $metaRecord->intField('post_id');
@@ -412,7 +412,7 @@ class BackendBehaviors
             $post_type = $metaRecord->strField('post_type');
 
             $list = CoreData::findAllTranslations($post_id, $post_lang, false);
-            if (is_array($list) && count($list)) {
+            if (is_array($list) && count($list) > 0) {
                 App::lexical()->lexicalKeySort($list, App::lexical()::ADMIN_LOCALE);
                 $langs = App::lang()->getLanguagesName();
                 foreach ($list as $lang => $id) {
@@ -429,7 +429,7 @@ class BackendBehaviors
                         'no_content' => true, ]);
                     $rst = App::blog()->getPosts($params);
 
-                    if ($rst->count()) {
+                    if ($rst->count() > 0) {
                         $rst->fetch();
 
                         $post_title = $rst->strField('post_title');
@@ -489,7 +489,7 @@ class BackendBehaviors
     public static function adminPostMiniListHeader(MetaRecord $metaRecord, ArrayObject $arrayObject, bool $component = false): string
     {
         $settings = My::settings();
-        if ($settings->getBool('active')) {
+        if ($settings->getBool('active', false)) {
             $value = (new Th())
                 ->scope('col')
                 ->class('nowrap')
@@ -509,7 +509,7 @@ class BackendBehaviors
     public static function adminPostMiniListValue(MetaRecord $metaRecord, ArrayObject $arrayObject, bool $component = false): string
     {
         $settings = My::settings();
-        if ($settings->getBool('active')) {
+        if ($settings->getBool('active', false)) {
             $post_lang = $metaRecord->strField('post_lang');
             $value     = (new Td())
                 ->class('nowrap')

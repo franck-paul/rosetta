@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace Dotclear\Plugin\rosetta;
 
 use Dotclear\App;
+use Dotclear\Database\MetaRecord;
 use Dotclear\Database\Statement\DeleteStatement;
 use Dotclear\Database\Statement\SelectStatement;
 use Exception;
@@ -229,7 +230,7 @@ class CoreData
         ;
 
         $rs = $selectStatement->select();
-        if ($rs && $rs->count()) {
+        if ($rs instanceof MetaRecord && $rs->count() > 0) {
             /**
              * @var array<string, int>
              */
@@ -303,9 +304,12 @@ class CoreData
                 }
             }
 
-            if (!$full && $key = array_search($id, $list, true)) {
-                // Remove original from list
-                unset($list[$key]);
+            if (!$full) {
+                $key = array_search($id, $list, true);
+                if ($key !== false) {
+                    // Remove original from list
+                    unset($list[$key]);
+                }
             }
 
             return $list;
@@ -354,7 +358,7 @@ class CoreData
 
         $rs = $selectStatement->select();
 
-        if ($rs && $rs->count()) {
+        if ($rs instanceof MetaRecord && $rs->count() > 0) {
             // Load first record
             $rs->fetch();
             $rowRosetta = new RowRosetta($rs);

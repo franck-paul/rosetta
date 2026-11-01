@@ -46,7 +46,7 @@ class FrontendBehaviors
     public static function coreBlogBeforeGetPosts(ArrayObject $arrayObject): string
     {
         $settings = My::settings();
-        if ($settings->getBool('active')) {
+        if ($settings->getBool('active', false)) {
             if (static::$state !== self::ROSETTA_NONE || isset($arrayObject['post_lang'])) {
                 return '';
             }
@@ -99,7 +99,7 @@ class FrontendBehaviors
         }
 
         $rs = App::blog()->getPosts($arrayObject);
-        if ($rs->count()) {
+        if ($rs->count() > 0) {
             $rs->fetch();
 
             $post_lang = $rs->strField('post_lang');
@@ -121,9 +121,9 @@ class FrontendBehaviors
     {
         $settings = My::settings();
         // Start replacing posts only if in Filtering posts state
-        if ($settings->getBool('active')
-            && $settings->getBool('accept_language')
-            && $metaRecord->count()
+        if ($settings->getBool('active', false)
+            && $settings->getBool('accept_language', false)
+            && $metaRecord->count() > 0
             && static::$state === self::ROSETTA_FILTER
         ) {
             $cols = $metaRecord->columns();
@@ -167,7 +167,7 @@ class FrontendBehaviors
                                     'no_content'  => false,
                                 ]);
                                 $rst = App::blog()->getPosts($params);
-                                if ($rst->count()) {
+                                if ($rst->count() > 0) {
                                     // Load first record
                                     $rst->fetch();
                                     // Replace source id with its translation id
@@ -187,7 +187,7 @@ class FrontendBehaviors
                         }
                     }
 
-                    if (count($ids) && $nbx) {
+                    if (count($ids) > 0 && $nbx > 0) {
                         // Get new list of posts as we have at least one exchange done
 
                         /**
@@ -220,7 +220,7 @@ class FrontendBehaviors
         }
 
         $settings = My::settings();
-        if ($settings->getBool('active')
+        if ($settings->getBool('active', false)
             && App::frontend()->context()->posts instanceof MetaRecord
             && in_array(App::url()->getType(), $urlTypes, true)
             && in_array(App::frontend()->context()->posts->strField('post_type'), $postTypes, true)
@@ -237,7 +237,7 @@ class FrontendBehaviors
                 $current,
                 true
             );
-            if (is_array($list) && count($list)) {
+            if (is_array($list) && count($list) > 0) {
                 echo '<!-- Rosetta: translated version of this entry -->' . "\n";
                 foreach ($list as $lang => $url) {
                     echo '<link rel="alternate" href="' . $url . '" hreflang="' . $lang . '">' . "\n";
@@ -276,7 +276,7 @@ class FrontendBehaviors
         $rsSrc = App::blog()->getPosts($paramsSrc);
 
         // Check if post/page id exists in rosetta table
-        if ($rsSrc->count()) {
+        if ($rsSrc->count() > 0) {
             // Load first record
             $rsSrc->fetch();
 
@@ -305,14 +305,14 @@ class FrontendBehaviors
                 App::behavior()->callBehavior('publicPostBeforeGetPosts', $paramsDst, $handler->args);
                 $rsDst = App::blog()->getPosts($paramsDst);
 
-                if ($rsDst->count()) {
+                if ($rsDst->count() > 0) {
                     // Load first record
                     $rsDst->fetch();
 
                     // Redirect to translated post
                     $url = $rsDst->getURL();
                     if ($url !== '') {
-                        if (!preg_match('%^https?://%', $url)) {
+                        if (!(bool) preg_match('%^https?://%', $url)) {
                             // Prepend scheme if not present
                             $url = (isset($_SERVER['HTTPS']) ? 'https:' : 'http:') . $url;
                         }
@@ -330,7 +330,7 @@ class FrontendBehaviors
     public static function urlHandlerGetArgsDocument(Url $handler): string
     {
         $settings = My::settings();
-        if (!$settings->getBool('active')) {
+        if (!$settings->getBool('active', false)) {
             return '';
         }
 
@@ -339,11 +339,11 @@ class FrontendBehaviors
 
         if ($lang !== '') {
             // Check lang scheme
-            if (preg_match('/^[a-z]{2}(-[a-z]{2})?$/', rawurldecode($lang), $matches)) {
+            if ((bool) preg_match('/^[a-z]{2}(-[a-z]{2})?$/', rawurldecode($lang), $matches)) {
                 // Assume that the URL scheme is for post/page
                 $langs[] = $matches[0];
             }
-        } elseif ($settings->getBool('accept_language')) {
+        } elseif ($settings->getBool('accept_language', false)) {
             $urlType = '';
             $urlPart = '';
             $url     = is_string($url = $_SERVER['URL_REQUEST_PART']) ? $url : '';

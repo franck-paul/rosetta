@@ -53,7 +53,7 @@ class FrontendTemplateCode
             $rosettum_lang = isset($_GET['lang']) && is_string($rosettum_lang = $_GET['lang']) ? $rosettum_lang : '';
             if ($rosettum_lang !== '') {
                 // Check lang scheme
-                if (preg_match('/^[a-z]{2}(-[a-z]{2})?$/', rawurldecode($rosettum_lang), $matches)) {
+                if ((bool) preg_match('/^[a-z]{2}(-[a-z]{2})?$/', rawurldecode($rosettum_lang), $matches)) {
                     // Assume that the URL scheme is for post/page
                     $rosetta_langs[] = $matches[0];
                 }
@@ -109,7 +109,7 @@ class FrontendTemplateCode
             $rosetta_current
         );
 
-        if (is_array($rosetta_table) && count($rosetta_table)) {
+        if (is_array($rosetta_table) && count($rosetta_table) > 0) {
             $rosetta_list = [];
             foreach ($rosetta_table as $rosetta_name => $rosetta_url) {
                 $rosetta_is_current = $rosetta_name === $rosetta_current;

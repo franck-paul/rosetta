@@ -135,7 +135,7 @@ class BackendRest
                     'no_content' => true, ]);
 
                 $rs = App::blog()->getPosts($arrayObject);
-                if ($rs->count()) {
+                if ($rs->count() > 0) {
                     // Load first record
                     $rs->fetch();
                     $rosetta_lang = $rs->strField('post_lang');
@@ -216,7 +216,7 @@ class BackendRest
                 'post_type'  => ['post', 'page'],
                 'no_content' => true, ]);
             $rs = App::blog()->getPosts($params);
-            if ($rs->count()) {
+            if ($rs->count() > 0) {
                 $rs->fetch();
 
                 $post_id   = $rs->intField('post_id');
@@ -234,7 +234,7 @@ class BackendRest
                     'post_type'  => ['post', 'page'],
                     'no_content' => true, ]);
                 $rs = App::blog()->getPosts($params);
-                if ($rs->count()) {
+                if ($rs->count() > 0) {
                     $rs->fetch();
 
                     $post_id    = $rs->intField('post_id');

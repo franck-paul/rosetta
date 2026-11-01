@@ -42,12 +42,12 @@ class FrontendTemplate
     public static function rosettaEntryList(array|ArrayObject $attr): string
     {
         $settings = My::settings();
-        if (!$settings->getBool('active')) {
+        if (!$settings->getBool('active', false)) {
             return '';
         }
 
         $option = is_string($option = $attr['include_current']) ? $option : 'std';
-        if (!preg_match('#^(std|link|none)$#', $option)) {
+        if (!(bool) preg_match('#^(std|link|none)$#', $option)) {
             $option = 'std';
         }
 

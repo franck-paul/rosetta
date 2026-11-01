@@ -25,7 +25,7 @@ class FrontendWidgets
     public static function rosettaEntryWidget(WidgetsElement $widgetsElement): string
     {
         $settings = My::settings();
-        if (!$settings->getBool('active')) {
+        if (!$settings->getBool('active', false)) {
             return '';
         }
 
@@ -78,7 +78,7 @@ class FrontendWidgets
     public static function rosettaStaticHomeWidget(WidgetsElement $widgetsElement): string
     {
         $settings = My::settings();
-        if (!$settings->getBool('active')) {
+        if (!$settings->getBool('active', false)) {
             return '';
         }
 

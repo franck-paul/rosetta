@@ -48,7 +48,7 @@ class FrontendHelper
         $rsSrc = App::blog()->getPosts($paramsSrc);
 
         // Check if post/page id exists in rosetta table
-        if ($rsSrc->count()) {
+        if ($rsSrc->count() > 0) {
             // Load first record
             $rsSrc->fetch();
 
@@ -76,7 +76,7 @@ class FrontendHelper
                 App::behavior()->callBehavior('publicPostBeforeGetPosts', $paramsDst, $entry);
                 $rsDst = App::blog()->getPosts($paramsDst);
 
-                if ($rsDst->count()) {
+                if ($rsDst->count() > 0) {
                     // Load first record
                     $rsDst->fetch();
 
@@ -141,14 +141,14 @@ class FrontendHelper
                 App::behavior()->callBehavior('publicPostBeforeGetPosts', $params, null);
                 $rs = App::blog()->getPosts($params);
 
-                if ($rs->count()) {
+                if ($rs->count() > 0) {
                     $rs->fetch();
                     $post_url = $rs->strField('post_url');
 
                     $url = App::blog()->url() . App::postTypes()->get($post_type)->publicUrl(Html::sanitizeURL($post_url));
 
                     $settings = My::settings();
-                    if ($settings->getBool('accept_language')) {
+                    if ($settings->getBool('accept_language', false)) {
                         // Add lang parameter to the URL to prevent accept-language auto redirect
                         $url .= (str_contains($url, '?') ? '&' : '?') . 'lang=' . $lang;
                     }
