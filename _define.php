@@ -18,9 +18,9 @@ if (isset($this) && is_object($this) && method_exists($this, 'registerModule') &
         'Rosetta',
         'Manage post/page translations',
         'Franck Paul',
-        '9.0',
+        '10.0',
         [
-            'date'     => '2026-08-03T10:09:39+0200',
+            'date'     => '2026-11-08T10:20:36+0100',
             'requires' => [
                 ['core', '2.40'],
                 ['TemplateHelper'],
