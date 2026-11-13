@@ -18,6 +18,7 @@ namespace Dotclear\Plugin\rosetta;
 use ArrayObject;
 use Dotclear\App;
 use Dotclear\Core\Backend\Favorites;
+use Dotclear\Core\Backend\UserPrefFilter;
 use Dotclear\Database\MetaRecord;
 use Dotclear\Database\Statement\SelectStatement;
 use Dotclear\Helper\Html\Form\Caption;
@@ -522,7 +523,7 @@ class BackendBehaviors
     }
 
     /**
-     * @param      ArrayObject<string, mixed>  $arrayObject  The sorts
+     * @param      ArrayObject<array-key, UserPrefFilter>  $arrayObject  The filters
      */
     public static function adminFiltersLists(ArrayObject $arrayObject): string
     {

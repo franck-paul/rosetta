@@ -63,7 +63,7 @@ class Backend
             'adminPostMiniListValueV2'  => BackendBehaviors::adminPostMiniListValue(...),
             'adminPagesListHeaderV2'    => BackendBehaviors::adminPagesListHeader(...),
             'adminPagesListValueV2'     => BackendBehaviors::adminPagesListValue(...),
-            'adminFiltersListsV2'       => BackendBehaviors::adminFiltersLists(...),
+            'adminFiltersListsV3'       => BackendBehaviors::adminFiltersLists(...),
 
             // Add behaviour callback for import/export
             'exportSingleV2' => BackendBehaviors::exportSingle(...),
