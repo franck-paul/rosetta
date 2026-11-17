@@ -6,9 +6,9 @@ dotclear.mergeDeep(dotclear, dotclear.getData('rosetta_type'));
 
 dotclear.ready(() => {
   // Add toggle capability on Rosetta area
-  $('#rosetta-details').toggleWithDetails({
+  dotclear.toggleWithDetails(document.getElementById('rosetta-details'), {
     user_pref: 'dcx_post_rosetta',
-    hide: $('#rosetta-list tbody').children().length !== 0,
+    hide: document.querySelectorAll('#rosetta-list tbody > *').length !== 0,
   });
 
   function getURLParameter(url, name) {
